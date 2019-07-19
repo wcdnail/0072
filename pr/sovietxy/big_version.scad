@@ -1,0 +1,221 @@
+use <../libs/dimlines.scad>
+
+$fn=32;
+prof_cx=20;
+printer_height=600;
+
+z_rod_height=373;
+z_car_height=54;
+z_hold_height=20;
+
+module table(tx, ty) {
+    ex = tx % 100;
+    ey = ty % 100;
+    color("Grey") cube([tx, ty, 4]);
+    translate([ex/2, ey/2, 4]) color("White") cube([tx-ex, ty-ey, 3]);
+}
+
+module z_carriage() {
+    color("DarkSlateGray") translate([10.57, -17, 0]) rotate([0, -90, 0]) {
+        translate([0, 34, 21.3]) rotate([180, 0, 0]) import("printedparts/4xCoreXY_Z_Axis_LM8UU_Bolt.stl");
+        translate([0, 0, 0]) rotate([0, 0, 0]) import("printedparts/4xCoreXY_Z_Axis_LM8UU_Nut.stl");
+    }
+}
+
+module z_holder() {
+    translate([-41.15, -30, -80]) {
+        rotate([90, 0, -90]) color("Yellow") import("printedparts2/Z-Axis Holder.stl");
+        rotate([90, 0, -90]) color("Green") import("printedparts2/Z-Axis Clamp.stl");
+    }
+}
+
+module z_carriage_rod(zp = 0) {
+    translate([0, 0, (z_rod_height-z_car_height-z_hold_height)-zp]) z_carriage();
+    z_holder();
+    translate([0, 0, z_rod_height-z_hold_height]) z_holder();
+    color("White") cylinder(d=8, h=z_rod_height);
+}
+
+module x_carriage() {
+    translate([-37.5, 37.5, 15.2]) rotate([180, 0, 0]) import("printedparts/1xCoreXY_X-Carriage.stl");
+}
+
+module l_x_end_top() {
+    translate([0, 70, 11.1]) rotate([180, 0, 0]) import("printedparts/2xCoreXY_X-End_Bolt.stl");
+}
+
+module l_x_end_bottom() {
+    translate([0, 0, -10.2]) rotate([0, 0, 0]) import("printedparts/2xCoreXY_X-End_Nut.stl");
+}
+
+module l_x_end() {
+    l_x_end_bottom();
+    l_x_end_top();
+}
+
+module r_x_end() {
+    mirror([1, 0, 0]) l_x_end();
+}
+
+module r_idler() {
+    translate([0, 0, 0]) rotate([0, 0, 180]) import("printedparts/1xCoreXY_Idler.stl");
+}
+
+module r_motor() {
+    translate([0, 0, 25]) rotate([180, 0, 180]) import("printedparts/1xCoreXY_Motor.stl");
+}
+
+module r_y_axis(by, cy, xe_pos) {
+    color("DarkSlateGray") {
+        translate([0, 0, 0]) r_motor();
+        translate([0, by + prof_cx, 0]) r_idler();
+        translate([-3.5, xe_pos - 35, 14.5]) r_x_end();
+    }
+    translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color("White") cylinder(h=cy, d=8);
+}
+
+module l_y_axis(by, cy, xe_pos) {
+    mirror([1, 0, 0]) r_y_axis(by, cy, xe_pos);
+}
+
+module core_xy(bx, cx, by, cy, px = 0, py = 0) {
+    xe_px=bx/2 + px;
+    xe_py=by/2 + py;
+    translate([bx, 0, 0]) r_y_axis(by, cy, xe_py);
+    translate([-0, 0, 0]) l_y_axis(by, cy, xe_py);
+    color("White") {
+        translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
+        translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
+    }
+    translate([xe_px, xe_py, prof_cx - 10]) color("Crimson") x_carriage();
+}
+
+module frame_cst(bx, by, hgt = prof_cx) {
+    color("SeaGreen") {
+        translate([bx, 0, -hgt]) cube([prof_cx, by, hgt]);
+        translate([-prof_cx, 0, -hgt]) cube([prof_cx, by, hgt]);
+    }
+    color("Purple") {
+        translate([0, -prof_cx, -hgt]) cube([bx, prof_cx, hgt]);
+        translate([0, by, -hgt]) cube([bx, prof_cx, hgt]);
+    }
+}
+
+module frame_ytx(bx, by, hgt = prof_cx) {
+    color("SeaGreen") {
+        translate([bx, 0, -hgt]) cube([prof_cx, by, hgt]);
+        translate([-prof_cx, 0, -hgt]) cube([prof_cx, by, hgt]);
+    }
+    color("Purple") {
+        translate([0, 0, -hgt]) cube([bx, prof_cx, hgt]);
+        translate([0, by-prof_cx, -hgt]) cube([bx, prof_cx, hgt]);
+    }
+}
+
+
+module core_xy_t220(bx, cx, by, cy, px = 0, py = 0, table_y_offset = 0) {
+    tx=220;
+    ty=220;
+    core_xy(bx, cx, by, cy, px, py, table_y_offset); 
+    translate([(bx-tx)/2, table_y_offset+(by-ty)/2, -20]) table(tx, ty);
+}
+
+module core_xy_t330(bx, cx, by, cy, px = 0, py = 0, table_y_offset = 0) {
+    tx=330;
+    ty=330;
+    core_xy(bx, cx, by, cy, px, py, table_y_offset); 
+    translate([(bx-tx)/2, table_y_offset+(by-tx)/2, -20]) table(tx, tx);
+}
+
+module frame_vert(bx, by) {
+    translate([-prof_cx, -prof_cx, -printer_height]) cube([prof_cx, prof_cx, printer_height]);
+    translate([-prof_cx, by, -printer_height]) cube([prof_cx, prof_cx, printer_height]);
+    translate([bx, by, -printer_height]) cube([prof_cx, prof_cx, printer_height]);
+    translate([bx, -prof_cx, -printer_height]) cube([prof_cx, prof_cx, printer_height]);
+}
+
+module frame_full(bx, by) {
+    core_xy_h=20;
+    bottom_h=20;
+    frame_cst(bx, by, core_xy_h);
+    translate([0, 0, -(prinetr_height-bottom_h-core_xy_h-prof_cx*2)]) frame_cst(bx, by, bottom_h);
+}
+
+module curr_v() {
+    x_rodh_orig=330;
+    y_rodh_orig=347;
+    x_barh_orig=400;
+    y_barh_orig=400;
+
+    min_x=-108;
+    min_y=-110;
+    max_x=108;
+    max_y=140;
+    
+    frame_full(x_barh_orig, y_barh_orig);
+    core_xy_t220(x_barh_orig, x_rodh_orig, y_barh_orig, y_rodh_orig, min_x, min_y, 0);
+}
+
+module new_frame_full(bx, by) {
+    core_xy_h=40;
+    bottom_h=40;
+    core_xy_z_offs=100;
+    translate([0, 0, core_xy_z_offs]) frame_vert(bx, by);
+    translate([0, 0, core_xy_z_offs]) frame_cst(bx, by, prof_cx);
+    frame_cst(bx, by, core_xy_h);
+    translate([0, 0, -(printer_height-bottom_h-core_xy_z_offs-87)]) frame_cst(bx, by, prof_cx);
+    translate([0, 0, -(printer_height-bottom_h-core_xy_z_offs)]) frame_cst(bx, by, bottom_h);
+    /*
+    tfcx=400;
+    tfcy=400;
+    tfho=300;
+    tfeh=200;
+    translate([(bx-tfcx)/2, (by-tfcy)/2, tfho]) frame_cst(tfcx, tfcy, prof_cx);
+    translate([(bx-tfcx)/2-prof_cx, (by-tfcy)/2-prof_cx*2, tfho-tfeh]) 
+        rotate([-5.7, 0, 0]) cube([prof_cx, prof_cx, tfeh]);
+    */
+}
+
+module newestVariant() {
+    x_rodh=420;
+    y_rodh=405;
+    x_barh=490;
+    y_barh=450;
+    
+    tx=330;
+    ty=330;
+    ty_offset=14;
+
+    min_x=-150;
+    min_y=-135;
+    max_x=150;
+    max_y=165;
+    min_z=0;
+    max_z=275;
+    
+    zpos =0;
+    ztab =7;
+    tab_cx=387;
+    tab_cy=400;
+    
+    // Frame
+    new_frame_full(x_barh, y_barh);
+    
+    // Soviet CoreXY
+    core_xy(x_barh, x_rodh, y_barh, y_rodh, 0, 0);
+    
+    // Table
+    translate([(x_barh-tx)/2, ty_offset+(y_barh-tx)/2, -(z_hold_height*2+zpos)+ztab]) table(tx, tx);
+    
+    // Z rods
+    translate([21.2, ty_offset+95, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
+    translate([21.2, ty_offset+x_barh-135, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
+    translate([y_barh + 40, 0, 0]) mirror([1, 0, 0]) {
+        translate([21.2, ty_offset+95, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
+        translate([21.2, ty_offset+x_barh-135, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
+    }
+    translate([(x_barh-tab_cx)/2, ty_offset + (y_barh-tab_cy)/2, -(z_hold_height*2+zpos)]) frame_ytx(tab_cx, tab_cy, prof_cx);
+}
+
+newestVariant();
+
