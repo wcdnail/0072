@@ -168,6 +168,8 @@
 //#define EXTRUDER_WATTS (12.0*12.0/6.7) //  P=I^2/R
 //#define BED_WATTS (12.0*12.0/1.1)      // P=I^2/R
 
+// PID Autotune command example - M303 E0 S200 C8
+
 // PID settings:
 // Comment the following line to disable PID and enable bang-bang.
 #define PIDTEMP
@@ -182,11 +184,16 @@
   #define K1 0.95 //smoothing factor within the PID
   #define PID_dT ((OVERSAMPLENR * 8.0)/(F_CPU / 64.0 / 256.0)) //sampling period of the temperature routine
 
+// MC3 STALIN (autotune)
+  #define  DEFAULT_Kp 24.40
+  #define  DEFAULT_Ki 2.05
+  #define  DEFAULT_Kd 72.76
+
 // If you are using a pre-configured hotend then you can use one of the value sets by uncommenting it
 // JH//Ultimaker
-    #define  DEFAULT_Kp 22.2//26.04
-    #define  DEFAULT_Ki 1.08//3.68
-    #define  DEFAULT_Kd 114//46.07
+//    #define  DEFAULT_Kp 22.2//26.04
+//    #define  DEFAULT_Ki 1.08//3.68
+//    #define  DEFAULT_Kd 114//46.07
 
 // MakerGear
 //    #define  DEFAULT_Kp 7.0
@@ -455,9 +462,12 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // MK8_setps_per_mm = (step_count * microsteps)/(2*pi*R)
 //#define _MC3_MK8_FEEDER_RADIUS        11
 //#define _MC3_MK8_MM_PER_ROTATE        69,1150372
+// 92,5992411966755 * 2 = 185,198482393351
+//
+// Разрешение холодной экструзии - M302 P1
 //
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT     { 160, 160, 8000, 92.5992411966755 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT     { 160, 160, 8000, 186 }
 #define DEFAULT_MAX_FEEDRATE            { 500, 500,  5,  25 }     // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION        { 1500, 1500, 100, 10000 } // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
 
