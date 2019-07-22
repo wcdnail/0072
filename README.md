@@ -18,8 +18,11 @@
 
 # 2. MC3 СТАЛИН (MC3 Stealth)
 Оригинальный проект: https://www.thingiverse.com/thing:1017777<br/>
+Доработки: https://www.thingiverse.com/thing:1118690<br/>
+Магазин: http://3d.masterkit.ru/shop/3d-printers/1916117<br/>
 
-![vulcanus-v1-2018-1](v/mc3-stalin/IMG_20190720_144446.jpg?raw=true "MC3 СТАЛИН")
+![mc3-stalin-v-1-2019](v/mc3-stalin/IMG_20190720_144446.jpg?raw=true "MC3 СТАЛИН")
+![mc3-stalin-v-1-2019](v/mc3-stalin/IMG_20190720_144437.jpg?raw=true "MC3 СТАЛИН")
 
 # MC3-2. Прошивки
 `fw/mc3/Marlin_MC3_STALIN_My` - Marlin 1.0.0

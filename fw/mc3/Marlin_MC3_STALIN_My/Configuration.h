@@ -459,17 +459,17 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 //#define _MC3_M5_Z_STEP                0.8
 //
 // Экструдер
-// MK8_setps_per_mm = (step_count * microsteps)/(2*pi*R)
+// MK8_setps_per_mm = (step_count * microsteps)/(pi*R)
 //#define _MC3_MK8_FEEDER_RADIUS        11
-//#define _MC3_MK8_MM_PER_ROTATE        69,1150372
-// 92,5992411966755 * 2 = 185,198482393351
+//#define _MC3_MK8_MM_PER_ROTATE        --
 //
 // Разрешение холодной экструзии - M302 P1
 //
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT     { 160, 160, 8000, 186 }
+#define _MC3_XY_STEPS                     171.3 // For example: M92 X<value>
+#define DEFAULT_AXIS_STEPS_PER_UNIT     { _MC3_XY_STEPS, _MC3_XY_STEPS, 8000, 200 }
 #define DEFAULT_MAX_FEEDRATE            { 500, 500,  5,  25 }     // (mm/sec)
-#define DEFAULT_MAX_ACCELERATION        { 1500, 1500, 100, 10000 } // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_MAX_ACCELERATION        { 1500, 1500, 20, 10000 } // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION            2000  // X, Y, Z and E max acceleration in mm/s^2 for printing moves
 #define DEFAULT_RETRACT_ACCELERATION    2000  // X, Y, Z and E max acceleration in mm/s^2 for retracts
@@ -495,18 +495,18 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 // M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
 //define this to enable EEPROM support
-//#define EEPROM_SETTINGS
+#define EEPROM_SETTINGS
 //to disable EEPROM Serial responses and decrease program space by ~1700 byte: comment this out:
 // please keep turned on if you can.
-//#define EEPROM_CHITCHAT
+#define EEPROM_CHITCHAT
 
 // Preheat Constants
-#define PLA_PREHEAT_HOTEND_TEMP 180
-#define PLA_PREHEAT_HPB_TEMP 70
+#define PLA_PREHEAT_HOTEND_TEMP 210
+#define PLA_PREHEAT_HPB_TEMP 0
 #define PLA_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
 
 #define ABS_PREHEAT_HOTEND_TEMP 240
-#define ABS_PREHEAT_HPB_TEMP 100
+#define ABS_PREHEAT_HPB_TEMP 0
 #define ABS_PREHEAT_FAN_SPEED 255   // Insert Value between 0 and 255
 
 //LCD and SD support
