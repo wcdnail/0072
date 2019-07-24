@@ -8,6 +8,7 @@ ocy=76;                 // Оригинальная ширина (Y)
 ocz=6;                  // Оригинальная высота (Z)
 
 lm8uu_od=16;            // Внешний диаметр линейных подшипников
+lm8uu_cx=25;
 
 cx_factor=2.7;          // Делитель оригинальной длины
 
@@ -21,10 +22,10 @@ ncy=ocy-nydec;
 e3dh_cx=12;             // Смещение E3D от центра по X
 e3dh_cz=15;             // Смещение E3D от центра по Y
 
-hnut_m="M4";            // Размер горизонтальных гаек
-hbolt_d=4.2;            // Диаметр горизонтальных отв.
-hnut_sf=2;              // Масштаб горизонтальных гаек
-hnut_hh=9;              // Смещение по Z горизонтальных гаек
+hnut_m="M3";            // Размер горизонтальных гаек
+hbolt_d=3.2;            // Диаметр горизонтальных отв.
+hnut_sf=15;             // Масштаб горизонтальных гаек
+hnut_hh=8.2;            // Смещение по Z горизонтальных гаек
 
 vnut_m="M4";            // Размер вертикальных гаек
 vhole_ofs=-6;           //
@@ -34,7 +35,7 @@ module x_carriage_v5() {
 }
 
 module x_belt_clamp() {
-    translate([0, 0, 0]) rotate([0, 0, 0]) import("printedparts/1xCoreXY_Belt_tensioner.stl");
+    translate([0, 0, 0]) rotate([0, 0, 0]) import("belt_tensioner.stl");
 }
 
 module x_carriage_direct_drive() {
@@ -45,20 +46,21 @@ module e3d_v6_175() {
     translate([0, 0, 0]) rotate([0, 0, 0]) import("../parts/E3D_v6_1.75mm_Universal.stl");
 }
 
-module x_carriage_1s() {
+module x_carriage_1s(linguide_d=8, e3d_h=0, hnut_oy=0) {
     difference() {
         difference() {
             union() {
                 translate([nxofs, nydec/2, 0]) cube([ncx, ocy - nydec, ocz]);
                 translate([nxofs, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od+5, h=ncx);
                 translate([nxofs, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od+5, h=ncx);
-                translate([ncx-(e3dh_cx+ecx), ocy/2-25, 0]) cube([e3dh_cx, 50, e3dh_cz]);
+                translate([ncx-(e3dh_cx+ecx), ocy/2-25, 0]) cube([e3dh_cx, 50, e3dh_cz+e3d_h]);
             }
             translate([0, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od, h=50);
             translate([0, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od, h=50);
         }
-        translate([-10, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=8, h=50);
-        translate([-10, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=8, h=50);
+        // Linear guides holes
+        translate([-10, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=linguide_d, h=50);
+        translate([-10, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=linguide_d, h=50);
         // vert bolts holes
         //translate([30, 13, -10]) cylinder(d=3.2, h=20);
         //translate([30, ocy-13, -10]) cylinder(d=3.2, h=20);
@@ -66,11 +68,11 @@ module x_carriage_1s() {
         translate([(ncx)/2+vhole_ofs, ocy/2, -20+hnut_hh]) cylinder(d=4.2, h=40);
         translate([(ncx)/2+vhole_ofs, ocy/2, 1+hnut_hh]) scale([1, 1, 2]) nut(vnut_m);
         // horizontal bolts holes
-        translate([-10, 25.5, hnut_hh]) rotate([0, 90, 0]) cylinder(d=hbolt_d, h=50);
-        translate([-10, ocy-25.5, hnut_hh]) rotate([0, 90, 0]) cylinder(d=hbolt_d, h=50);
+        translate([-10, (25.5+hnut_oy), hnut_hh]) rotate([0, 90, 0]) cylinder(d=hbolt_d, h=50);
+        translate([-10, ocy-(25.5+hnut_oy), hnut_hh]) rotate([0, 90, 0]) cylinder(d=hbolt_d, h=50);
         // horizontal nut holes
-        translate([ncx-e3dh_cx-0.5, 25.5, hnut_hh]) rotate([0, 90, 0]) scale([1, 1, hnut_sf]) nut(hnut_m);
-        translate([ncx-e3dh_cx-0.5, ocy-25.5, hnut_hh]) rotate([0, 90, 0]) scale([1, 1, hnut_sf]) nut(hnut_m);
+        translate([ncx-e3dh_cx-0.5, (25.5+hnut_oy), hnut_hh]) rotate([0, 90, 0]) scale([1, 1, hnut_sf]) nut(hnut_m);
+        translate([ncx-e3dh_cx-0.5, ocy-(25.5+hnut_oy), hnut_hh]) rotate([0, 90, 0]) scale([1, 1, hnut_sf]) nut(hnut_m);
         // E3D v6 mount
         translate([ncx-ecx, ocy/2, -10]) cylinder(d=20, h=15);
         translate([ncx-ecx, ocy/2, -10]) cylinder(d=10, h=30);
@@ -131,9 +133,9 @@ module x_carriage_top() {
 //color("blue") translate([ncx+ecx-0.7, ocy/2+2.5, 19.5]) rotate([180, 0, 0]) e3d_v6_175();
 //%x_carriage_v5();
 //translate([-3.425, 0, 0]) %x_carriage_direct_drive();
-//x_carriage_1s();
-x_carriage_1s_stl();
-translate([ncx*2-ecx*2, 0, 0]) mirror([1, 0, 0]) x_carriage_1s_stl();
-translate([0, 0, -0.2]) x_carriage_top();
+//x_carriage_1s(12, -1, 3);
+//x_carriage_1s_stl();
+//translate([ncx*2-ecx*2, 0, 0]) mirror([1, 0, 0]) x_carriage_1s_stl();
+//translate([0, 0, -0.2]) x_carriage_top();
 //rotate([180, 0, 0]) x_carriage_top();
-translate([-6, 19.4, -19.9]) rotate([90, 0, 90]) color("Red") x_belt_clamp();
+//translate([-6, 38.08, -10.16]) rotate([90, 0, 90]) color("Red") x_belt_clamp();
