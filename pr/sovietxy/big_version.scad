@@ -1,5 +1,3 @@
-use <../libs/dimlines.scad>
-
 $fn=32;
 prof_cx=20;
 printer_height=600;
@@ -7,6 +5,8 @@ printer_height=600;
 z_rod_height=373;
 z_car_height=54;
 z_hold_height=20;
+
+y_axis_die=1.4;
 
 module table(tx, ty) {
     ex = tx % 100;
@@ -78,6 +78,17 @@ module l_y_axis(by, cy, xe_pos) {
     mirror([1, 0, 0]) r_y_axis(by, cy, xe_pos);
 }
 
+module r_y_axis_tr(by, cy, xe_pos) {
+    translate([0, 0, 0]) %r_motor();
+    translate([0, by + prof_cx, 0]) %r_idler();
+    translate([-3.5, xe_pos - 35, 14.5]) %r_x_end();
+    translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color("White") cylinder(h=cy, d=8);
+}
+
+module l_y_axis_tr(by, cy, xe_pos) {
+    mirror([1, 0, 0]) r_y_axis_tr(by, cy, xe_pos);
+}
+
 module core_xy(bx, cx, by, cy, px = 0, py = 0) {
     xe_px=bx/2 + px;
     xe_py=by/2 + py;
@@ -89,6 +100,19 @@ module core_xy(bx, cx, by, cy, px = 0, py = 0) {
     }
     translate([xe_px, xe_py, prof_cx - 10]) color("Crimson") x_carriage();
 }
+
+module core_xy_tr(bx, cx, by, cy, px = 0, py = 0) {
+    xe_px=bx/2 + px;
+    xe_py=by/2 + py;
+    translate([bx, 0, 0]) r_y_axis_tr(by, cy, xe_py);
+    translate([-0, 0, 0]) l_y_axis_tr(by, cy, xe_py);
+    color("White") {
+        translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
+        translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
+    }
+    translate([xe_px, xe_py, prof_cx - 10]) %x_carriage();
+}
+
 
 module frame_cst(bx, by, hgt = prof_cx) {
     color("SeaGreen") {
@@ -217,5 +241,17 @@ module newestVariant() {
     translate([(x_barh-tab_cx)/2, ty_offset + (y_barh-tab_cy)/2, -(z_hold_height*2+zpos)]) frame_ytx(tab_cx, tab_cy, prof_cx);
 }
 
-newestVariant();
+//newestVariant();
 
+x_rodh=420;
+y_rodh=405;
+x_barh=490;
+y_barh=450;
+
+tx=330;
+ty=330;
+ty_offset=14;
+
+core_xy_tr(x_barh, x_rodh, y_barh, y_rodh, 0, 0);
+
+translate([21, y_barh-0.5, 15]) rotate([90, 0, 0]) color("red") cylinder(h=y_axis_die, d=8);
