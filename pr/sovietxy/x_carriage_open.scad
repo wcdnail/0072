@@ -2,7 +2,7 @@ include <x_carriage.scad>
 
 slice_zo=ocz+8;
 slice_zyo=2;
-sl_cy=12;
+sl_cy=11.65;
 sl_zo=2.5;
 
 module x_carriage_opened(linguide_d=12) {
