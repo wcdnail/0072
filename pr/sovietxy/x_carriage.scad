@@ -7,8 +7,8 @@ ocx=76;                 // Оригинальная длина (X)
 ocy=76;                 // Оригинальная ширина (Y)
 ocz=6;                  // Оригинальная высота (Z)
 
-lm8uu_od=16;            // Внешний диаметр линейных подшипников
-lm8uu_cx=25;
+lm8uu_od=15;            // Внешний диаметр линейных подшипников
+lm8uu_cx=24;
 
 cx_factor=2.7;          // Делитель оригинальной длины
 
@@ -46,24 +46,37 @@ module e3d_v6_175() {
     translate([0, 0, 0]) rotate([0, 0, 0]) import("../parts/E3D_v6_1.75mm_Universal.stl");
 }
 
-module x_carriage_1s(linguide_d=8, e3d_h=0, hnut_oy=0) {
+module l_x_end_top() {
+    translate([0, 70, 11.1]) rotate([180, 0, 0]) import("printedparts/2xCoreXY_X-End_Bolt.stl");
+}
+
+module l_x_end_bottom() {
+    translate([0, 0, -10.2]) rotate([0, 0, 0]) import("printedparts/2xCoreXY_X-End_Nut.stl");
+}
+
+module l_x_end() {
+    l_x_end_bottom();
+    l_x_end_top();
+}
+
+module x_carriage_1s(linguide_d=8, e3d_h=0, hnut_oy=0, lgho=0) {
     difference() {
         difference() {
             union() {
-                translate([nxofs, nydec/2, 0]) cube([ncx, ocy - nydec, ocz]);
-                translate([nxofs, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od+5, h=ncx);
-                translate([nxofs, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od+5, h=ncx);
-                translate([ncx-(e3dh_cx+ecx), ocy/2-25, 0]) cube([e3dh_cx, 50, e3dh_cz+e3d_h]);
+                translate([nxofs, nydec/2, 0.5]) cube([ncx, ocy-nydec-lgho*2, ocz]);
+                translate([nxofs, (13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od+5, h=ncx);
+                translate([nxofs, ocy-(13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od+5, h=ncx);
+                translate([ncx-(e3dh_cx+ecx), ocy/2-25, 0.5]) cube([e3dh_cx, 50-lgho*2, e3dh_cz+e3d_h-0.5]);
             }
             translate([0, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od, h=50);
             translate([0, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od, h=50);
         }
         // Linear guides holes
-        translate([-10, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=linguide_d, h=50);
-        translate([-10, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=linguide_d, h=50);
+        translate([-10, (13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=linguide_d, h=50);
+        translate([-10, ocy-(13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=linguide_d, h=50);
         // vert bolts holes
-        //translate([30, 13, -10]) cylinder(d=3.2, h=20);
-        //translate([30, ocy-13, -10]) cylinder(d=3.2, h=20);
+        //translate([30, (13+lgho), -10]) cylinder(d=3.2, h=20);
+        //translate([30, ocy-(13+lgho), -10]) cylinder(d=3.2, h=20);
         // vert nut hole
         translate([(ncx)/2+vhole_ofs, ocy/2, -20+hnut_hh]) cylinder(d=4.2, h=40);
         translate([(ncx)/2+vhole_ofs, ocy/2, 1+hnut_hh]) scale([1, 1, 2]) nut(vnut_m);
