@@ -1,6 +1,6 @@
 include <x_carriage.scad>
 
-rods_diff=0.5;
+rods_diff=0.7;
 
 slice_zo=ocz+8;
 slice_zyo=2;
