@@ -2,6 +2,10 @@ include <../../openscad/libs/nutsnbolts/cyl_head_bolt.scad>
 include <../../openscad/libs/nutsnbolts/materials.scad>
 include <bconf.scad>
 
+module optical_endstop() {
+    translate([0, 0, 0]) rotate([0, 0, 0]) import("../parts/optical_endstop.stl ");
+}
+
 module x_carriage_v5() {
     translate([0, 0, 0]) rotate([0, 0, 0]) import("printedparts/1xCoreXY_X-Carriage.stl");
 }
@@ -76,7 +80,7 @@ module x_carriage_dd_1s() {
 }
 
 module x_carriage_1s_stl() {
-    import("x_carriage-one-half-draft.stl");
+    import("x_carriage-16x25lm8uu.stl");
 }
 
 bxs=3;
