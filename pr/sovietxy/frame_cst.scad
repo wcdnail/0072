@@ -177,10 +177,10 @@ module new_frame_full(bx, by) {
 }
 
 module newestVariant() {
-    x_rodh=420;
-    y_rodh=405;
-    x_barh=490;
-    y_barh=450;
+    RODXLen=420;
+    RODYLen=405;
+    BARXLen=490;
+    BARYLen=450;
     
     tx=330;
     ty=330;
@@ -199,27 +199,27 @@ module newestVariant() {
     tab_cy=400;
     
     // Frame
-    new_frame_full(x_barh, y_barh);
+    new_frame_full(BARXLen, BARYLen);
     
     // Soviet CoreXY
-    core_xy(x_barh, x_rodh, y_barh, y_rodh, 0, 0);
+    core_xy(BARXLen, RODXLen, BARYLen, RODYLen, 0, 0);
     
     // Table
-    translate([(x_barh-tx)/2, ty_offset+(y_barh-tx)/2, -(z_hold_height*2+zpos)+ztab]) table(tx, tx);
+    translate([(BARXLen-tx)/2, ty_offset+(BARYLen-tx)/2, -(z_hold_height*2+zpos)+ztab]) table(tx, tx);
     
     // Z rods
     translate([21.2, ty_offset+95, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
-    translate([21.2, ty_offset+x_barh-135, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
-    translate([y_barh + 40, 0, 0]) mirror([1, 0, 0]) {
+    translate([21.2, ty_offset+BARXLen-135, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
+    translate([BARYLen + 40, 0, 0]) mirror([1, 0, 0]) {
         translate([21.2, ty_offset+95, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
-        translate([21.2, ty_offset+x_barh-135, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
+        translate([21.2, ty_offset+BARXLen-135, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
     }
-    translate([(x_barh-tab_cx)/2, ty_offset + (y_barh-tab_cy)/2, -(z_hold_height*2+zpos)]) frame_ytx(tab_cx, tab_cy, prof_cx);
+    translate([(BARXLen-tab_cx)/2, ty_offset + (BARYLen-tab_cy)/2, -(z_hold_height*2+zpos)]) frame_ytx(tab_cx, tab_cy, prof_cx);
 }
 
 //newestVariant();
 
-x_barh=490;
-y_barh=450;
+BARXLen=490;
+BARYLen=450;
 
-translate([-x_barh/2, -y_barh/2, 0]) frame_cst(x_barh, y_barh, prof_cx);
+translate([-BARXLen/2, -BARYLen/2, 0]) frame_cst(BARXLen, BARYLen, prof_cx);

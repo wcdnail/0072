@@ -2,7 +2,7 @@ include <../../openscad/libs/nutsnbolts/cyl_head_bolt.scad>
 include <../../openscad/libs/nutsnbolts/materials.scad>
 include <bconf.scad>
 
-module linearBearing(od=LM8UU_OD, hght=LM8UU_HGHT) {
+module linearBearing(od=LM8UUOutterDiam, hght=LM8UULen) {
     rotate([-90, 0, 0]) cylinder(d=od, h=hght);
 }
 
