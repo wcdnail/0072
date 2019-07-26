@@ -241,7 +241,7 @@ module newestVariant() {
     translate([(x_barh-tab_cx)/2, ty_offset + (y_barh-tab_cy)/2, -(z_hold_height*2+zpos)]) frame_ytx(tab_cx, tab_cy, prof_cx);
 }
 
-//newestVariant();
+newestVariant();
 
 x_rodh=420;
 y_rodh=405;
@@ -252,6 +252,5 @@ tx=330;
 ty=330;
 ty_offset=14;
 
-core_xy_tr(x_barh, x_rodh, y_barh, y_rodh, 0, 0);
-
-translate([21, y_barh-0.5, 15]) rotate([90, 0, 0]) color("red") cylinder(h=y_axis_die, d=8);
+//core_xy_tr(x_barh, x_rodh, y_barh, y_rodh, 0, 0);
+//translate([21, y_barh-0.5, 15]) rotate([90, 0, 0]) color("red") cylinder(h=y_axis_die, d=8);

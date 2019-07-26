@@ -1,34 +1,6 @@
 include <../../openscad/libs/nutsnbolts/cyl_head_bolt.scad>
 include <../../openscad/libs/nutsnbolts/materials.scad>
-
-$fn=64;
-
-ocx=76;                 // Оригинальная длина (X)
-ocy=76;                 // Оригинальная ширина (Y)
-ocz=6;                  // Оригинальная высота (Z)
-
-lm8uu_od=16;            // Внешний диаметр линейных подшипников
-lm8uu_cx=25;
-
-cx_factor=2.7;          // Делитель оригинальной длины
-
-ecx=3;                  // Длина передней стенки 
-ncx=ocx/cx_factor+ecx;  // Новая длина каретки
-nxofs=-ecx;             // Смещение каретки по X
-
-nydec=23;               // Декремент ширины каретки
-ncy=ocy-nydec;
-
-e3dh_cx=12;             // Смещение E3D от центра по X
-e3dh_cz=15;             // Смещение E3D от центра по Y
-
-hnut_m="M3";            // Размер горизонтальных гаек
-hbolt_d=3.2;            // Диаметр горизонтальных отв.
-hnut_sf=15;             // Масштаб горизонтальных гаек
-hnut_hh=8.2;            // Смещение по Z горизонтальных гаек
-
-vnut_m="M4";            // Размер вертикальных гаек
-vhole_ofs=-6;           //
+include <bconf.scad>
 
 module x_carriage_v5() {
     translate([0, 0, 0]) rotate([0, 0, 0]) import("printedparts/1xCoreXY_X-Carriage.stl");
@@ -64,12 +36,12 @@ module x_carriage_1s(linguide_d=8, e3d_h=0, hnut_oy=0, lgho=0) {
         difference() {
             union() {
                 translate([nxofs, nydec/2, 0.5]) cube([ncx, ocy-nydec-lgho*2, ocz]);
-                translate([nxofs, (13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od+5, h=ncx);
-                translate([nxofs, ocy-(13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od+5, h=ncx);
+                translate([nxofs, (13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=LM8UU_OD+5, h=ncx);
+                translate([nxofs, ocy-(13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=LM8UU_OD+5, h=ncx);
                 translate([ncx-(e3dh_cx+ecx), ocy/2-25, 0.5]) cube([e3dh_cx, 50-lgho*2, e3dh_cz+e3d_h-0.5]);
             }
-            translate([0, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od, h=50);
-            translate([0, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=lm8uu_od, h=50);
+            translate([0, 13, 10.5]) rotate([0, 90, 0]) cylinder(d=LM8UU_OD, h=50);
+            translate([0, ocy-13, 10.5]) rotate([0, 90, 0]) cylinder(d=LM8UU_OD, h=50);
         }
         // Linear guides holes
         translate([-10, (13+lgho), 10.5]) rotate([0, 90, 0]) cylinder(d=linguide_d, h=50);

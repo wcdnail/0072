@@ -1,4 +1,4 @@
-use <../../openscad/libs/dimlines.scad>
+use <../../openscad/libs/temp/dimlines.scad>
 
 $fn=32;
 prof_cx=20;
