@@ -52,6 +52,10 @@ module x_rods(rod_d, bx, cx, by, cy, px = 0, py = 0) {
     translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=rod_d);
 }
 
+module z_motor() {
+    translate([0, 0, 0]) rotate([0, 0, 0]) import("printedparts/2xCoreXY_Z_Motor.stl");
+}
+
 module optical_endstop() {
     translate([0, 0, 0]) rotate([0, 0, 0]) import("../parts/optical_endstop_1.stl");
 }
