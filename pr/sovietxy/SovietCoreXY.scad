@@ -1,5 +1,5 @@
-$fn=32;
-prof_cx=20;
+include <bconf.scad>
+
 printer_height=600;
 
 z_rod_height=373;
@@ -68,7 +68,7 @@ module r_motor() {
 module r_y_axis(by, cy, xe_pos) {
     color("DarkSlateGray") {
         translate([0, 0, 0]) r_motor();
-        translate([0, by + prof_cx, 0]) r_idler();
+        translate([0, by + BARCX, 0]) r_idler();
         translate([-3.5, xe_pos - 35, 14.5]) r_x_end();
     }
     translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color("White") cylinder(h=cy, d=8);
@@ -80,7 +80,7 @@ module l_y_axis(by, cy, xe_pos) {
 
 module r_y_axis_tr(by, cy, xe_pos) {
     translate([0, 0, 0]) %r_motor();
-    translate([0, by + prof_cx, 0]) %r_idler();
+    translate([0, by + BARCX, 0]) %r_idler();
     translate([-3.5, xe_pos - 35, 14.5]) %r_x_end();
     translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color("White") cylinder(h=cy, d=8);
 }
@@ -98,7 +98,7 @@ module core_xy(bx, cx, by, cy, px = 0, py = 0) {
         translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
         translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
     }
-    translate([xe_px, xe_py, prof_cx - 10]) color("Crimson") x_carriage();
+    translate([xe_px, xe_py, BARCX - 10]) color("Crimson") x_carriage();
 }
 
 module core_xy_tr(bx, cx, by, cy, px = 0, py = 0) {
@@ -110,29 +110,29 @@ module core_xy_tr(bx, cx, by, cy, px = 0, py = 0) {
         translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
         translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
     }
-    translate([xe_px, xe_py, prof_cx - 10]) %x_carriage();
+    translate([xe_px, xe_py, BARCX - 10]) %x_carriage();
 }
 
 
-module frame_cst(bx, by, hgt = prof_cx) {
+module frame_cst(bx, by, hgt = BARCX) {
     color("SeaGreen") {
-        translate([bx, 0, -hgt]) cube([prof_cx, by, hgt]);
-        translate([-prof_cx, 0, -hgt]) cube([prof_cx, by, hgt]);
+        translate([bx, 0, -hgt]) cube([BARCX, by, hgt]);
+        translate([-BARCX, 0, -hgt]) cube([BARCX, by, hgt]);
     }
     color("Purple") {
-        translate([0, -prof_cx, -hgt]) cube([bx, prof_cx, hgt]);
-        translate([0, by, -hgt]) cube([bx, prof_cx, hgt]);
+        translate([0, -BARCX, -hgt]) cube([bx, BARCX, hgt]);
+        translate([0, by, -hgt]) cube([bx, BARCX, hgt]);
     }
 }
 
-module frame_ytx(bx, by, hgt = prof_cx) {
+module frame_ytx(bx, by, hgt = BARCX) {
     color("SeaGreen") {
-        translate([bx, 0, -hgt]) cube([prof_cx, by, hgt]);
-        translate([-prof_cx, 0, -hgt]) cube([prof_cx, by, hgt]);
+        translate([bx, 0, -hgt]) cube([BARCX, by, hgt]);
+        translate([-BARCX, 0, -hgt]) cube([BARCX, by, hgt]);
     }
     color("Purple") {
-        translate([0, 0, -hgt]) cube([bx, prof_cx, hgt]);
-        translate([0, by-prof_cx, -hgt]) cube([bx, prof_cx, hgt]);
+        translate([0, 0, -hgt]) cube([bx, BARCX, hgt]);
+        translate([0, by-BARCX, -hgt]) cube([bx, BARCX, hgt]);
     }
 }
 
@@ -152,17 +152,17 @@ module core_xy_t330(bx, cx, by, cy, px = 0, py = 0, table_y_offset = 0) {
 }
 
 module frame_vert(bx, by) {
-    translate([-prof_cx, -prof_cx, -printer_height]) cube([prof_cx, prof_cx, printer_height]);
-    translate([-prof_cx, by, -printer_height]) cube([prof_cx, prof_cx, printer_height]);
-    translate([bx, by, -printer_height]) cube([prof_cx, prof_cx, printer_height]);
-    translate([bx, -prof_cx, -printer_height]) cube([prof_cx, prof_cx, printer_height]);
+    translate([-BARCX, -BARCX, -printer_height]) cube([BARCX, BARCX, printer_height]);
+    translate([-BARCX, by, -printer_height]) cube([BARCX, BARCX, printer_height]);
+    translate([bx, by, -printer_height]) cube([BARCX, BARCX, printer_height]);
+    translate([bx, -BARCX, -printer_height]) cube([BARCX, BARCX, printer_height]);
 }
 
 module frame_full(bx, by) {
     core_xy_h=20;
     bottom_h=20;
     frame_cst(bx, by, core_xy_h);
-    translate([0, 0, -(prinetr_height-bottom_h-core_xy_h-prof_cx*2)]) frame_cst(bx, by, bottom_h);
+    translate([0, 0, -(prinetr_height-bottom_h-core_xy_h-BARCX*2)]) frame_cst(bx, by, bottom_h);
 }
 
 module curr_v() {
@@ -185,18 +185,18 @@ module new_frame_full(bx, by) {
     bottom_h=40;
     core_xy_z_offs=100;
     translate([0, 0, core_xy_z_offs]) frame_vert(bx, by);
-    translate([0, 0, core_xy_z_offs]) frame_cst(bx, by, prof_cx);
+    translate([0, 0, core_xy_z_offs]) frame_cst(bx, by, BARCX);
     frame_cst(bx, by, core_xy_h);
-    translate([0, 0, -(printer_height-bottom_h-core_xy_z_offs-87)]) frame_cst(bx, by, prof_cx);
+    translate([0, 0, -(printer_height-bottom_h-core_xy_z_offs-87)]) frame_cst(bx, by, BARCX);
     translate([0, 0, -(printer_height-bottom_h-core_xy_z_offs)]) frame_cst(bx, by, bottom_h);
     /*
     tfcx=400;
     tfcy=400;
     tfho=300;
     tfeh=200;
-    translate([(bx-tfcx)/2, (by-tfcy)/2, tfho]) frame_cst(tfcx, tfcy, prof_cx);
-    translate([(bx-tfcx)/2-prof_cx, (by-tfcy)/2-prof_cx*2, tfho-tfeh]) 
-        rotate([-5.7, 0, 0]) cube([prof_cx, prof_cx, tfeh]);
+    translate([(bx-tfcx)/2, (by-tfcy)/2, tfho]) frame_cst(tfcx, tfcy, BARCX);
+    translate([(bx-tfcx)/2-BARCX, (by-tfcy)/2-BARCX*2, tfho-tfeh]) 
+        rotate([-5.7, 0, 0]) cube([BARCX, BARCX, tfeh]);
     */
 }
 
@@ -238,7 +238,7 @@ module newestVariant() {
         translate([21.2, ty_offset+95, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
         translate([21.2, ty_offset+BARXLen-135, -(z_rod_height + z_hold_height)]) z_carriage_rod(zpos);
     }
-    translate([(BARXLen-tab_cx)/2, ty_offset + (BARYLen-tab_cy)/2, -(z_hold_height*2+zpos)]) frame_ytx(tab_cx, tab_cy, prof_cx);
+    translate([(BARXLen-tab_cx)/2, ty_offset + (BARYLen-tab_cy)/2, -(z_hold_height*2+zpos)]) frame_ytx(tab_cx, tab_cy, BARCX);
 }
 
 newestVariant();

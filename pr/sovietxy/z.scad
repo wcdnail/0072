@@ -1,49 +1,45 @@
-include <../../openscad/libs/nutsnbolts/cyl_head_bolt.scad>
-include <../../openscad/libs/nutsnbolts/materials.scad>
-include <../../openscad/libs/temp/dimlines.scad>
 include <bconf.scad>
 
-// translate([0, 0, 0])
-// rotate([0, 0, 0])
+//translate([0, 0, 0]) rotate([0, 0, 0])
 
-ZmotorCX=84.6;
-ZmotorCY=42.3;
-ZmotorHeight=20;
-
-DIM_FONTSCALE=0.3;
-DIM_LINE_WIDTH=0.2;
-
-module x_dim(cx, cy, cz, offs=20, lh=6, rh=6) {
-    color("black") {
-        translate([-cx/2, -cy/2-offs, cz]) dimensions(cx);
-        translate([-cx/2, -cy/2+lh/2, cz]) rotate([0, 0, -90]) line(offs+lh);
-        translate([cx/2, -cy/2+rh/2, cz]) rotate([0, 0, -90]) line(offs+rh);
+module z_frame_long_asm(skipDims=false) {
+    ZmotorXC=BARXLen/2;
+    translate([ZmotorXC, BARCY+1.15, 0]) z_motor_c1(skipDims);
+    translate([ZmotorXC, BARYLen+BARCY+1.15-ZmotorCY, 0]) rotate([0, 0, 180]) z_motor_c1(true);
+    h_frame_2020(skipDims);
+    if(!skipDims) {
+        color("Black") {
+            x_dim_abs(ZmotorXC, 0, BARCZ, 130);
+            x_dim_abs(BARXLen-ZmotorXC, 0, BARCZ, 130, ox=ZmotorXC);
+            x_dim_abs(ZmotorXC-ZmotorCX/2, 0, BARCZ, 110);
+            x_dim_abs(BARXLen-ZmotorXC-ZmotorCX/2, 0, BARCZ, 110, ox=ZmotorXC+ZmotorCX/2);
+        }
     }
 }
 
-module y_dim(cx, cy, cz, offs=20, lh=6, rh=6) {
-    rotate([0, 0, 90]) x_dim(cy, cx, cz, offs, lh, rh);
-}
+//z_frame_long_asm();
 
-module z_dim(cx, cy, cz, offs=20, lh=6, rh=6) {
-    translate([0, 0, cz/2]) rotate([0, 90, 0]) x_dim(cz, cy, cx/2, offs, lh, rh);
-}
+ZaxisML8UUCX=64;
+ZaxisML8UUCY=21.2;
+ZaxisML8UUCZ=57;
 
-module z_motor_cutted(skipDims=false) {
-    difference() {
-        translate([ZmotorCX/4, -ZmotorCX/4, 20]) 
-            rotate([0, 0, 180]) rotate([180, 0, 0]) 
-                import("printedparts/2xCoreXY_Z_Motor.stl");
-        translate([0, -ZmotorCX/3, -9.9]) 
-            cube([ZmotorCX+20, ZmotorCY+20, 20], center=true);
+module z_lmu88_stls(modelColor="SlateGray", skipDims=false) {
+    boffs=0.05;
+    color(modelColor) render() {
+        translate([-17, -ZaxisML8UUCY/2-boffs, 3]) rotate([0, 0, -90]) rotate([0, -90, 0]) import("printedparts/4xCoreXY_Z_Axis_LM8UU_Bolt.stl");
+        translate([17, ZaxisML8UUCY/2+boffs, 3]) rotate([0, 0, 90]) rotate([0, -90, 0]) import("printedparts/4xCoreXY_Z_Axis_LM8UU_Nut.stl");
     }
     if(!skipDims) {
-        translate([ZmotorCX/4, 0, 0]) x_dim(ZmotorCX/2, ZmotorCY, ZmotorHeight, 15, ZmotorCX/2+3);
-        translate([-ZmotorCX/4+2, -ZmotorCY/4, 0]) y_dim(ZmotorCX/2, ZmotorCY/2, ZmotorHeight, 45);
-        x_dim(ZmotorCX, ZmotorCY, ZmotorHeight, 25);
-        y_dim(ZmotorCX, ZmotorCY, ZmotorHeight, 25, rh=ZmotorCX/2+3);
-        z_dim(ZmotorCX, ZmotorCY, ZmotorHeight, 10);
+        color("Black") {
+            x_dim(ZaxisML8UUCX, 0, ZaxisML8UUCZ-10, 20);
+        }
     }
 }
 
-z_motor_cutted();
+module z_lmu88_holder() {
+    z_lmu88_stls();
+}
+
+z_lmu88_holder();
+//%import("printedparts/4xCoreXY_Z_Axis_LM8UU_Bolt.stl");
+//scale(0.0394) import("1112.3mf");
