@@ -1,5 +1,5 @@
 //Draw text
-scale([4,4,4]) drawtext("Hello World!");
+//scale([4,4,4]) drawtext("Hello World!");
 
 //Draw character set
 //scale([2,2,2]) drawtext(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}");
