@@ -13,6 +13,14 @@ DIM_FONTSCALE=1.2;
 LM8UUOutterDiam=16.2;
 LM8UULen=25;
 
+// Параметры стола
+BEDProfLen=400;
+BEDCX=330;
+BEDCY=330;
+BEDCZ=3;
+BEDSpringMinH=20;
+BEDSpringMaxH=25;
+
 // Размеры держателей линейных подшипников
 LM8UUHolderOD=4.8;
 LM8UUCenterOffset=0.5;
@@ -77,8 +85,8 @@ ZrodHolderClampCX=34;
 
 module x_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_CENTER) {
     translate([ox, oy-offs, oz+cz]) dimensions(cx, loc=textLoc);
-    lly = offs<0 ? oy-offs+lh-2 : oy+lh-2;
-    rly = offs<0 ? oy-offs+rh-2 : oy+rh-2;
+    lly=offs<0 ? oy-(offs-2) : oy+lh-2;
+    rly=offs<0 ? oy-(offs-2) : oy+rh-2;
     lrh=abs(offs);
     translate([ox, lly, oz+cz]) rotate([0, 0, -90]) line(lrh+lh);
     translate([ox+cx, rly, oz+cz]) rotate([0, 0, -90]) line(lrh+rh);

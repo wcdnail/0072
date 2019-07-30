@@ -3,19 +3,14 @@ include <bconf.scad>
 //translate([0, 0, 0]) rotate([0, 0, 0])
 
 ZmotorXC=BARXLen/2;
-ZrodHolderCenterOffset=60;
+ZrodHolderCenterOffset=BEDProfLen/(ZrodHolderCX*2);
 ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
 
-BEDProfLen=400;
 BEDYProfOffs=13;
 BEDPlateCX=BEDProfLen;
 BEDPlateCY=BEDProfLen-BEDYProfOffs;
 BEDPlateCZ=3;
-BEDCX=330;
-BEDCY=330;
-BEDCZ=3;
-BEDSpringMinH=20;
-BEDSpringMaxH=25;
+
 BEDZ=300;
 
 module bed_rod_holders(skipDims=false) {
@@ -59,7 +54,7 @@ module bed_v2(skipDims=false, plateClr="Silver") {
     }
 }
 
-module z_frame_rod_holders_half(skipDims=false, withMotor=true) {
+module z_frame_half(skipDims=false, withMotor=true) {
     // Motor
     if (withMotor) {
         translate([ZmotorXC, BARCY+1.15, 0]) z_motor_c1(skipDims);
@@ -103,8 +98,8 @@ module z_frame_rod_holders_half(skipDims=false, withMotor=true) {
 
 module z_frame(skipDims=false) {
     h_frame_2020(skipDims);
-    z_frame_rod_holders_half(skipDims);
-    translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_frame_rod_holders_half(skipDims);
+    z_frame_half(skipDims);
+    translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_frame_half(skipDims);
     if(!skipDims) {
         color("Black") {
         }
