@@ -7,7 +7,7 @@ $fn=64;
 
 // Параметры отображения размеров
 DIM_LINE_WIDTH=0.8;
-DIM_FONTSCALE=0.8;
+DIM_FONTSCALE=1.2;
 
 // Размеры линейных подшипников
 LM8UUOutterDiam=16.2;
@@ -28,6 +28,7 @@ BARYLen=450;
 // Длины гладких направляющих 
 RODXLen=420;
 RODYLen=405;
+RODZLen=370;
 
 // Параметры каретки X
 origCARLen=76;                  // Оригинальная длина (X)
@@ -61,6 +62,16 @@ ZmotorCX=84.6;
 ZmotorCY=42.3;
 ZmotorHeight=20;
 
+ZaxisML8UUCX=64;
+ZaxisML8UUCY=21.2;
+ZaxisML8UUCZ=57;
+ZaxisM5HoleCX=49;
+
+ZrodHolderCX=62.24;
+ZrodHolderCY=21.15;
+ZrodHolderCZ=20;
+ZrodHolderClampCX=34;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Размеры 
 
@@ -90,7 +101,7 @@ module y_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_
 }
 
 module z_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_CENTER, textLoc) {
-    translate([0, 0, cz/2]) rotate([0, 90, 0]) x_dim_abs(cz, cy, cx/2, offs, lh, rh, ox, oy, oz);
+    translate([0, 0, cz]) rotate([0, 90, 0]) x_dim_abs(cz, cy, cx/2, offs, lh, rh, ox, oy, oz);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -171,6 +182,45 @@ module z_motor_c1(skipDims=false, modelColor="SlateGray") {
     }
 }
 
+module z_lmu88_holder(skipDims=false, middleOffs=0.05, modelColor="SlateGray") {
+    color(modelColor) render() {
+        translate([-17, -ZaxisML8UUCY/2-middleOffs, 3]) rotate([0, 0, -90]) rotate([0, -90, 0]) import("printedparts/4xCoreXY_Z_Axis_LM8UU_Bolt.stl");
+        translate([17, ZaxisML8UUCY/2+middleOffs, 3]) rotate([0, 0, 90]) rotate([0, -90, 0]) import("printedparts/4xCoreXY_Z_Axis_LM8UU_Nut.stl");
+    }
+    if(!skipDims) {
+        color("Black") {
+            x_dim(ZaxisM5HoleCX, 0, ZaxisML8UUCZ+0.5, -25);
+            x_dim(ZaxisML8UUCX, 0, ZaxisML8UUCZ-10, 30);
+            x_dim_abs(ZaxisML8UUCX/2, 0, ZaxisML8UUCZ+0.5, 20);
+            y_dim(ZaxisML8UUCX, ZaxisML8UUCY, ZaxisML8UUCZ, -(ZaxisML8UUCX+10), textLoc=DIM_OUTSIDE);
+            y_dim_abs(ZaxisML8UUCX, ZaxisML8UUCY/2, ZaxisML8UUCZ, 45, textLoc=DIM_OUTSIDE);
+            z_dim(ZaxisML8UUCX, 0, ZaxisML8UUCZ, 30);
+            z_dim_abs(ZaxisML8UUCX, 0, ZaxisML8UUCZ-10, 20);
+        }
+    }
+    /*
+    // M5 bolts
+    color("red") {
+        translate([-ZaxisM5HoleCX/2, 0, ZaxisML8UUCZ-10]) rotate([90, 0, 0]) cylinder(d=5, h=30);
+        translate([ ZaxisM5HoleCX/2, 0, ZaxisML8UUCZ-10]) rotate([90, 0, 0]) cylinder(d=5, h=30);
+    }
+    */
+}
+
+module z_rod_holder(skipDims=false, middleOffs=2.5, modelColor="SlateGray") {
+    color(modelColor) render() {
+        translate([ZrodHolderCX/2-9.85, ZrodHolderCY/2, 0]) rotate([0, 0, 180]) import("printedparts/4xCoreXY_Z-Rodholder.stl");
+        translate([ZrodHolderClampCX/2, -ZrodHolderCY+middleOffs, 0]) rotate([0, 0, 180]) rotate([90, 0, 0]) import("printedparts/4xCoreXY_Z-Rodclamp.stl");
+    }
+    if(!skipDims) {
+        color("Black") {
+            x_dim(ZrodHolderCX, ZrodHolderCY, ZrodHolderCZ, 20);
+            y_dim(ZrodHolderCX, ZrodHolderCY, ZrodHolderCZ, 20, lh=ZrodHolderCX, textLoc=DIM_OUTSIDE);
+            z_dim(ZrodHolderCX, ZrodHolderCY, ZrodHolderCZ, 20);
+        }
+    }
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Рама
 
@@ -194,8 +244,8 @@ module profile2020_quarter(h) {
             ]);
 }
 
-module profile_2020(h) {
-    color("Gainsboro") render() {
+module profile_2020(h, profClr="Gainsboro") {
+    color(profClr) render() {
         difference() {
             union() {
                 rotate([0, 0,   0]) profile2020_quarter(h);
@@ -208,13 +258,9 @@ module profile_2020(h) {
    }
 }
 
-module h_frame_half(skipDims=false) {
-    translate([-BARCX/2, 0, BARCZ/2]) 
-        rotate([-90, 0, 0])
-            profile_2020(BARYLen);
-    translate([0, -BARCX/2, BARCZ/2])
-        rotate([0, 90, 0])
-            profile_2020(BARXLen);
+module h_frame_half(skipDims=false, profClr="Gainsboro") {
+    translate([-BARCX/2, 0, BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BARYLen, profClr);
+    translate([0, -BARCX/2, BARCZ/2]) rotate([0, 90, 0]) profile_2020(BARXLen, profClr);
     if(!skipDims) {
         color("black") {
             x_dim_abs(BARXLen, BARYLen, BARCZ, 150);
@@ -223,14 +269,12 @@ module h_frame_half(skipDims=false) {
     }
 }
 
-module h_frame_2020(skipDims=false) {
+module h_frame_2020(skipDims=false, profClr="Gainsboro") {
     h_frame_half(skipDims);
-    translate([BARXLen, BARYLen, 0]) 
-        rotate([0, 0, 180]) 
-            h_frame_half(true);
+    translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) h_frame_half(true, profClr);
 }
 
-module h_frame_2040(skipDims=false) {
-    h_frame_2020(skipDims);
-    translate([0, 0, BARCZ]) h_frame_2020(skipDims);
+module h_frame_2040(skipDims=false, profClr="Gainsboro") {
+    h_frame_2020(skipDims, profClr);
+    translate([0, 0, BARCZ]) h_frame_2020(skipDims, profClr);
 }
