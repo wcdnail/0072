@@ -3,15 +3,17 @@ include <bconf.scad>
 //translate([0, 0, 0]) rotate([0, 0, 0])
 
 ZmotorXC=BARXLen/2;
-ZrodHolderCenterOffset=BEDProfLen/(ZrodHolderCX*2);
+//ZrodHolderCenterOffset=BEDCX/3.5;
+ZrodHolderCenterOffset=20;
 ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
 
 BEDYProfOffs=13;
 BEDPlateCX=BEDProfLen;
 BEDPlateCY=BEDProfLen-BEDYProfOffs;
+BEDProfileCY=BEDPlateCY-BARCY*2;
 BEDPlateCZ=3;
 
-BEDZ=300;
+BEDZ=200;
 
 module bed_rod_holders(skipDims=false) {
     // Bed rod holders
@@ -23,16 +25,17 @@ module bed_rod_holders(skipDims=false) {
     }
 }
 
-module bed_frame_half(skipDims=false, profClr="Gainsboro") {
+module bed_frame_v2(skipDims=false, profClr="Gainsboro") {
     translate([ZmotorXC-BEDPlateCX/2, (BARYLen-BEDPlateCY)/2+BARCY/2, BEDZ-BARCZ/2]) rotate([0, 90, 0]) profile_2020(BEDProfLen, profClr);
-    translate([ZmotorXC-BEDPlateCX/2-BARCX/2, (BARYLen-BEDPlateCY)/2-BEDYProfOffs/2, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfLen, profClr);
+    translate([ZmotorXC-BEDPlateCX/2, BARYLen-(BARYLen-BEDPlateCY)/2-BARCY/2, BEDZ-BARCZ/2]) rotate([0, 90, 0]) profile_2020(BEDProfLen, profClr);
+    //translate([ZmotorXC-BEDPlateCX/2-BARCX/2, (BARYLen-BEDPlateCY)/2-BEDYProfOffs/2, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfLen, profClr);
+    translate([ZmotorXC-BEDPlateCX/2+BARCX/2, (BARYLen-BEDPlateCY)/2+BARCY, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfileCY, profClr);
+    translate([BARXLen-(ZmotorXC-BEDPlateCX/2+BARCX/2), (BARYLen-BEDPlateCY)/2+BARCY, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfileCY, profClr);
     if(!skipDims) {
         color("black") {
-            x_dim_abs(BEDPlateCX+BARCX*2, BEDPlateCY, 0, 60, ox=ZmotorXC-BEDPlateCX/2-BARCX, oy=(BARYLen-BEDPlateCY)/2+BARCY/2, oz=BEDZ);
-            x_dim_abs(BEDPlateCX, BEDPlateCY, 0, 40, ox=ZmotorXC-BEDPlateCX/2, oy=(BARYLen-BEDPlateCY)/2+BARCY/2, oz=BEDZ);
-            y_dim_abs(0, BEDPlateCY, 0, -60, ox=ZmotorXC-BEDPlateCX/2-BEDYProfOffs, oy=-(BARYLen-BEDPlateCY)/2, oz=BEDZ);
-            y_dim_abs(0, BEDProfLen-BARCY*2-BEDYProfOffs, 0, -40, ox=ZmotorXC-BEDPlateCX/2+BEDYProfOffs/2, oy=-(BARYLen-BEDPlateCY)/2, oz=BEDZ);
-            y_dim_abs(0, BEDYProfOffs/2, 0, -80, ox=ZmotorXC-BEDPlateCX/2-BARCX, oy=-(BARYLen-BEDPlateCY)/2, oz=BEDZ, textLoc=DIM_OUTSIDE);
+            x_dim_abs(BEDPlateCX, BEDPlateCY, 0, 50, ox=ZmotorXC-BEDPlateCX/2, oy=(BARYLen-BEDPlateCY)/2+BARCY/2, oz=BEDZ);
+            y_dim_abs(0, BEDPlateCY, 0, -30, ox=ZmotorXC-BEDPlateCX/2-BEDYProfOffs, oy=-(BARYLen-BEDPlateCY)/2, oz=BEDZ);
+            y_dim_abs(0, BEDProfileCY, 0, -10, ox=ZmotorXC-BEDPlateCX/2+BEDYProfOffs/2, oy=-(BARYLen-BEDPlateCY)/2, oz=BEDZ);
         }
     }
 }
@@ -43,8 +46,7 @@ module bed_v2(skipDims=false, plateClr="Silver") {
     // Bed
     color("White") translate([ZmotorXC-BEDCX/2, (BARYLen-BEDCY)/2, BEDZ+BEDSpringMinH]) cube([BEDCX, BEDCY, BEDCZ]);
     // Frame
-    bed_frame_half(skipDims);
-    translate([BARXLen, BARYLen, 0]) mirror([1, 0, 0]) mirror([0, 1, 0]) bed_frame_half(skipDims);
+    bed_frame_v2(skipDims);
     // Bed rod holders
     bed_rod_holders(skipDims);
     translate([0, BARYLen, 0]) mirror([0, 1, 0]) bed_rod_holders(skipDims);
@@ -108,3 +110,4 @@ module z_frame(skipDims=false) {
 
 z_frame();
 bed_v2();
+//z_lmu88_holder(false);
