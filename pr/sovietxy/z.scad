@@ -1,4 +1,5 @@
 include <bconf.scad>
+use <../../openscad/nema17.scad>
 
 //translate([0, 0, 0]) rotate([0, 0, 0])
 
@@ -56,18 +57,21 @@ module bed_v2(skipDims=false, plateClr="Silver") {
     }
 }
 
-module z_frame_half(skipDims=false, withMotor=true) {
+module z_frame_half(skipDims=false, withMotor=true, withRods=true) {
     // Motor
     if (withMotor) {
         translate([ZmotorXC, BARCY+1.15, 0]) z_motor_c1(skipDims);
+        translate([ZmotorXC, BARCY+1.15, -N17Height/2-5.3]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
     }
     // Rod holder
     translate([ZmotorXC-ZrodHolderDistToCenter, ZrodHolderCY/2, 0]) rotate([0, 0, 180]) z_rod_holder(true);
     translate([ZmotorXC+ZrodHolderDistToCenter, ZrodHolderCY/2, 0]) rotate([0, 0, 180]) z_rod_holder(true);
     // Rods
-    color("White") {
-        translate([ZmotorXC-ZrodHolderDistToCenter, ZaxisML8UUCY, 0]) cylinder(d=8, h=RODZLen);
-        translate([ZmotorXC+ZrodHolderDistToCenter, ZaxisML8UUCY, 0]) cylinder(d=8, h=RODZLen);
+    if (withRods) {
+        color("White") {
+            translate([ZmotorXC-ZrodHolderDistToCenter, ZaxisML8UUCY, 0]) cylinder(d=8, h=RODZLen);
+            translate([ZmotorXC+ZrodHolderDistToCenter, ZaxisML8UUCY, 0]) cylinder(d=8, h=RODZLen);
+        }
     }
     if(!skipDims) {
         color("Black") {
@@ -98,16 +102,22 @@ module z_frame_half(skipDims=false, withMotor=true) {
     }
 }
 
-module z_frame(skipDims=false) {
+module z_frame(skipDims=false, withMotor=true, withRods=true) {
     h_frame_2020(skipDims);
-    z_frame_half(skipDims);
-    translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_frame_half(skipDims);
+    z_frame_half(skipDims, withMotor, withRods);
+    translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_frame_half(skipDims, withMotor, withRods);
     if(!skipDims) {
         color("Black") {
         }
     }
 }
 
+module top_frame(skipDims=false) {
+    translate([0, 0, RODZLen-BARCZ]) z_frame(true, false, false);
+    translate([0, 0, RODZLen]) h_frame_2020(true);
+}
+
 z_frame();
-bed_v2();
+//top_frame();
+//bed_v2();
 //z_lmu88_holder(false);

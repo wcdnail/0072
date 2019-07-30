@@ -80,6 +80,12 @@ ZrodHolderCY=21.15;
 ZrodHolderCZ=20;
 ZrodHolderClampCX=34;
 
+N17Height=40;
+N17Width=42;
+N17ShaftDiameter=5;
+N17ShaftLength=28;
+N17FixingHolesInteraxis=31;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Размеры 
 
