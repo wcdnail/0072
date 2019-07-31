@@ -40,9 +40,11 @@ RODZDiam=8;
 
 RODXLen=420;
 RODYLen=405;
-RODZLen=383;
-RODZUp=7;
+RODZLen=373;
+RODZUp=-3;
 TOPFrameZ=370;
+
+ZScrewLen=330;
 
 // Параметры каретки X
 carZE3DOffs=-19.5;
@@ -374,7 +376,7 @@ module r_motor() {
     translate([0, 0, 25]) rotate([180, 0, 180]) import("printedparts/1xCoreXY_Motor.stl");
 }
 
-module r_y_axis(by, cy, xe_pos, partClr="DarkSlateGray", rodClr="White") {
+module r_y_axis(by, cy, xe_pos, partClr="SlateGray", rodClr="White") {
     color(partClr) {
         translate([0, 0, 0]) r_motor();
         translate([0, by + BARCX, 0]) r_idler();
@@ -383,7 +385,7 @@ module r_y_axis(by, cy, xe_pos, partClr="DarkSlateGray", rodClr="White") {
     translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
 }
 
-module l_y_axis(by, cy, xe_pos, partClr="DarkSlateGray", rodClr="White") {
+module l_y_axis(by, cy, xe_pos, partClr="SlateGray", rodClr="White") {
     mirror([1, 0, 0]) r_y_axis(by, cy, xe_pos, partClr, rodClr);
 }
 
@@ -404,7 +406,7 @@ module x_carriage_new(carClr="Crimson", withE3D=true, e3dClr="White") {
     }
 }
 
-module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="DarkSlateGray", rodClr="White", carClr="Crimson", withE3D=true, rAxis=true, lAxis=true, e3dClr="White") {
+module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="SlateGray", rodClr="White", carClr="Crimson", withE3D=true, rAxis=true, lAxis=true, e3dClr="White") {
     xe_px=bx/2 + px;
     xe_py=by/2 + py;
     if (rAxis) {

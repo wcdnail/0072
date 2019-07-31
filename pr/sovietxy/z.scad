@@ -11,9 +11,9 @@ BEDPlateCY=BEDProfLen-BEDYProfOffs;
 BEDProfileCY=BEDPlateCY-BARCY*2;
 BEDPlateCZ=3;
 
-ZMin=ZaxisML8UUCZ+30;
-ZMax=320;
-BEDZ=ZMin;
+ZMin=ZaxisML8UUCZ+BARCZ*2;
+ZMax=330;
+BEDZ=ZMax;
 
 module bed_rod_holders(skipDims=false) {
     // Bed rod holders
@@ -84,6 +84,14 @@ module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders
             translate([ZmotorXC-ZrodHolderDistToCenter, ZaxisML8UUCY, hldrZO+RODZUp]) cylinder(d=8, h=RODZLen);
             translate([ZmotorXC+ZrodHolderDistToCenter, ZaxisML8UUCY, hldrZO+RODZUp]) cylinder(d=8, h=RODZLen);
         }
+        // Coupler
+        color("White") {
+            translate([ZmotorXC, ZaxisML8UUCY, hldrZO+10]) cylinder(d=18.5, h=25);
+        }
+        // Z screw
+        color("DimGray") {
+            translate([ZmotorXC, ZaxisML8UUCY, hldrZO+25]) cylinder(d=8, h=ZScrewLen);
+        }
     }
     if(!skipDims) {
         color("Black") {
@@ -124,8 +132,8 @@ module z_frame(skipDims=false, withMotor=true, withRods=true, newRodHolders=true
 }
 
 module top_frame(skipDims=false, transparentBars=false) {
-    translate([0, 0, TOPFrameZ]) h_frame_2020(true);
-    translate([0, 0, TOPFrameZ-BARCZ]) z_frame(true, false, false, false);
+    translate([0, 0, TOPFrameZ-BARCZ]) h_frame_2020(true);
+    translate([0, 0, TOPFrameZ]) z_frame(true, false, false, false);
 }
 
 // Z frame w/new holders
@@ -140,7 +148,7 @@ module top_frame_sizes() {
 
 // Assembly
 module z_assembly(carx=0, cary=0, skipDims=false, withE3D=true) {
-    z_frame(rodHolderBottom=true, drawMotor=true);
+    z_frame(rodHolderBottom=false, drawMotor=true);
     top_frame(transparentBars=true);
     translate([0, 0, TOPFrameZ+BARCZ]) core_xy_frame(withE3D=withE3D);
     bed_v2();
