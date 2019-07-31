@@ -466,8 +466,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // Разрешение холодной экструзии - M302 P1
 //
 
-#define _MC3_XY_STEPS                     171.3 // For example: M92 X<value>
-#define DEFAULT_AXIS_STEPS_PER_UNIT     { _MC3_XY_STEPS, _MC3_XY_STEPS, 8000, 200 }
+#define _MC3_Y_STEPS                      171.3 // For example: M92 X<value>
+#define DEFAULT_AXIS_STEPS_PER_UNIT     { (200 * 32)/(2 * 20), _MC3_Y_STEPS, 8000, 200 }
 #define DEFAULT_MAX_FEEDRATE            { 500, 500,  5,  25 }     // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION        { 1500, 1500, 20, 10000 } // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
 

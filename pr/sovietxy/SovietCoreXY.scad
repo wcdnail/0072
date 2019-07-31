@@ -22,17 +22,10 @@ module z_carriage() {
     }
 }
 
-module z_holder() {
-    translate([-41.15, -30, -80]) {
-        rotate([90, 0, -90]) color("Yellow") import("printedparts2/Z-Axis Holder.stl");
-        rotate([90, 0, -90]) color("Green") import("printedparts2/Z-Axis Clamp.stl");
-    }
-}
-
 module z_carriage_rod(zp = 0) {
     translate([0, 0, (z_rod_height-z_car_height-z_hold_height)-zp]) z_carriage();
-    z_holder();
-    translate([0, 0, z_rod_height-z_hold_height]) z_holder();
+    z_holder_new();
+    translate([0, 0, z_rod_height-z_hold_height]) z_holder_new();
     color("White") cylinder(d=8, h=z_rod_height);
 }
 

@@ -80,6 +80,11 @@ ZrodHolderCY=21.15;
 ZrodHolderCZ=20;
 ZrodHolderClampCX=34;
 
+ZrodHolder2CX=60;
+ZrodHolder2CY=50;
+ZrodHolder2CZ=20;
+ZrodHolder2ClampCX=49;
+
 N17Height=40;
 N17Width=42;
 N17ShaftDiameter=5;
@@ -231,6 +236,17 @@ module z_rod_holder(skipDims=false, middleOffs=2.5, modelColor="SlateGray") {
             x_dim(ZrodHolderCX, ZrodHolderCY, ZrodHolderCZ, 20);
             y_dim(ZrodHolderCX, ZrodHolderCY, ZrodHolderCZ, 20, lh=ZrodHolderCX, textLoc=DIM_OUTSIDE);
             z_dim(ZrodHolderCX, ZrodHolderCY, ZrodHolderCZ, 20);
+        }
+    }
+}
+
+module z_rod_holder_new(skipDims=false) {
+    translate([ZrodHolder2CX/2, -41, -80]) rotate([90, 0, 0]) {
+        color("Yellow") render() import("printedparts/Z-Achsen Halter Oben.stl");
+        color("Green") render() import("printedparts/Z-Axis Clamp.stl");
+    }
+    if(!skipDims) {
+        color("Black") {
         }
     }
 }
