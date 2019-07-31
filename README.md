@@ -1,7 +1,9 @@
 # Проекты ЧПУ
 
-# 1. Вулканус в. 1.3 с доработками (Vulcanus v1)
+# 1. Советский CoreXY  в. 1.3 с доработками (Vulcanus v1)
 Оригинальный проект: http://www.instructables.com/id/Vulcanus-V1-3D-Printer/
+
+![sovietxy-v1-2019-1](v/soviet-core-xy-2019/SovietCoreXY_devel_logo.png?raw=true "Советский CoreXY в. 1.3 в разработке")
 
 В13-1.3.1. Область посторения 300х300 (стол 330х330)<br/>
 В13-1.3.2. Профиля по X и Y увеличены, 490 и 450 мм<br/>

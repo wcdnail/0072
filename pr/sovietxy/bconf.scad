@@ -322,8 +322,8 @@ module h_frame_half(skipDims=false, transparentBars=false, profClr="Gainsboro") 
     translate([0, -BARCX/2, BARCZ/2]) rotate([0, 90, 0]) profile_2020(BARXLen, transparentBars, profClr);
     if(!skipDims) {
         color("black") {
-            x_dim_abs(BARXLen, BARYLen, BARCZ, 150);
-            y_dim_abs(BARXLen, BARYLen, BARCZ, -150);
+            x_dim_abs(BARXLen, BARYLen, BARCZ, 300);
+            y_dim_abs(BARXLen, BARYLen, BARCZ, -300);
         }
     }
 }
