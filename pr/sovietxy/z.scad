@@ -1,8 +1,6 @@
 include <bconf.scad>
 use <../../openscad/nema17.scad>
 
-//translate([0, 0, 0]) rotate([0, 0, 0])
-
 ZmotorXC=BARXLen/2;
 ZrodHolderCenterOffset=25;
 ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
@@ -13,12 +11,15 @@ BEDPlateCY=BEDProfLen-BEDYProfOffs;
 BEDProfileCY=BEDPlateCY-BARCY*2;
 BEDPlateCZ=3;
 
-BEDZ=200;
+ZMin=ZaxisML8UUCZ+30;
+ZMax=320;
+BEDZ=ZMin;
 
 module bed_rod_holders(skipDims=false) {
     // Bed rod holders
     translate([ZmotorXC-ZrodHolderDistToCenter, ZaxisML8UUCY, BEDZ-ZaxisML8UUCZ]) z_lmu88_holder(true);
     translate([ZmotorXC+ZrodHolderDistToCenter, ZaxisML8UUCY, BEDZ-ZaxisML8UUCZ]) z_lmu88_holder(true);
+    translate([ZmotorXC, ZaxisML8UUCY, BEDZ]) z_transm_v2(true);
     if(!skipDims) {
         color("Black") {
         }
@@ -40,11 +41,11 @@ module bed_frame_v2(skipDims=false, profClr="Gainsboro") {
     }
 }
 
-module bed_v2(skipDims=false, plateClr="Silver") {
+module bed_v2(skipDims=false, plateClr="Silver", heaterClr="Magenta") {
     // Bed plate
     color(plateClr) translate([ZmotorXC-BEDPlateCX/2, (BARYLen-BEDPlateCY)/2, BEDZ]) cube([BEDPlateCX, BEDPlateCY, BEDPlateCZ]);
     // Bed
-    color("White") translate([ZmotorXC-BEDCX/2, (BARYLen-BEDCY)/2, BEDZ+BEDSpringMinH]) cube([BEDCX, BEDCY, BEDCZ]);
+    color(heaterClr) translate([ZmotorXC-BEDCX/2, (BARYLen-BEDCY)/2, BEDZ+BEDSpringMinH]) cube([BEDCX, BEDCY, BEDCZ]);
     // Frame
     bed_frame_v2(skipDims);
     // Bed rod holders
@@ -56,7 +57,7 @@ module bed_v2(skipDims=false, plateClr="Silver") {
     }
 }
 
-module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=true) {
+module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=true, transparentBars=false) {
     // Motor
     if (withMotor) {
         translate([ZmotorXC, BARCY+1.15, 0]) z_motor_c1(skipDims);
@@ -80,8 +81,8 @@ module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders
     // Rods
     if (withRods) {
         color("White") {
-            translate([ZmotorXC-ZrodHolderDistToCenter, ZaxisML8UUCY, hldrZO]) cylinder(d=8, h=RODZLen);
-            translate([ZmotorXC+ZrodHolderDistToCenter, ZaxisML8UUCY, hldrZO]) cylinder(d=8, h=RODZLen);
+            translate([ZmotorXC-ZrodHolderDistToCenter, ZaxisML8UUCY, hldrZO+RODZUp]) cylinder(d=8, h=RODZLen);
+            translate([ZmotorXC+ZrodHolderDistToCenter, ZaxisML8UUCY, hldrZO+RODZUp]) cylinder(d=8, h=RODZLen);
         }
     }
     if(!skipDims) {
@@ -110,22 +111,21 @@ module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders
             x_dim_abs(rrhEndX-lrhBegX-hldrCX*2, 0, BARCZ, -90, ox=lrhBegX+hldrCX);
             x_dim_abs(rrhEndX-lrhBegX-hldrCX, 0, BARCZ, -110, ox=lrhBegX+hldrCX/2);
             // Hieghts
-            z_dim_abs(0, 0, RODZLen+BARCZ, 70);
-            z_dim_abs(0, 0, RODZLen, 50, ox=-hldrZO);
-            z_dim_abs(0, 0, RODZLen-BARCZ*2, 30, ox=-hldrZO);
+            z_dim_abs(0, 0, TOPFrameZ+BARCZ, 70);
+            z_dim_abs(0, 0, TOPFrameZ, 30, ox=-hldrZO);
         }
     }
 }
 
-module z_frame(skipDims=false, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=false) {
-    h_frame_2020(skipDims);
-    z_frame_half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor);
+module z_frame(skipDims=false, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=false, transparentBars=false) {
+    h_frame_2020(skipDims, transparentBars);
+    z_frame_half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor, transparentBars);
     translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_frame_half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor);
 }
 
-module top_frame(skipDims=false) {
-    translate([0, 0, RODZLen-BARCZ]) h_frame_2020(true);
-    translate([0, 0, RODZLen]) z_frame(true, false, false, false);
+module top_frame(skipDims=false, transparentBars=false) {
+    translate([0, 0, TOPFrameZ]) h_frame_2020(true);
+    translate([0, 0, TOPFrameZ-BARCZ]) z_frame(true, false, false, false);
 }
 
 // Z frame w/new holders
@@ -135,20 +135,23 @@ module bottom_frame_sizes() {
 
 // Z frame w/old holders
 module top_frame_sizes() {
-    z_frame(newRodHolders=false, withMotor=false);
+    z_frame(newRodHolders=false, withRods=false, withMotor=false);
 }
 
 // Assembly
-module z_assembly(skipDims=false) {
-    z_frame();
-    top_frame();
-    //bed_v2();
+module z_assembly(carx=0, cary=0, skipDims=false, withE3D=true) {
+    z_frame(rodHolderBottom=true, drawMotor=true);
+    top_frame(transparentBars=true);
+    translate([0, 0, TOPFrameZ+BARCZ]) core_xy_frame(withE3D=withE3D);
+    bed_v2();
     if(!skipDims) {
         color("Black") {
         }
     }
 }
 
+//bed_v2();
 //bottom_frame_sizes();
-top_frame_sizes();
-//z_assembly();
+//top_frame_sizes();
+z_assembly();
+//x_carriage_new_check();

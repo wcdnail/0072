@@ -29,16 +29,24 @@ LM8UUCenterOffset=0.5;
 BARCX=20;
 BARCY=20;
 BARCZ=20;
+
 // Длины профилей
 BARXLen=490;
 BARYLen=450;
 
-// Длины гладких направляющих 
+// Размеры гладких направляющих 
+RODXYDiam=8;
+RODZDiam=8;
+
 RODXLen=420;
 RODYLen=405;
-RODZLen=370;
+RODZLen=383;
+RODZUp=7;
+TOPFrameZ=370;
 
 // Параметры каретки X
+carZE3DOffs=-19.5;
+
 origCARLen=76;                  // Оригинальная длина (X)
 origCARWidth=76;                // Оригинальная ширина (Y)
 origCARHeightWOHolder=6;        // Оригинальная высота (Z)
@@ -70,11 +78,13 @@ ZmotorCX=84.6;
 ZmotorCY=42.3;
 ZmotorHeight=20;
 
+// Z carriage
 ZaxisML8UUCX=64;
 ZaxisML8UUCY=21.2;
 ZaxisML8UUCZ=57;
 ZaxisM5HoleCX=49;
 
+// Z axis holders
 ZrodHolderCX=62.24;
 ZrodHolderCY=21.15;
 ZrodHolderCZ=20;
@@ -251,6 +261,14 @@ module z_rod_holder_new(skipDims=false) {
     }
 }
 
+module z_transm_v2(skipDims=false, modelColor="SlateGray") {
+    color(modelColor) render() translate([0, 10.5, 0]) rotate([0, 0, 180]) rotate([0, 90, 0]) import("printedparts/TR8_Mutter.stl");
+    if(!skipDims) {
+        color("Black") {
+        }
+    }
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Рама
 
@@ -274,8 +292,8 @@ module profile2020_quarter(h) {
             ]);
 }
 
-module profile_2020(h, profClr="Gainsboro") {
-    color(profClr) render() {
+module profile_2020_raw(h) {
+    render() {
         difference() {
             union() {
                 rotate([0, 0,   0]) profile2020_quarter(h);
@@ -285,12 +303,21 @@ module profile_2020(h, profClr="Gainsboro") {
             }
             translate([0, 0, -2]) cylinder(d=5, h=h*1.4);
         }
-   }
+    }
 }
 
-module h_frame_half(skipDims=false, profClr="Gainsboro") {
-    translate([-BARCX/2, 0, BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BARYLen, profClr);
-    translate([0, -BARCX/2, BARCZ/2]) rotate([0, 90, 0]) profile_2020(BARXLen, profClr);
+module profile_2020(h, transparentBars=false, profClr="Gainsboro") {
+    if (transparentBars) {
+        %profile_2020_raw(h);
+    }
+    else {
+        color(profClr) profile_2020_raw(h);
+    }
+}
+
+module h_frame_half(skipDims=false, transparentBars=false, profClr="Gainsboro") {
+    translate([-BARCX/2, 0, BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BARYLen, transparentBars, profClr);
+    translate([0, -BARCX/2, BARCZ/2]) rotate([0, 90, 0]) profile_2020(BARXLen, transparentBars, profClr);
     if(!skipDims) {
         color("black") {
             x_dim_abs(BARXLen, BARYLen, BARCZ, 150);
@@ -299,12 +326,100 @@ module h_frame_half(skipDims=false, profClr="Gainsboro") {
     }
 }
 
-module h_frame_2020(skipDims=false, profClr="Gainsboro") {
-    h_frame_half(skipDims);
-    translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) h_frame_half(true, profClr);
+module h_frame_2020(skipDims=false, transparentBars=false, profClr="Gainsboro") {
+    h_frame_half(skipDims, profClr, transparentBars);
+    translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) h_frame_half(true, profClr, transparentBars);
 }
 
 module h_frame_2040(skipDims=false, profClr="Gainsboro") {
     h_frame_2020(skipDims, profClr);
     translate([0, 0, BARCZ]) h_frame_2020(skipDims, profClr);
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Core XY
+
+module l_x_end_top() {
+    translate([0, 70, 11.1]) rotate([180, 0, 0]) import("printedparts/2xCoreXY_X-End_Bolt.stl");
+}
+
+module l_x_end_bottom() {
+    translate([0, 0, -10.2]) rotate([0, 0, 0]) import("printedparts/2xCoreXY_X-End_Nut.stl");
+}
+
+module l_x_end_top_new() {
+    translate([0, 0, 0.1]) rotate([0, 0, 0]) import("x_end-bolts-16x25lm8uu.stl");
+}
+
+module l_x_end_bottom_new() {
+    translate([0, 0, -0.1]) rotate([0, 0, 0]) import("x_end-nuts-16x25lm8uu.stl");
+}
+
+module l_x_end() {
+    //render() {
+        l_x_end_bottom_new();
+        l_x_end_top_new();
+    //}
+}
+
+module r_x_end() {
+    mirror([1, 0, 0]) l_x_end();
+}
+
+module r_idler() {
+    translate([0, 0, 0]) rotate([0, 0, 180]) import("printedparts/1xCoreXY_Idler.stl");
+}
+
+module r_motor() {
+    translate([0, 0, 25]) rotate([180, 0, 180]) import("printedparts/1xCoreXY_Motor.stl");
+}
+
+module r_y_axis(by, cy, xe_pos, partClr="DarkSlateGray", rodClr="White") {
+    color(partClr) {
+        translate([0, 0, 0]) r_motor();
+        translate([0, by + BARCX, 0]) r_idler();
+        translate([-3.5, xe_pos - 35, 14.5]) r_x_end();
+    }
+    translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
+}
+
+module l_y_axis(by, cy, xe_pos, partClr="DarkSlateGray", rodClr="White") {
+    mirror([1, 0, 0]) r_y_axis(by, cy, xe_pos, partClr, rodClr);
+}
+
+module x_carriage() {
+    translate([-37.5, 37.5, 15.2]) rotate([180, 0, 0]) import("printedparts/1xCoreXY_X-Carriage.stl");
+}
+
+module x_carriage_new(carClr="Crimson", withE3D=true, e3dClr="White") {
+    color(carClr) {
+        render() {
+            translate([carCX-carXEdge, -origCARWidth/2, 0]) rotate([0, 90, 0]) import("x_carriage-16x25lm8uu.stl");
+            translate([-(carCX-carXEdge), -origCARWidth/2, 0]) rotate([0, -90, 0]) import("x_carriage-16x25lm8uu_holes.stl");
+            translate([0, 0, 0]) rotate([0, 0, 0]) import("x_carriage-top.stl");
+        }
+    }
+    if (withE3D) {
+        color(e3dClr) translate([5.3, -2.5, carZE3DOffs]) rotate([0, 0, 0]) e3d_v6_175();
+    }
+}
+
+module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="DarkSlateGray", rodClr="White", carClr="Crimson", withE3D=true, rAxis=true, lAxis=true, e3dClr="White") {
+    xe_px=bx/2 + px;
+    xe_py=by/2 + py;
+    if (rAxis) {
+        translate([bx, 0, 0]) r_y_axis(by, cy, xe_py, partClr, rodClr);
+    }
+    if (lAxis) {
+        translate([-0, 0, 0]) l_y_axis(by, cy, xe_py, partClr, rodClr);
+    }
+    color(rodClr) {
+        translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
+        translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
+    }
+    translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
+}
+
+module x_carriage_new_check(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, rodClr="White", carClr="Crimson", withE3D=true) {
+    core_xy_frame(bx, cx, by, cy, px, py, "None", rodClr, carClr, withE3D, false, false);
 }
