@@ -491,34 +491,36 @@ module z_plane_holes_sizes(newRodHolders=true, h=5) {
         x_dim_abs(BARCX, 0, dimz, 40, rh=BARYLen, ox=-BARCX, textLoc=DIM_OUTSIDE);
         y_dim_abs(0, BARCY, dimz, -40, ox=-BARCX, rh=BARXLen, textLoc=DIM_OUTSIDE);
         // Motor
-        x_dim_abs(ZmotorXC, 0, dimz, 140, rh=45);
-        x_dim_abs(BARXLen-ZmotorXC, 0, dimz, 140, ox=ZmotorXC);
+        x_dim_abs(ZmotorXC, 0, dimz, 180, rh=45);
+        x_dim_abs(BARXLen-ZmotorXC, 0, dimz, 180, ox=ZmotorXC);
         // Motor CX
-        x_dim_abs(ZmotorXC-ZmotorCX/2, 0, dimz, 120);
-        x_dim_abs(BARXLen-ZmotorXC-ZmotorCX/2, 0, dimz, 120, ox=ZmotorXC+ZmotorCX/2);
+        x_dim_abs(ZmotorXC-ZmotorCX/2, 0, dimz, 160);
+        x_dim_abs(BARXLen-ZmotorXC-ZmotorCX/2, 0, dimz, 160, ox=ZmotorXC+ZmotorCX/2);
         // Rod holder left
-        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+hldrCX/2, 0, dimz, 100);
-        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter, 0, dimz, 80, rh=40);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+hldrCX/2, 0, dimz, 140);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter, 0, dimz, 100, rh=40);
         x_dim_abs(ZmotorXC-ZrodHolderDistToCenter-hldrCX/2, 0, dimz, 60);
         // Rod holder right
-        x_dim_abs(BARXLen-ZmotorXC-ZrodHolderDistToCenter+hldrCX/2, 0, dimz, 100, ox=ZmotorXC+ZrodHolderDistToCenter-hldrCX/2);
-        x_dim_abs(BARXLen-ZmotorXC-ZrodHolderDistToCenter, 0, dimz, 80, lh=40, ox=ZmotorXC+ZrodHolderDistToCenter);
+        x_dim_abs(BARXLen-ZmotorXC-ZrodHolderDistToCenter+hldrCX/2, 0, dimz, 140, ox=ZmotorXC+ZrodHolderDistToCenter-hldrCX/2);
+        x_dim_abs(BARXLen-ZmotorXC-ZrodHolderDistToCenter, 0, dimz, 100, lh=40, ox=ZmotorXC+ZrodHolderDistToCenter);
         x_dim_abs(BARXLen-ZmotorXC-ZrodHolderDistToCenter-hldrCX/2, 0, dimz, 60, ox=ZmotorXC+ZrodHolderDistToCenter+hldrCX/2);
         // Rod Y middle
         y_dim_abs(0, ZrodHolderCY+BARCY, dimz, BARXLen/2, rh=100, ox=-BARCY, oy=-BARXLen/2.5, textLoc=DIM_OUTSIDE);
         // Bolts
-        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter-17, 0, dimz, -50, rh=30);
-        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+17, 0, dimz, -70, rh=30);
-        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter-17, 0, dimz, -50, lh=30, ox=ZmotorXC+ZrodHolderDistToCenter+17);
-        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+17, 0, dimz, -70, lh=30, ox=ZmotorXC+ZrodHolderDistToCenter-17);
-        /*
-        // Rod middle
+        hlOffs=17;
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter-hlOffs, 0, dimz, 80, rh=30);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter-hlOffs, 0, dimz, 80, lh=30, ox=ZmotorXC+ZrodHolderDistToCenter+hlOffs);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+hlOffs, 0, dimz, 120, rh=30);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+hlOffs, 0, dimz, 120, lh=30, ox=ZmotorXC+ZrodHolderDistToCenter-hlOffs);
+        // Holes 
+        lhlBegX=ZmotorXC-ZrodHolderDistToCenter-hlOffs;
+        rhlEndX=ZmotorXC+ZrodHolderDistToCenter+hlOffs;
+        x_dim_abs(rhlEndX-lhlBegX, 0, dimz, -100, ox=lhlBegX);
+        x_dim_abs(rhlEndX-lhlBegX-hlOffs*4, 0, dimz, -60, ox=lhlBegX+hlOffs*2);
+        // Rods & motor
         lrhBegX=ZmotorXC-ZrodHolderDistToCenter-hldrCX/2;
         rrhEndX=ZmotorXC+ZrodHolderDistToCenter+hldrCX/2;
-        x_dim_abs(rrhEndX-lrhBegX, 0, dimz, -90, ox=lrhBegX);
-        x_dim_abs(rrhEndX-lrhBegX-hldrCX*2, 0, dimz, -50, ox=lrhBegX+hldrCX);
-        x_dim_abs(rrhEndX-lrhBegX-hldrCX, 0, dimz, -70, ox=lrhBegX+hldrCX/2);
-        */
+        x_dim_abs(rrhEndX-lrhBegX-hldrCX, 0, dimz, -80, ox=lrhBegX+hldrCX/2);
     }
 }
 
@@ -535,7 +537,7 @@ module z_plane(h=4, skipDims=false, newRodHolders=true, planeClr="Cyan") {
         translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) z_plane_holes_sizes(newRodHolders, h);
         color("Black") {
             // Sides
-            x_dim_abs(BARXLen+BARCX*2, 0, dimz, 160, ox=-BARCX);
+            x_dim_abs(BARXLen+BARCX*2, 0, dimz, 200, ox=-BARCX);
             y_dim_abs(0, BARYLen+BARCY*2, dimz, -70, ox=-BARCX);
         }
     }
