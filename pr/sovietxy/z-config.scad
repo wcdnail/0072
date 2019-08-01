@@ -6,8 +6,8 @@ include <../../openscad/libs/dim1/dimlines.scad>
 $fn=64;
 
 // Параметры отображения размеров
-DIM_LINE_WIDTH=0.8;
-DIM_FONTSCALE=1.2;
+DIM_LINE_WIDTH=1;
+DIM_FONTSCALE=1;
 
 // Размеры линейных подшипников
 LM8UUOutterDiam=16.2;
@@ -44,10 +44,20 @@ RODZLen=373;
 RODZUp=-3;
 TOPFrameZ=370;
 
+// Размеры винтовой передачи 
+ZScrewDiam=8;
 ZScrewLen=330;
+ZScrewHolderCX=60;
+
+// Размеры "кровати"
+BEDYProfOffs=13;
+BEDPlateCX=BEDProfLen;
+BEDPlateCY=BEDProfLen-BEDYProfOffs;
+BEDProfileCY=BEDPlateCY-BARCY*2;
+BEDPlateCZ=3;
 
 // Параметры каретки X
-carZE3DOffs=-19.5;
+carZE3DOffs=-19.5;              // Смещение по Z относительно STL модели E3D
 
 origCARLen=76;                  // Оригинальная длина (X)
 origCARWidth=76;                // Оригинальная ширина (Y)
@@ -103,6 +113,13 @@ N17ShaftDiameter=5;
 N17ShaftLength=28;
 N17FixingHolesInteraxis=31;
 
+ZMin=ZaxisML8UUCZ+BARCZ*2;
+ZMax=330;
+
+ZmotorXC=BARXLen/2;
+ZrodHolderCenterOffset=25;
+ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Размеры 
 
@@ -127,12 +144,12 @@ module z_dim(cx, cy, cz, offs=20, lh=6, rh=6, textLoc=DIM_CENTER) {
     translate([0, 0, cz/2]) rotate([0, 90, 0]) x_dim(cz, cy, cx/2, offs, lh, rh, textLoc);
 }
 
-module y_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_CENTER, textLoc) {
-    rotate([0, 0, 90]) x_dim_abs(cy, cx, cz, offs, lh, rh, ox, oy, oz);
+module y_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_CENTER) {
+    rotate([0, 0, 90]) x_dim_abs(cy, cx, cz, offs, lh, rh, ox, oy, oz, textLoc);
 }
 
-module z_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_CENTER, textLoc) {
-    translate([0, 0, cz]) rotate([0, 90, 0]) x_dim_abs(cz, cy, cx/2, offs, lh, rh, ox, oy, oz);
+module z_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_CENTER) {
+    translate([0, 0, cz]) rotate([0, 90, 0]) x_dim_abs(cz, cy, cx/2, offs, lh, rh, ox, oy, oz, textLoc);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -424,4 +441,102 @@ module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0,
 
 module x_carriage_new_check(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, rodClr="White", carClr="Crimson", withE3D=true) {
     core_xy_frame(bx, cx, by, cy, px, py, "None", rodClr, carClr, withE3D, false, false);
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+// Листы-перекрытия
+
+module h_plane(h=3) {
+    linear_extrude(height=h)
+        polygon(points=[
+             [0, -BARCY]
+            ,[BARXLen, -BARCY]
+            ,[BARXLen, 0]
+            ,[BARXLen+BARCX, 0]
+            ,[BARXLen+BARCX, BARYLen]
+            ,[BARXLen, BARYLen]
+            ,[BARXLen, BARYLen+BARCY]
+            ,[0, BARYLen+BARCY]
+            ,[0, BARYLen]
+            ,[-BARCX, BARYLen]
+            ,[-BARCX, 0]
+            ,[0, 0]
+            ]);
+}
+
+module z_plane_holes_half(newRodHolders=true) { 
+    hldrCX = (newRodHolders ? ZrodHolder2CX : ZrodHolderCX);
+    hldrZO = 0;
+    hldrBD = 5.5;
+    color("Red") {
+        // Motor
+        translate([ZmotorXC, ZaxisML8UUCY, -50]) cylinder(d=24, h=100);
+        // Rods
+        translate([ZmotorXC-ZrodHolderDistToCenter, ZaxisML8UUCY, -50]) cylinder(d=RODXYDiam, h=100);
+        translate([ZmotorXC+ZrodHolderDistToCenter, ZaxisML8UUCY, -50]) cylinder(d=RODXYDiam, h=100);
+        // Z rod holder bolts
+        translate([ZmotorXC-ZrodHolderDistToCenter+17, ZaxisML8UUCY-31.2, -10]) cylinder(d=hldrBD, h=50);
+        translate([ZmotorXC-ZrodHolderDistToCenter-17, ZaxisML8UUCY-31.2, -10]) cylinder(d=hldrBD, h=50);
+        translate([ZmotorXC+ZrodHolderDistToCenter+17, ZaxisML8UUCY-31.2, -10]) cylinder(d=hldrBD, h=50);
+        translate([ZmotorXC+ZrodHolderDistToCenter-17, ZaxisML8UUCY-31.2, -10]) cylinder(d=hldrBD, h=50);
+    }
+}
+
+module z_plane_holes_sizes(newRodHolders=true, h=5) { 
+    dimz = h + 1;
+    hldrCX = (newRodHolders ? ZrodHolder2CX : ZrodHolderCX);
+    hldrZO = 0;
+    color("Black") {
+        // Corner
+        x_dim_abs(BARCX, 0, dimz, 40, rh=BARYLen, ox=-BARCX, textLoc=DIM_OUTSIDE);
+        y_dim_abs(0, BARCY, dimz, -40, ox=-BARCX, rh=BARXLen, textLoc=DIM_OUTSIDE);
+        // Motor
+        x_dim_abs(ZmotorXC, 0, dimz, 140, rh=45);
+        x_dim_abs(BARXLen-ZmotorXC, 0, dimz, 140, ox=ZmotorXC);
+        // Motor CX
+        x_dim_abs(ZmotorXC-ZmotorCX/2, 0, dimz, 120);
+        x_dim_abs(BARXLen-ZmotorXC-ZmotorCX/2, 0, dimz, 120, ox=ZmotorXC+ZmotorCX/2);
+        // Rod holder left
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+hldrCX/2, 0, dimz, 100);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter, 0, dimz, 80, rh=40);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter-hldrCX/2, 0, dimz, 60);
+        // Rod holder right
+        x_dim_abs(BARXLen-ZmotorXC-ZrodHolderDistToCenter+hldrCX/2, 0, dimz, 100, ox=ZmotorXC+ZrodHolderDistToCenter-hldrCX/2);
+        x_dim_abs(BARXLen-ZmotorXC-ZrodHolderDistToCenter, 0, dimz, 80, lh=40, ox=ZmotorXC+ZrodHolderDistToCenter);
+        x_dim_abs(BARXLen-ZmotorXC-ZrodHolderDistToCenter-hldrCX/2, 0, dimz, 60, ox=ZmotorXC+ZrodHolderDistToCenter+hldrCX/2);
+        // Rod Y middle
+        y_dim_abs(0, ZrodHolderCY+BARCY, dimz, BARXLen/2, rh=100, ox=-BARCY, oy=-BARXLen/2.5, textLoc=DIM_OUTSIDE);
+        // Bolts
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter-17, 0, dimz, -50, rh=30);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+17, 0, dimz, -70, rh=30);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter-17, 0, dimz, -50, lh=30, ox=ZmotorXC+ZrodHolderDistToCenter+17);
+        x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+17, 0, dimz, -70, lh=30, ox=ZmotorXC+ZrodHolderDistToCenter-17);
+        /*
+        // Rod middle
+        lrhBegX=ZmotorXC-ZrodHolderDistToCenter-hldrCX/2;
+        rrhEndX=ZmotorXC+ZrodHolderDistToCenter+hldrCX/2;
+        x_dim_abs(rrhEndX-lrhBegX, 0, dimz, -90, ox=lrhBegX);
+        x_dim_abs(rrhEndX-lrhBegX-hldrCX*2, 0, dimz, -50, ox=lrhBegX+hldrCX);
+        x_dim_abs(rrhEndX-lrhBegX-hldrCX, 0, dimz, -70, ox=lrhBegX+hldrCX/2);
+        */
+    }
+}
+
+
+module z_plane(h=4, skipDims=false, newRodHolders=true, planeClr="Cyan") {
+    difference() {
+        color(planeClr) h_plane(h);
+        z_plane_holes_half(newRodHolders);
+        translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_plane_holes_half(newRodHolders);
+    }
+    if(!skipDims) {
+        dimz = h + 1;
+        z_plane_holes_sizes(newRodHolders, h);
+        translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) z_plane_holes_sizes(newRodHolders, h);
+        color("Black") {
+            // Sides
+            x_dim_abs(BARXLen+BARCX*2, 0, dimz, 160, ox=-BARCX);
+            y_dim_abs(0, BARYLen+BARCY*2, dimz, -70, ox=-BARCX);
+        }
+    }
 }

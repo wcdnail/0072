@@ -1,4 +1,4 @@
-include <bconf.scad>
+include <z-config.scad>
 
 module x_carriage_1s(rodsHolesDiam=8, e3dZOffset=0) {
     difference() {

@@ -1,4 +1,4 @@
-include <bconf.scad>
+include <z-config.scad>
 
 printer_height=600;
 

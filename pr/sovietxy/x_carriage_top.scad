@@ -1,4 +1,4 @@
-include <bconf.scad>
+include <z-config.scad>
 use <x_carriage.scad>
 
 //color("blue") translate([carCX+carXEdge-0.7, origCARWidth/2+2.5, 19.5]) rotate([180, 0, 0]) e3d_v6_175();

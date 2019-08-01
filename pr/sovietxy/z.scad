@@ -1,20 +1,6 @@
-include <bconf.scad>
+include <z-config.scad>
 use <../../openscad/nema17.scad>
 
-ZmotorXC=BARXLen/2;
-ZrodHolderCenterOffset=25;
-ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
-
-ZscrewHolderCX=60;
-
-BEDYProfOffs=13;
-BEDPlateCX=BEDProfLen;
-BEDPlateCY=BEDProfLen-BEDYProfOffs;
-BEDProfileCY=BEDPlateCY-BARCY*2;
-BEDPlateCZ=3;
-
-ZMin=ZaxisML8UUCZ+BARCZ*2;
-ZMax=330;
 BEDZ=ZMax;
 
 module bed_rod_holders(skipDims=false, newRodHolders=true) {
@@ -28,8 +14,8 @@ module bed_rod_holders(skipDims=false, newRodHolders=true) {
             // Z screw
             x_dim_abs(BEDPlateCX/2, 0, BARCZ, 130, rh=40, ox=ZmotorXC-BEDPlateCX/2, oz=BEDZ-BARCZ);
             x_dim_abs(BEDPlateCX/2, 0, BARCZ, 130, rh=40, ox=ZmotorXC, oz=BEDZ-BARCZ);
-            x_dim_abs((BEDPlateCX-ZscrewHolderCX)/2, 0, BARCZ, 110, rh=40, ox=ZmotorXC-BEDPlateCX/2, oz=BEDZ-BARCZ);
-            x_dim_abs((BEDPlateCX-ZscrewHolderCX)/2, 0, BARCZ, 110, lh=40, ox=ZmotorXC+ZscrewHolderCX/2, oz=BEDZ-BARCZ);
+            x_dim_abs((BEDPlateCX-ZScrewHolderCX)/2, 0, BARCZ, 110, rh=40, ox=ZmotorXC-BEDPlateCX/2, oz=BEDZ-BARCZ);
+            x_dim_abs((BEDPlateCX-ZScrewHolderCX)/2, 0, BARCZ, 110, lh=40, ox=ZmotorXC+ZScrewHolderCX/2, oz=BEDZ-BARCZ);
             // Rod holder left
             x_dim_abs(ZrodHolderDistToCenter+3-ZaxisML8UUCX/2, 0, BARCZ, 70, rh=40, ox=ZmotorXC-BEDPlateCX/2, oz=BEDZ-BARCZ);
             x_dim_abs(ZrodHolderDistToCenter+3+ZaxisML8UUCX/2, 0, BARCZ, 90, rh=40, ox=ZmotorXC-BEDPlateCX/2, oz=BEDZ-BARCZ);
@@ -151,27 +137,47 @@ module top_frame(skipDims=false, transparentBars=false) {
 }
 
 // Z frame w/new holders
-module bottom_frame_sizes() {
-    z_frame(drawMotor=false, withRods=false);
+module bottom_frame_sizes(center=true) {
+    sx = center ? -BARXLen/2 : 0;
+    sy = center ? -BARYLen/2 : 0;
+    sz = 0;
+    translate([sx, sy, sz]) {
+        z_frame(drawMotor=false, withRods=false);
+    }
 }
 
 // Z frame w/old holders
-module top_frame_sizes() {
-    z_frame(newRodHolders=false, withRods=false, withMotor=false);
+module top_frame_sizes(center=true) {
+    sx = center ? -BARXLen/2 : 0;
+    sy = center ? -BARYLen/2 : 0;
+    sz = 0;
+    translate([sx, sy, sz]) {
+        z_frame(newRodHolders=false, withRods=false, withMotor=false);
+    }
 }
 
-module table_sizes() {
-    bed_v2();
+module table_sizes(center=true) {
+    sx = center ? -BARXLen/2 : 0;
+    sy = center ? -BARYLen/2 : 0;
+    sz = 0;
+    translate([sx, sy, sz]) {
+        bed_v2();
+    }
 }
 
 // Assembly
-module z_assembly(carx=0, cary=0, skipDims=false, withE3D=true) {
-    z_frame(rodHolderBottom=false, drawMotor=true);
-    top_frame(transparentBars=true);
-    translate([0, 0, TOPFrameZ+BARCZ]) core_xy_frame(withE3D=withE3D);
-    bed_v2();
-    if(!skipDims) {
-        color("Black") {
+module z_assembly(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
+    sx = center ? -BARXLen/2 : 0;
+    sy = center ? -BARYLen/2 : 0;
+    sz = 0;
+    translate([sx, sy, sz]) {
+        z_frame(rodHolderBottom=false, drawMotor=true);
+        top_frame(transparentBars=true);
+        translate([0, 0, TOPFrameZ+BARCZ]) core_xy_frame(withE3D=withE3D);
+        bed_v2();
+        if(!skipDims) {
+            color("Black") {
+            }
         }
     }
 }

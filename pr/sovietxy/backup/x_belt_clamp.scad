@@ -1,4 +1,4 @@
-include <bconf.scad>
+include <z-config.scad>
 include <x_carriage.scad>
 
 translate([-6, 38.08, -9.95]) rotate([90, 0, 90]) color("yellow") x_belt_clamp();
