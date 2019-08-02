@@ -186,4 +186,3 @@ module z_assembly(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
 //bottom_frame_sizes();
 //top_frame_sizes();
 z_assembly();
-//x_carriage_new_check();

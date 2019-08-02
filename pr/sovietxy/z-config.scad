@@ -121,6 +121,28 @@ ZrodHolderCenterOffset=25;
 ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
 
 // ---------------------------------------------------------------------------------------------------------------------
+// E3Dv6 
+
+E3DradDiam=22.45;
+E3DsradDiam=16;
+E3DradZBeg=18.74;
+E3DradCZ=26.01;
+E3DfullCZ=62.5;
+E3DsradCZ=7.05;
+E3DhldrCZ=5.85;
+E3DhldrDiam=12;
+
+module e3d_v6_holder(xysf=1) {
+    scale([xysf, xysf, 1]) {
+        translate([0, 0, 0]) cylinder(h=E3DfullCZ, d=4);
+        translate([0, 0, E3DradZBeg]) cylinder(h=E3DradCZ, d=E3DradDiam);
+        translate([0, 0, E3DradZBeg+E3DradCZ]) cylinder(h=E3DsradCZ, d=E3DsradDiam);
+        translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ]) cylinder(h=E3DhldrCZ, d=E3DhldrDiam);
+        translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ+E3DhldrCZ]) cylinder(h=E3DsradCZ/2+0.25, d=E3DsradDiam);
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 // Размеры 
 
 module x_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_CENTER) {
@@ -166,7 +188,7 @@ module optical_endstop() {
 }
 
 module x_carriage_v5() {
-    translate([0, 0, 0]) rotate([0, 0, 0]) import("printedparts/1xCoreXY_X-Carriage.stl");
+    translate([-origCARLen/2, -origCARWidth/2, 0]) rotate([0, 0, 0]) import("printedparts/CoreXY_X-Carriage_E3D-V5.stl");
 }
 
 module x_belt_clamp() {
@@ -178,7 +200,7 @@ module x_carriage_direct_drive() {
 }
 
 module e3d_v6_175() {
-    translate([0, 0, 0]) rotate([0, 0, 0]) import("../parts/E3D_v6_1.75mm_Universal.stl");
+    translate([5.2, -2.5, 0]) rotate([0, 0, 0]) import("../parts/E3D_v6_1.75mm_Universal.stl");
 }
 
 module l_x_end_top() {
@@ -419,11 +441,19 @@ module x_carriage_new(carClr="Crimson", withE3D=true, e3dClr="White") {
         }
     }
     if (withE3D) {
-        color(e3dClr) translate([5.3, -2.5, carZE3DOffs]) rotate([0, 0, 0]) e3d_v6_175();
+        color(e3dClr) translate([0, 0, carZE3DOffs]) rotate([0, 0, 0]) e3d_v6_175();
     }
 }
 
-module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="SlateGray", rodClr="White", carClr="Crimson", withE3D=true, rAxis=true, lAxis=true, e3dClr="White") {
+module x_carriage_v6_std(carClr) {
+    color(carClr) {
+        rotate([180, 0, 0]) translate([-origCARLen/2, -origCARWidth/2, -25]) import("printedparts/CoreXY_X-Carriage_E3D-V5.stl");
+        rotate([0, 0, 0]) translate([-origCARLen/2, -origCARWidth/2, 25]) import("printedparts/1xCoreXY_Direct_Drive.stl");
+    }
+    %translate([0, 0, 16.5]) rotate([0, 0, 90]) e3d_v6_175();
+}
+
+module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="SlateGray", rodClr="White", carClr="Crimson", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=true) {
     xe_px=bx/2 + px;
     xe_py=by/2 + py;
     if (rAxis) {
@@ -436,11 +466,20 @@ module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0,
         translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
         translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
     }
-    translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
+    if (newCar) {
+        translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
+    }
+    else {
+        translate([xe_px, xe_py, 0]) x_carriage_v6_std(carClr);
+    }
 }
 
 module x_carriage_new_check(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, rodClr="White", carClr="Crimson", withE3D=true) {
     core_xy_frame(bx, cx, by, cy, px, py, "None", rodClr, carClr, withE3D, false, false);
+}
+
+module x_carriage_check(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, rodClr="White", carClr="Crimson", withE3D=true) {
+    core_xy_frame(bx, cx, by, cy, px, py, "None", rodClr, carClr, withE3D, false, false, newCar=false);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
