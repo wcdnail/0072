@@ -10,7 +10,7 @@ DIM_LINE_WIDTH=1;
 DIM_FONTSCALE=1;
 
 // Размеры линейных подшипников
-LM8UUOutterDiam=16.15;
+LM8UUOutterDiam=16.2;
 LM8UULen=25;
 
 // Параметры стола
@@ -37,7 +37,6 @@ BARYLen=450;
 // Размеры гладких направляющих 
 RODXYDiam=8;
 RODZDiam=8;
-XRODSDiff=50;
 
 RODXLen=420;
 RODYLen=405;
@@ -58,38 +57,34 @@ BEDProfileCY=BEDPlateCY-BARCY*2;
 BEDPlateCZ=3;
 
 // Параметры каретки X
-CARCX=76;
-CARCY=76;
-CARBaseCZ=3;
-CARFullCZ=15.5;
+carZE3DOffs=-19.5;              // Смещение по Z относительно STL модели E3D
 
-// Смещение по Z относительно STL модели E3D
-CARZE3DOffs=-19.5;             
+origCARLen=76;                  // Оригинальная длина (X)
+origCARWidth=76;                // Оригинальная ширина (Y)
+origCARHeightWOHolder=6;        // Оригинальная высота (Z)
 
-CARXE=2.5;                       // Длина передней стенки 
-CAR2CX=CARCX+CARXE*2;          // Новая длина каретки
+carXEdge=3;                     // Длина передней стенки 
+carCX=origCARLen/2.7+carXEdge;  // Новая длина каретки
+carBaseXOffset=-carXEdge;       // Смещение каретки по X
 
-// Параметры X терминала
-XENDCY=70;
-XENDFullCZ=21.5;
-
-/*
-carBaseXOffset=-CARXE;          // Смещение каретки по X
 carYShrink=23;                  // Декремент ширины каретки
 carCY=origCARWidth-carYShrink;
+
 e3dBaseXOffset=12;              // Смещение E3D от центра по X
 e3dBaseYOffset=15;              // Смещение E3D от центра по Y
 e3dNutsYOffset=3;
+
 carHNutSizeName="M3";           // Размер горизонтальных гаек
 carHBoltHoleDiam=3.2;           // Диаметр горизонтальных отв.
 carHBoltHeadDiam=7;             // Диаметр шляпки горизонтальных винтов
 carHNutXScale=15;               // Масштаб горизонтальных гаек
 carHBoltHeight=8.2;             // Смещение по Z горизонтальных гаек
+
 carVNutSizeName="M4";           // Размер вертикальных гаек
 carVBoltHoleDiam=4.2;
 carVBoltHoleCenterOffs=-6;
+
 carBaseZOffset=0;               // Смещение базы каретки по Z 
-*/
 
 ZmotorCX=84.6;
 ZmotorCY=42.3;
@@ -193,7 +188,7 @@ module optical_endstop() {
 }
 
 module x_carriage_v5() {
-    translate([-CARCX/2, -CARCY/2, 0]) rotate([0, 0, 0]) import("printedparts/CoreXY_X-Carriage_E3D-V5.stl");
+    translate([-origCARLen/2, -origCARWidth/2, 0]) rotate([0, 0, 0]) import("printedparts/CoreXY_X-Carriage_E3D-V5.stl");
 }
 
 module x_belt_clamp() {
@@ -239,8 +234,11 @@ module x_carriage_h1_boltholes_stl() {
 module z_motor_c1(skipDims=false, modelColor="SlateGray") {
     color(modelColor) render() {
         difference() {
-            translate([ZmotorCX/4, -ZmotorCX/4, 20]) rotate([0, 0, 180]) rotate([180, 0, 0]) import("printedparts/2xCoreXY_Z_Motor.stl");
-            translate([0, -ZmotorCX/3, -9.9]) cube([ZmotorCX+20, ZmotorCY+20, 20], center=true);
+            translate([ZmotorCX/4, -ZmotorCX/4, 20]) 
+                rotate([0, 0, 180]) rotate([180, 0, 0]) 
+                    import("printedparts/2xCoreXY_Z_Motor.stl");
+            translate([0, -ZmotorCX/3, -9.9]) 
+                cube([ZmotorCX+20, ZmotorCY+20, 20], center=true);
         }
     }
     if(!skipDims) {
@@ -421,7 +419,7 @@ module r_y_axis(by, cy, xe_pos, partClr="SlateGray", rodClr="White") {
     color(partClr) {
         translate([0, 0, 0]) r_motor();
         translate([0, by + BARCX, 0]) r_idler();
-        translate([-3.5, xe_pos - XENDCY/2, 14.5]) r_x_end();
+        translate([-3.5, xe_pos - 35, 14.5]) r_x_end();
     }
     translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
 }
@@ -437,20 +435,20 @@ module x_carriage() {
 module x_carriage_new(carClr="Crimson", withE3D=true, e3dClr="White") {
     color(carClr) {
         render() {
-            translate([CARCX, -CARCY/2, 0]) rotate([0, 90, 0]) import("x_carriage-16x25lm8uu.stl");
-            translate([-CARCX, -CARCY/2, 0]) rotate([0, -90, 0]) import("x_carriage-16x25lm8uu_holes.stl");
+            translate([carCX-carXEdge, -origCARWidth/2, 0]) rotate([0, 90, 0]) import("x_carriage-16x25lm8uu.stl");
+            translate([-(carCX-carXEdge), -origCARWidth/2, 0]) rotate([0, -90, 0]) import("x_carriage-16x25lm8uu_holes.stl");
             translate([0, 0, 0]) rotate([0, 0, 0]) import("x_carriage-top.stl");
         }
     }
     if (withE3D) {
-        color(e3dClr) translate([0, 0, CARZE3DOffs]) rotate([0, 0, 0]) e3d_v6_175();
+        color(e3dClr) translate([0, 0, carZE3DOffs]) rotate([0, 0, 0]) e3d_v6_175();
     }
 }
 
 module x_carriage_v6_std(carClr) {
     color(carClr) {
-        rotate([180, 0, 0]) translate([-CARCX/2, -CARCY/2, -25]) import("printedparts/CoreXY_X-Carriage_E3D-V5.stl");
-        rotate([0, 0, 0]) translate([-CARCX/2, -CARCY/2, 25]) import("printedparts/1xCoreXY_Direct_Drive.stl");
+        rotate([180, 0, 0]) translate([-origCARLen/2, -origCARWidth/2, -25]) import("printedparts/CoreXY_X-Carriage_E3D-V5.stl");
+        rotate([0, 0, 0]) translate([-origCARLen/2, -origCARWidth/2, 25]) import("printedparts/1xCoreXY_Direct_Drive.stl");
     }
     %translate([0, 0, 16.5]) rotate([0, 0, 90]) e3d_v6_175();
 }
