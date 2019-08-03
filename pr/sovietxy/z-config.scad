@@ -66,12 +66,15 @@ CARFullCZ=15.5;
 // Смещение по Z относительно STL модели E3D
 CARZE3DOffs=-19.5;             
 
-CARXE=2.5;                       // Длина передней стенки 
-CAR2CX=CARCX+CARXE*2;          // Новая длина каретки
+CARXE=2.5;                      // Длина передней стенки 
+CAR2CX=CARCX+CARXE*2;           // Новая длина каретки
 
 // Параметры X терминала
 XENDCY=70;
 XENDFullCZ=21.5;
+
+CARTopZOffs=3.5;
+CARVBoltHoleCenterOffs=-6;
 
 /*
 carBaseXOffset=-CARXE;          // Смещение каретки по X
@@ -87,7 +90,7 @@ carHNutXScale=15;               // Масштаб горизонтальных �
 carHBoltHeight=8.2;             // Смещение по Z горизонтальных гаек
 carVNutSizeName="M4";           // Размер вертикальных гаек
 carVBoltHoleDiam=4.2;
-carVBoltHoleCenterOffs=-6;
+
 carBaseZOffset=0;               // Смещение базы каретки по Z 
 */
 
@@ -126,25 +129,48 @@ ZrodHolderCenterOffset=25;
 ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
 
 // ---------------------------------------------------------------------------------------------------------------------
+// E3Dv5
+
+E3Dv5RadDiam=25;
+
+module e3d_v5_rad(enlarger=0, innerEnlarger=0.2) {
+    bz=19.3+enlarger;
+    largeDia=E3Dv5RadDiam+enlarger;
+    largeH=31.8;
+    thrH=8;
+    thrDia=9;
+    hldDia=12+enlarger;
+    hldrBottomH=6.8;
+    hldrOutterDia=16+enlarger;
+    hldrInnerH=9;
+    hldrInnerDia=12+enlarger+innerEnlarger;
+    hldrTopH=3.7;
+	translate([0, 0, 0]) union() {
+        translate([0, 0, bz]) cylinder(h=largeH, d=largeDia);
+        translate([0, 0, bz+largeH-1]) cylinder(h=thrH, d=thrDia);
+        translate([0, 0, bz+largeH+2.2-enlarger*2]) cylinder(h=hldrBottomH+enlarger*2, d=hldrOutterDia);
+        translate([0, 0, bz+largeH-1+hldrBottomH]) cylinder(h=hldrInnerH, d=hldrInnerDia);
+        translate([0, 0, bz+largeH-1+hldrBottomH+hldrInnerH-0.2-enlarger*2]) cylinder(h=hldrTopH+enlarger*2, d=hldrOutterDia);
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
 // E3Dv6 
 
-E3DradDiam=22.45;
-E3DsradDiam=16;
-E3DradZBeg=18.74;
-E3DradCZ=26.01;
-E3DfullCZ=62.5;
-E3DsradCZ=7.05;
-E3DhldrCZ=5.85;
-E3DhldrDiam=12;
+E3Dv6RadDiam=22.45;
 
-module e3d_v6_holder(xysf=1) {
-    scale([xysf, xysf, 1]) {
-        translate([0, 0, 0]) cylinder(h=E3DfullCZ, d=4);
-        translate([0, 0, E3DradZBeg]) cylinder(h=E3DradCZ, d=E3DradDiam);
-        translate([0, 0, E3DradZBeg+E3DradCZ]) cylinder(h=E3DsradCZ, d=E3DsradDiam);
-        translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ]) cylinder(h=E3DhldrCZ, d=E3DhldrDiam);
-        translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ+E3DhldrCZ]) cylinder(h=E3DsradCZ/2+0.25, d=E3DsradDiam);
-    }
+module e3d_v6_rad() {
+	E3DsradDiam=16;
+	E3DradZBeg=18.74;
+	E3DradCZ=26.01;
+	E3DfullCZ=62.5;
+	E3DsradCZ=7.05;
+	E3DhldrCZ=5.85;
+	E3DhldrDiam=12;
+	translate([0, 0, E3DradZBeg]) cylinder(h=E3DradCZ, d=E3Dv6RadDiam);
+	translate([0, 0, E3DradZBeg+E3DradCZ]) cylinder(h=E3DsradCZ, d=E3DsradDiam);
+	translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ]) cylinder(h=E3DhldrCZ, d=E3DhldrDiam);
+	translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ+E3DhldrCZ]) cylinder(h=E3DsradCZ/2+0.25, d=E3DsradDiam);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -304,6 +330,21 @@ module z_rod_holder_new(skipDims=false) {
     }
 }
 
+module z_rod_holder_short_new(skipDims=true) {
+    translate([ZrodHolder2CX/2, -41, -80]) rotate([90, 0, 0]) {
+        color("Yellow") render() import("printedparts/Z-Axis Holder.stl");
+        color("Green") render() import("printedparts/Z-Axis Clamp.stl");
+		//color("Black") model_name("'Z-Axis Holder.stl' & 'Z-Axis Clamp.stl'");
+    }
+    if(!skipDims) {
+        color("Black") {
+            x_dim(ZrodHolder2CX, ZrodHolder2CY, ZrodHolder2CZ, 10);
+            y_dim_abs(ZrodHolder2CX, ZrodHolder2CY/2+6, ZrodHolder2CZ, 50, ox=-ZrodHolder2CY/2+4, lh=ZrodHolder2CX/2+5, textLoc=DIM_OUTSIDE);
+            z_dim(ZrodHolder2CX, ZrodHolder2CY, ZrodHolder2CZ, 10, lh=ZrodHolderCX, textLoc=DIM_OUTSIDE);
+        }
+    }
+}
+
 module z_transm_v2(skipDims=false, modelColor="SlateGray") {
     color(modelColor) render() translate([0, 10.5, 0]) rotate([0, 0, 180]) rotate([0, 90, 0]) import("printedparts/TR8_Mutter.stl");
     if(!skipDims) {
@@ -434,20 +475,7 @@ module x_carriage() {
     translate([-37.5, 37.5, 15.2]) rotate([180, 0, 0]) import("printedparts/1xCoreXY_X-Carriage.stl");
 }
 
-module x_carriage_new(carClr="Crimson", withE3D=true, e3dClr="White") {
-    color(carClr) {
-        render() {
-            translate([CARCX, -CARCY/2, 0]) rotate([0, 90, 0]) import("x_carriage-16x25lm8uu.stl");
-            translate([-CARCX, -CARCY/2, 0]) rotate([0, -90, 0]) import("x_carriage-16x25lm8uu_holes.stl");
-            translate([0, 0, 0]) rotate([0, 0, 0]) import("x_carriage-top.stl");
-        }
-    }
-    if (withE3D) {
-        color(e3dClr) translate([0, 0, CARZE3DOffs]) rotate([0, 0, 0]) e3d_v6_175();
-    }
-}
-
-module x_carriage_v6_std(carClr) {
+module x_carriage_v5_std(carClr) {
     color(carClr) {
         rotate([180, 0, 0]) translate([-CARCX/2, -CARCY/2, -25]) import("printedparts/CoreXY_X-Carriage_E3D-V5.stl");
         rotate([0, 0, 0]) translate([-CARCX/2, -CARCY/2, 25]) import("printedparts/1xCoreXY_Direct_Drive.stl");
@@ -455,7 +483,98 @@ module x_carriage_v6_std(carClr) {
     %translate([0, 0, 16.5]) rotate([0, 0, 90]) e3d_v6_175();
 }
 
-module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="SlateGray", rodClr="White", carClr="Crimson", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=true) {
+module e3d_v5_stl() {
+    translate([-12.5, -12.5, 0]) import("../parts/E3D_v5_Hot_end.stl");
+}
+
+module x_end_rods_check() {
+    translate([-120, -XENDCY/2, 10]) l_x_end();
+    translate([-90,  XRODSDiff/2, XENDFullCZ/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam, h=RODXLen);
+    translate([-90, -XRODSDiff/2, XENDFullCZ/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam, h=RODXLen);
+}
+
+CARCentralHoleDiam=E3Dv6RadDiam+3;
+
+module car_base_holes() {
+    color("Red") {
+        translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
+        translate([-CARCX/2+13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
+        translate([ CARCX/2-13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
+        translate([-8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+        translate([ 8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+        translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+        translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+        translate([ 0,  CARCY/2-20, XENDFullCZ-200]) cylinder(h=400, d=8);
+        translate([ 0,  CARCY/2-25, XENDFullCZ-100]) cube([8, 10, 300], center=true);
+        translate([-CARCX/2+13, 0, XENDFullCZ-4]) scale([1, 1, 2]) nut("M4");
+        translate([ CARCX/2-13, 0, XENDFullCZ-4]) scale([1, 1, 2]) nut("M4");
+    }
+}
+
+module car_base(drawE3D=true, clr="Yellow") {
+	if (drawE3D) {
+		%translate([0, 0, -34.7-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
+	}
+    color(clr) translate([-CAR2CX/2, -CARCY/2, XENDFullCZ-CARBaseCZ]) cube([CAR2CX, CARCY, CARBaseCZ]);
+}
+
+module car_lmu88_holder1(clr="Yellow") {
+    sz=XENDFullCZ;
+    bhy=CARCY/2.8;
+    bhz=LM8UUOutterDiam-3.5;
+    bslicez=14.6;
+    wsz=5;
+    wz=6.7;
+    difference() {
+        // Bearing holder
+        color(clr) union() {
+            translate([CARCX/2-LM8UULen-CARXE, CARCY/2-bhy, sz]) rotate([0, 90, 0])
+                linear_extrude(height=LM8UULen+CARXE*2) polygon(points=[[0, 0],[CARBaseCZ, 0],[CARBaseCZ+bhz, bhy/6],[CARBaseCZ+bhz, bhy-bhy/7],[CARBaseCZ, bhy], [0, bhy]]);
+            translate([-0.1, -0.1, sz-wsz]) cube([CARCX/4, CARCY/2-CARXE*2, wsz]);
+            translate([16, -0.1, sz-wz]) cube([18, CARCY/4, wz]);
+        }
+        // Linear bearing
+        color("Blue") {
+            translate([CARCX/2-LM8UULen, XRODSDiff/2, sz/2]) rotate([0, 90, 0]) cylinder(d=LM8UUOutterDiam, h=LM8UULen);
+            translate([CARCX/2-LM8UULen*1.5, XRODSDiff/2, sz/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam*1.3, h=LM8UULen*2);
+            translate([CARCX/2-LM8UULen/2, XRODSDiff/2, 0]) scale([1, 1, 0.7]) rotate([45, 0, 0]) cube([LM8UULen*2, LM8UULen, LM8UULen], center=true);
+            cube([CARCX*2, CARCY*2, bslicez], center=true);
+        }
+    }
+}
+
+module car_lmu88_holder2(clr="Yellow") {
+    translate([0, 0, -0.35]) car_lmu88_holder1(clr);
+    translate([0, 0, -0.35]) mirror([0, 1, 0]) car_lmu88_holder1(clr);
+}
+
+module car_lmu88_holders_all(clr="Yellow") {
+    car_lmu88_holder2(clr);
+    mirror([1, 0, 0]) car_lmu88_holder2(clr);
+}
+
+module carriage_v12(skipDims=false, carClr="Yellow", drawE3D=true) {
+    render() difference() {
+        union() {
+            car_base(drawE3D, carClr);
+            car_lmu88_holders_all(carClr);
+        }
+        color("Magenta") car_base_holes();
+    }
+    if(!skipDims) {
+        color("black") {
+            translate([0, 0, XENDFullCZ]) x_dim(CAR2CX, 0, 0, 100);
+            translate([0, 0, XENDFullCZ]) y_dim(0, CARCY, 0, 100);
+            translate([0, 0, XENDFullCZ-XENDFullCZ/2]) y_dim(0, XRODSDiff, 0, 80);
+        }
+    }
+}
+
+module carriage_v12_direct(modelClr="Crimson") {
+    color(modelClr) translate([0, 0, -CARTopZOffs]) rotate([0, 0, 180]) translate([-CARCX/2, -CARCY/2, 25]) import("printedparts/1xCoreXY_Direct_Drive.stl");
+}
+
+module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="SlateGray", rodClr="White", carClr="Crimson", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=false) {
     xe_px=bx/2 + px;
     xe_py=by/2 + py;
     if (rAxis) {
@@ -472,7 +591,7 @@ module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0,
         translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
     }
     else {
-        translate([xe_px, xe_py, 0]) x_carriage_v6_std(carClr);
+        translate([xe_px, xe_py, 0]) carriage_v12(carClr, true, false);
     }
 }
 

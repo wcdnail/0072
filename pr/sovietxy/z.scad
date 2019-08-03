@@ -57,7 +57,7 @@ module bed_v2(skipDims=false, plateClr="Silver", heaterClr="Magenta", newRodHold
     }
 }
 
-module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=true, transparentBars=false) {
+module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=true, transparentBars=false, shortRodHolders=false) {
     // Motor
     if (withMotor) {
         translate([ZmotorXC, BARCY+1.15, 0]) z_motor_c1(skipDims);
@@ -70,9 +70,16 @@ module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders
     hldrZO = (newRodHolders ? (rodHolderBottom ? -BARCZ : BARCZ) : 0);
     if (newRodHolders) {
         hldrRotY = (rodHolderBottom ? 0 : 180);
-        hldrZOreal = (rodHolderBottom ? -BARCZ : BARCZ*2);
-        translate([ZmotorXC-ZrodHolderDistToCenter, BARCY+1.05, hldrZOreal]) rotate([0, hldrRotY, 0]) z_rod_holder_new();
-        translate([ZmotorXC+ZrodHolderDistToCenter, BARCY+1.05, hldrZOreal]) rotate([0, hldrRotY, 0]) z_rod_holder_new();
+        if (shortRodHolders) {
+            hldrZOreal = BARCZ;
+            translate([ZmotorXC-ZrodHolderDistToCenter, BARCY+1.05, hldrZOreal]) rotate([0, hldrRotY, 0]) z_rod_holder_short_new();
+            translate([ZmotorXC+ZrodHolderDistToCenter, BARCY+1.05, hldrZOreal]) rotate([0, hldrRotY, 0]) z_rod_holder_short_new();
+        }
+        else {
+            hldrZOreal = (rodHolderBottom ? -BARCZ : BARCZ*2);
+            translate([ZmotorXC-ZrodHolderDistToCenter, BARCY+1.05, hldrZOreal]) rotate([0, hldrRotY, 0]) z_rod_holder_new();
+            translate([ZmotorXC+ZrodHolderDistToCenter, BARCY+1.05, hldrZOreal]) rotate([0, hldrRotY, 0]) z_rod_holder_new();
+        }
     }
     else {
         translate([ZmotorXC-ZrodHolderDistToCenter, ZrodHolderCY/2, 0]) rotate([0, 0, 180]) z_rod_holder(true);
@@ -125,15 +132,15 @@ module z_frame_half(skipDims=false, withMotor=true, withRods=true, newRodHolders
     }
 }
 
-module z_frame(skipDims=false, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=false, transparentBars=false) {
+module z_frame(skipDims=false, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=false, transparentBars=false, shortRodHolders=false) {
     h_frame_2020(skipDims, transparentBars);
-    z_frame_half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor, transparentBars);
-    translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_frame_half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor);
+    z_frame_half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor, transparentBars, shortRodHolders);
+    translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_frame_half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor, transparentBars, shortRodHolders);
 }
 
 module top_frame(skipDims=false, transparentBars=false) {
     translate([0, 0, TOPFrameZ-BARCZ]) h_frame_2020(true);
-    translate([0, 0, TOPFrameZ]) z_frame(true, false, false, false);
+    translate([0, 0, TOPFrameZ]) z_frame(skipDims=true, withMotor=false, withRods=false, newRodHolders=true, shortRodHolders=true);
 }
 
 // Z frame w/new holders
@@ -152,7 +159,7 @@ module top_frame_sizes(center=true) {
     sy = center ? -BARYLen/2 : 0;
     sz = 0;
     translate([sx, sy, sz]) {
-        z_frame(newRodHolders=false, withRods=false, withMotor=false);
+        z_frame(skipDims=false, withMotor=false, withRods=false, newRodHolders=true, shortRodHolders=true);
     }
 }
 
