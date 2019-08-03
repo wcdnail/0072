@@ -1,5 +1,6 @@
 include <z-config.scad>
 use <z.scad>
+use <../../openscad/nema17.scad>
 
 //%x_end_rods_check();
 
@@ -130,14 +131,8 @@ module car_top_enhanced() {
                     ,[-38, -1]
                 ]);
             // Thick side
-            translate([-38, 0, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) linear_extrude(height=14)
-                polygon(points=[
-                     [-38, 0]
-                    ,[-22, 13]
-                    ,[-3.5, 13]
-                    ,[-3.5, -1]
-                    ,[-38, -1]
-                ]);
+            //translate([-38, 0, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) linear_extrude(height=14)
+                //polygon(points=[[-38, 0],[-22, 13],[-3.5, 13],[-3.5, -1],[-38, -1]]);
         }
         // Base slice
         translate([0, 50, CARTopZBeg+CARTopBaseCZ]) rotate([90]) linear_extrude(height=100)
@@ -158,3 +153,4 @@ module car_top_enhanced() {
 
 car_top_middle();
 color("red") car_top_enhanced();
+translate([-5.3, -52, CARTopZBeg+CARTopBaseCZ+N17Height/2+1.3]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
