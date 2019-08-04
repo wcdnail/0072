@@ -111,6 +111,7 @@ module car_top_middle(noSensor=true) {
     }
 }
 
+/*
 module car_sensor_holder() {
     sby=58;
     sbz=30;
@@ -144,6 +145,9 @@ module car_sensor_holder() {
     }
     %translate([0, sby, CARTopZBeg-sbz-45]) cylinder(h=70, d=18);
 }
+*/
+
+
 
 module car_top_enhanced_1() {
     //render() 
@@ -157,15 +161,13 @@ module car_top_enhanced_1() {
                     translate([24, -22, CARTopZBeg+CARTopBaseCZ/2]) cube([6, 18, 13.35+16]);
                 }
                 color("Red") {
-                    // Bottom slice
-                    translate([-150, -150, CARTopZBeg-2]) cube([300, 300, CARTopBaseCZ/2+2]);
                     // E3D hole
                     translate([0, 0, E3Dv5ZOffset+64]) cylinder(h=200, d=CARTopE3DHoleDia);
                     // M3 vert bolt holes
                     translate([-8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
                     translate([ 8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
                     // Side slice
-                    translate([-24, -35, CARTopZBeg+CARTopBaseCZ]) cube([32, 60, 20]);
+                    translate([-24, -55, CARTopZBeg+CARTopBaseCZ]) cube([32, 80, 40]);
                     // Back slice 
                     translate([-36, -39, CARTopZBeg+CARTopBaseCZ]) cube([100, 15, 10]);
                     // Chain mount
@@ -208,20 +210,21 @@ module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true, noM
     esbx=CARCX/2-4;
     eslbx=-CARCX/2;
     esby=27;
-    esbz=CARTopZBeg+CARTopBaseCZ+11;
+    esbz=CARTopZBeg+14.3;
     color(clr) {
-        render() difference() {
+        render()
+        difference() {
             union() {
                 if(!noMotorMount) {
                     translate([-36, -10, CARTopZBeg+CARTopBaseCZ]) cube([56, 6.5, 10]);
                 }
                 if(rendStop) {
-                    translate([esbx-9, esby-0.9, CARTopZBeg+CARTopBaseCZ/2+23]) rotate([0, 90, 0]) cylinder(d=11.8, h=5);
-                    translate([esbx-9, esby-9, CARTopZBeg+CARTopBaseCZ/2]) cube([5, 14, 23]);
+                    translate([esbx-9, esby-0.9, CARTopZBeg+23]) rotate([0, 90, 0]) cylinder(d=11.8, h=5);
+                    translate([esbx-9, esby-9, CARTopZBeg]) cube([5, 14, 23]);
                 }
                 if(lendStop) {
-                    translate([eslbx, esby-0.9, CARTopZBeg+CARTopBaseCZ/2+23]) rotate([0, 90, 0]) cylinder(d=11.8, h=5);
-                    translate([eslbx, esby-16, CARTopZBeg+CARTopBaseCZ/2]) cube([5, 21, 23]);
+                    translate([eslbx, esby-0.9, CARTopZBeg+23]) rotate([0, 90, 0]) cylinder(d=11.8, h=5);
+                    translate([eslbx, esby-16, CARTopZBeg]) cube([5, 21, 23]);
                 }
                 car_top_enhanced_1();
             }
@@ -231,14 +234,14 @@ module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true, noM
             translate([10, 20, CARTopZBeg+CARTopBaseCZ+5.7]) rotate([90]) cylinder(d=3.8, h=50);
             // Right endstop holes
             if(rendStop) {
-                translate([esbx-20, esby-0.9, CARTopZBeg+CARTopBaseCZ/2+5.2]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
-                translate([esbx-20, esby-0.9, CARTopZBeg+CARTopBaseCZ/2+23.5]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
-                translate([esbx-14, esby-20.8, CARTopZBeg+CARTopBaseCZ/2+13.35]) cube([18, 14, 14+13.35]);
+                translate([esbx-20, esby-0.9, CARTopZBeg+5.2]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
+                translate([esbx-20, esby-0.9, CARTopZBeg+23.5]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
+                translate([esbx-14, esby-20.8, CARTopZBeg+16.7]) cube([18, 14, 14+13.35]);
             }
             if(lendStop) {
-                translate([eslbx-20, esby-0.9, CARTopZBeg+CARTopBaseCZ/2+5.2]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
-                translate([eslbx-20, esby-0.9, CARTopZBeg+CARTopBaseCZ/2+23.5]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
-                translate([eslbx-4, esby-20.8, CARTopZBeg+CARTopBaseCZ/2+16.3]) cube([18, 14, 14+13.35]);
+                translate([eslbx-20, esby-0.9, CARTopZBeg+5.2]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
+                translate([eslbx-20, esby-0.9, CARTopZBeg+23.5]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
+                translate([eslbx-4, esby-20.8, CARTopZBeg+19.7]) cube([18, 14, 14+13.35]);
             }
         }
     }
@@ -250,10 +253,12 @@ module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true, noM
     }
 }
 
+
 module x_endstop_term() {
     sbz=17.7;
     bdia=10;
-    render() difference() {
+    render() 
+    difference() {
         union() {
             hull() {
                 translate([-XENDCX/2+5, XENDCY/2-25+5, XENDFullCZ]) cylinder(d=bdia, h=3);
@@ -268,6 +273,11 @@ module x_endstop_term() {
             translate([-XENDCX/2-5, XENDCY/2-8.9, XENDFullCZ+sbz]) rotate([0, 90, 0]) cylinder(d=3.1, h=20);
         }
     }
+}
+
+module x_carriage_top_w2_endstops(clr="MediumSeaGreen", rendStop=true, lendStop=true) {
+    translate([0, 0, CARTopBaseCZ/2]) 
+        car_top_enhanced(clr, rendStop, lendStop, noMotorMount=false);
 }
 
 module full_assemled_carriage() {
@@ -292,12 +302,8 @@ module full_assemled_carriage() {
 module x_carriage_e3d_v5_liftdown_adapter() {
     translate([0, 0, 24.9]) rotate([0, 180]) {
         car_top_middle();
-        translate([0, 4, 0]) e3d_v5_clamp();   
+        //translate([0, 4, 0]) e3d_v5_clamp();   
     }
-}
-
-module x_carriage_top_w2_endstops(clr="MediumSeaGreen", rendStop=true, lendStop=true) {
-    car_top_enhanced(clr, rendStop, lendStop, noMotorMount=false);
 }
 
 module car_n_top_middle() {
@@ -306,4 +312,9 @@ module car_n_top_middle() {
     //car_sensor_holder();
 }
 
-full_assemled_carriage();
+//full_assemled_carriage();
+//car_n_top_middle();
+//x_carriage_e3d_v5_liftdown_adapter();
+//x_carriage_top_w2_endstops();
+//translate([0, 0, 24.9-CARTopBaseCZ/2]) rotate([0, 180]) e3d_v5_clamp();   
+rotate([180]) carriage_v12(true, "MediumSeaGreen", drawE3D=false);

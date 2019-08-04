@@ -498,7 +498,7 @@ module x_end_rods_check() {
     translate([-90, -XRODSDiff/2, XENDFullCZ/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam, h=RODXLen);
 }
 
-CARCentralHoleDiam=E3Dv6RadDiam+3;
+CARCentralHoleDiam=E3Dv5RadDiam+1;
 
 module car_base_holes() {
     color("Red") {
