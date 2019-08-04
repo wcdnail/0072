@@ -1,4 +1,4 @@
-# Проекты ЧПУ
+﻿# Проекты ЧПУ
 
 # 1. Советский CoreXY  в. 1.3 с доработками (Vulcanus v1)
 Оригинальный проект: http://www.instructables.com/id/Vulcanus-V1-3D-Printer/
@@ -18,7 +18,7 @@
 ![vulcanus-v1-2018-1](v/vulcanus-v1-2018/IMG_20180916_111408.jpg?raw=true "Вулканус в. 1")
 ![vulcanus-v1-2018-1](v/vulcanus-v1-2018/IMG_20180825_224153.jpg?raw=true "Вулканус в. 1")
 
-# 2. MC3 СТАЛИН (MC3 Stealth)
+# 2. MC3 Stealth
 Оригинальный проект: https://www.thingiverse.com/thing:1017777<br/>
 Доработки: https://www.thingiverse.com/thing:1118690<br/>
 Магазин: http://3d.masterkit.ru/shop/3d-printers/1916117<br/>
