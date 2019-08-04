@@ -70,6 +70,7 @@ CARXE=2.5;                      // Длина передней стенки
 CAR2CX=CARCX+CARXE*2;           // Новая длина каретки
 
 // Параметры X терминала
+XENDCX=50;
 XENDCY=70;
 XENDFullCZ=21.5;
 
@@ -207,6 +208,10 @@ module z_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_
 
 // ---------------------------------------------------------------------------------------------------------------------
 
+module opt_endstop() {
+    translate([-10, -4.2, 0]) rotate([0, 0, 90]) rotate([90]) import("../parts/optical_endstop_1.STL");
+}
+
 module x_rods(rod_d, bx, cx, by, cy, px = 0, py = 0) {
     xe_px=bx/2 + px;
     xe_py=by/2 + py;
@@ -223,7 +228,7 @@ module x_carriage_v5() {
 }
 
 module x_belt_clamp() {
-    translate([0, 0, 0]) rotate([0, 0, 0]) import("belt_tensioner.stl");
+    translate([-2.5, -19, 0]) rotate([0, 0, 90]) rotate([90]) import("printedparts/1xCoreXY_Belt_tensioner.stl");
 }
 
 module x_carriage_direct_drive() {
@@ -554,10 +559,10 @@ module car_lmu88_holders_all(clr="Yellow") {
 }
 
 module carriage_v12(skipDims=false, carClr="Yellow", drawE3D=true) {
-    render() difference() {
+    color(carClr) render() difference() {
         union() {
-            car_base(drawE3D, carClr);
-            car_lmu88_holders_all(carClr);
+            car_base(drawE3D);
+            car_lmu88_holders_all();
         }
         color("Magenta") car_base_holes();
     }
@@ -591,7 +596,7 @@ module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0,
         translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
     }
     else {
-        translate([xe_px, xe_py, 0]) carriage_v12(carClr, true, false);
+        translate([xe_px, xe_py, 0]) carriage_v12(true, carClr, false);
     }
 }
 
