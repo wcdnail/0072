@@ -62,7 +62,7 @@ CARTopZBeg=21.5;
 CARTopBaseCZ=6.7;
 CARTopE3DHoleDia=16;
 
-module car_top_middle() {
+module car_top_middle(noSensor=true) {
     render() 
     difference() {
         union() {
@@ -79,6 +79,21 @@ module car_top_middle() {
                     ,[-38, 15]
                     ,[-16, 15]
                     ]);
+            if (noSensor) {
+                translate([0, 0, CARTopZBeg]) linear_extrude(height=CARTopBaseCZ/2)
+                    polygon(points=[
+                         [ 16, 20]
+                        ,[ 16, 18.5]
+                        ,[-13, 18.5]
+                        ,[-16, 15]
+                        ,[-38, 15]
+                        ,[-38, 32]
+                        ,[-16, 32]
+                        ,[16, 32]
+                        ,[30, 32]
+                        ,[30, 20]
+                        ]);
+            }
             car_e3d_v5_holder(true, 18);
         }
         // E3D hole
@@ -89,28 +104,75 @@ module car_top_middle() {
         // M3 vert holes
         translate([-8, -25, -75]) cylinder(h=200, d=3.2);
         translate([ 8, -25, -75]) cylinder(h=200, d=3.2);
+        if (noSensor) {
+            translate([-8, 25, -75]) cylinder(h=200, d=3.2);
+            translate([ 8, 25, -75]) cylinder(h=200, d=3.2);
+        }
     }
 }
 
+module car_sensor_holder() {
+    sby=58;
+    sbz=30;
+    //render()
+    difference() {
+        union() {
+            translate([0, 0, CARTopZBeg]) linear_extrude(height=CARTopBaseCZ/2)
+                polygon(points=[
+                     [ 16, 20]
+                    ,[ 16, 18.5]
+                    ,[-13, 18.5]
+                    ,[-16, 15]
+                    ,[-38, 15]
+                    ,[-38, 32]
+                    ,[-16, 32]
+                    ,[-16, sby]
+                    ,[16, sby]
+                    ,[16, 32]
+                    ,[30, 32]
+                    ,[30, 20]
+                    ]);
+            translate([0, sby, CARTopZBeg-sbz]) cylinder(h=CARTopBaseCZ/2, d=32);
+        }
+        color("Red"){
+            // M3 vert holes
+            translate([-8, 25, -75]) cylinder(h=200, d=3.2);
+            translate([ 8, 25, -75]) cylinder(h=200, d=3.2);
+            // Z sensor
+            translate([0, sby, CARTopZBeg-5-sbz]) cylinder(h=200, d=18.4);
+        }
+    }
+    %translate([0, sby, CARTopZBeg-sbz-45]) cylinder(h=70, d=18);
+}
+
 module car_top_enhanced_1() {
-    render() difference() {
+    //render() 
+    difference() {
         union() {
             difference() {
                 union() {
                     carriage_v12_direct();
                     translate([-16, -32, CARTopZBeg+CARTopBaseCZ/2]) cube([32, 32, CARTopBaseCZ/2]);
+                    // Chain mount
+                    translate([24, -22, CARTopZBeg+CARTopBaseCZ/2]) cube([6, 18, 13.35+16]);
                 }
-                // Bottom slice
-                translate([-150, -150, CARTopZBeg-2]) cube([300, 300, CARTopBaseCZ/2+2]);
-                // E3D hole
-                translate([0, 0, E3Dv5ZOffset+64]) cylinder(h=200, d=CARTopE3DHoleDia);
-                // M3 vert bolt holes
-                translate([-8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
-                translate([ 8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
-                // Side slice
-                translate([-24, -35, CARTopZBeg+CARTopBaseCZ]) cube([32, 60, 20]);
-                // Back slice 
-                translate([-36, -39, CARTopZBeg+CARTopBaseCZ]) cube([100, 15, 10]);
+                color("Red") {
+                    // Bottom slice
+                    translate([-150, -150, CARTopZBeg-2]) cube([300, 300, CARTopBaseCZ/2+2]);
+                    // E3D hole
+                    translate([0, 0, E3Dv5ZOffset+64]) cylinder(h=200, d=CARTopE3DHoleDia);
+                    // M3 vert bolt holes
+                    translate([-8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
+                    translate([ 8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
+                    // Side slice
+                    translate([-24, -35, CARTopZBeg+CARTopBaseCZ]) cube([32, 60, 20]);
+                    // Back slice 
+                    translate([-36, -39, CARTopZBeg+CARTopBaseCZ]) cube([100, 15, 10]);
+                    // Chain mount
+                    translate([8, -11.9, CARTopZBeg+CARTopBaseCZ+3.15]) rotate([0, 90]) cylinder(h=30, d=3.3);
+                    translate([8, -18.1, CARTopZBeg+CARTopBaseCZ+21]) rotate([0, 90]) cylinder(h=30, d=4);
+                    translate([8, -8.1, CARTopZBeg+CARTopBaseCZ+21]) rotate([0, 90]) cylinder(h=30, d=4);
+                }    
             }
             translate([16, 0, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) linear_extrude(height=14)
                 polygon(points=[
@@ -142,16 +204,17 @@ module car_top_enhanced_1() {
     }
 }
 
-module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true) {
+module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true, noMotorMount=false) {
     esbx=CARCX/2-4;
     eslbx=-CARCX/2;
     esby=27;
     esbz=CARTopZBeg+CARTopBaseCZ+11;
     color(clr) {
-        car_top_enhanced_1();
         render() difference() {
             union() {
-                translate([-36, -10, CARTopZBeg+CARTopBaseCZ]) cube([56, 6.5, 10]);
+                if(!noMotorMount) {
+                    translate([-36, -10, CARTopZBeg+CARTopBaseCZ]) cube([56, 6.5, 10]);
+                }
                 if(rendStop) {
                     translate([esbx-9, esby-0.9, CARTopZBeg+CARTopBaseCZ/2+23]) rotate([0, 90, 0]) cylinder(d=11.8, h=5);
                     translate([esbx-9, esby-9, CARTopZBeg+CARTopBaseCZ/2]) cube([5, 14, 23]);
@@ -160,6 +223,7 @@ module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true) {
                     translate([eslbx, esby-0.9, CARTopZBeg+CARTopBaseCZ/2+23]) rotate([0, 90, 0]) cylinder(d=11.8, h=5);
                     translate([eslbx, esby-16, CARTopZBeg+CARTopBaseCZ/2]) cube([5, 21, 23]);
                 }
+                car_top_enhanced_1();
             }
             // E3D hole
             translate([0, 0, E3Dv5ZOffset+64]) cylinder(h=200, d=CARTopE3DHoleDia);
@@ -188,12 +252,12 @@ module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true) {
 
 module x_endstop_term() {
     sbz=17.7;
-    //render() 
-    difference() {
+    bdia=10;
+    render() difference() {
         union() {
             hull() {
-                translate([-XENDCX/2+5, XENDCY/2-25+5, XENDFullCZ]) cylinder(d=9, h=3);
-                translate([-XENDCX/2+5, XENDCY/2-3, XENDFullCZ]) cylinder(d=9, h=3);
+                translate([-XENDCX/2+5, XENDCY/2-25+5, XENDFullCZ]) cylinder(d=bdia, h=3);
+                translate([-XENDCX/2+5, XENDCY/2-3, XENDFullCZ]) cylinder(d=bdia, h=3);
             }
             translate([-XENDCX/2+2.5, XENDCY/2-14.37, XENDFullCZ+2]) rotate([-7]) cube([5, 7, sbz-1]);
             translate([-XENDCX/2+2.5, XENDCY/2-8.9, XENDFullCZ+sbz]) rotate([0, 90, 0]) cylinder(d=7, h=5);
@@ -216,12 +280,30 @@ module full_assemled_carriage() {
     e3d_v5_temp();
     color("Yellow") e3d_v5_clamp();
     color("Yellow") car_top_middle();
-    car_top_enhanced("MediumSeaGreen", rendStop=true, lendStop=true);
+    //car_sensor_holder();
+    x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true);
     color("Yellow") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
     // Motor
     //translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+1.3]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
     // Fan ducts
     //fan_duct_30_1("Blue");
+}
+
+module x_carriage_e3d_v5_liftdown_adapter() {
+    translate([0, 0, 24.9]) rotate([0, 180]) {
+        car_top_middle();
+        translate([0, 4, 0]) e3d_v5_clamp();   
+    }
+}
+
+module x_carriage_top_w2_endstops(clr="MediumSeaGreen", rendStop=true, lendStop=true) {
+    car_top_enhanced(clr, rendStop, lendStop, noMotorMount=false);
+}
+
+module car_n_top_middle() {
+    carriage_v12(true, "MediumSeaGreen", drawE3D=false);
+    color("Yellow") car_top_middle();
+    //car_sensor_holder();
 }
 
 full_assemled_carriage();
