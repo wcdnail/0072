@@ -127,7 +127,7 @@ module car_sensor_holder() {
 }
 */
 
-module car_top_enhanced_1() {
+module car_top_enhanced_1(noChainMount=false) {
     //render() 
     difference() {
         union() {
@@ -135,7 +135,9 @@ module car_top_enhanced_1() {
                 union() {
                     carriage_v12_direct();
                     // Chain mount
-                    translate([16, -22, CARTopZBeg+CARTopBaseCZ/2+13]) cube([14, 18, 16]);
+                    if(!noChainMount) {
+                        translate([16, -22, CARTopZBeg+CARTopBaseCZ/2+13]) cube([14, 18, 16]);
+                    }
                 }
                 color("Red") {
                     // E3D v5 enlarger
@@ -145,9 +147,11 @@ module car_top_enhanced_1() {
                     //translate([-8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
                     //translate([ 8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
                     // Chain mount
-                    translate([8, -15.7, CARTopZBeg+CARTopBaseCZ+21]) rotate([0, 90]) cylinder(h=30, d=4.4);
-                    translate([8, -8.1, CARTopZBeg+CARTopBaseCZ+21]) rotate([0, 90]) cylinder(h=30, d=4);
-                    translate([20, -15, CARTopZBeg+CARTopBaseCZ/2+12]) cube([4, 6, 50]);
+                    if(!noChainMount) {
+                        translate([8, -15.7, CARTopZBeg+CARTopBaseCZ+21]) rotate([0, 90]) cylinder(h=30, d=4.4);
+                        translate([8, -8.1, CARTopZBeg+CARTopBaseCZ+21]) rotate([0, 90]) cylinder(h=30, d=4);
+                        translate([20, -15, CARTopZBeg+CARTopBaseCZ/2+12]) cube([4, 6, 50]);
+                    }
                 }    
             }
             translate([16, 0, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) linear_extrude(height=14)
@@ -172,14 +176,13 @@ module car_top_enhanced_1() {
     }
 }
 
-module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true, noMotorMount=false) {
+module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true, noMotorMount=false, noChainMount=false) {
     esbx=CARCX/2-4;
     eslbx=-CARCX/2;
     esby=27;
     esbz=CARTopZBeg+14.3;
     color(clr) {
-        render()
-        difference() {
+        render() difference() {
             union() {
                 //if(!noMotorMount) {
                 //    translate([-36, -10, CARTopZBeg+CARTopBaseCZ]) cube([56, 6.5, 10]);
@@ -192,7 +195,7 @@ module car_top_enhanced(clr="MediumSeaGreen", rendStop=false, lendStop=true, noM
                     translate([eslbx, esby-0.9, CARTopZBeg+23]) rotate([0, 90, 0]) cylinder(d=11.8, h=5);
                     translate([eslbx, esby-16, CARTopZBeg]) cube([5, 21, 23]);
                 }
-                car_top_enhanced_1();
+                car_top_enhanced_1(noChainMount);
             }
             // E3D hole
             //translate([0, 0, E3Dv5ZOffset+64]) cylinder(h=200, d=CARTopE3DHoleDia);
@@ -242,9 +245,9 @@ module x_endstop_term() {
     }
 }
 
-module x_carriage_top_w2_endstops(clr="MediumSeaGreen", rendStop=true, lendStop=true) {
+module x_carriage_top_w2_endstops(clr="MediumSeaGreen", rendStop=true, lendStop=true, noChainMount=false) {
     translate([0, 0, CARTopBaseCZ/2]) 
-        car_top_enhanced(clr, rendStop, lendStop, noMotorMount=false);
+        car_top_enhanced(clr, rendStop, lendStop, noMotorMount=false, noChainMount=noChainMount);
 }
 
 module x_carriage_e3d_v5_liftdown_adapter() {
@@ -359,7 +362,8 @@ module fan_duct_3() {
 //x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true);
 
 //carriage_v12(true, "MediumSeaGreen", true);
-%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
-car_e3d_v5_clamp("Yellow");
+//%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
+//car_e3d_v5_clamp("Yellow");
 //fan_duct_3();
 //import("../parts/Fan_Duct_3_tiny_v3_fixed.stl");
+x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true, noChainMount=true);
