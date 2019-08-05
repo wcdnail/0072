@@ -247,27 +247,6 @@ module x_carriage_top_w2_endstops(clr="MediumSeaGreen", rendStop=true, lendStop=
         car_top_enhanced(clr, rendStop, lendStop, noMotorMount=false);
 }
 
-module full_assemled_carriage() {
-    %x_end_rods_check();
-    color("Red") mirror([1, 0, 0]) translate([95, 0, 0]) x_endstop_term();
-    %translate([115, -XENDCY/2, 10]) r_x_end();
-    color("Red") translate([90, 0, 0]) x_endstop_term();
-    // Каретка с хот-ендом
-    carriage_v12(true, "MediumSeaGreen", drawE3D=false);
-    e3d_v5_temp();
-    color("Yellow") e3d_v5_clamp();
-    color("Yellow") car_top_middle();
-    //car_sensor_holder();
-    x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true);
-    color("Yellow") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
-    // Fan ducts
-    //fan_duct_30_1("Blue");
-    // Motor
-    translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
-    // Feeder
-    //translate([-26.6, 11.8, CARTopZBeg+20]) rotate([0, 0, 0]) rotate([90]) import("experimental/Replicator_2X_Extruder_Drive_Block_Upgrade_New/2X_Extruder_Base_R_V2.STL");
-}
-
 module x_carriage_e3d_v5_liftdown_adapter() {
     translate([0, 0, 24.9]) rotate([0, 180]) {
         car_top_middle();
@@ -276,10 +255,10 @@ module x_carriage_e3d_v5_liftdown_adapter() {
 }
 
 module x_carriage_base() {
-    rotate([180]) carriage_v12(true, "MediumSeaGreen", drawE3D=false);
+    rotate([180]) carriage_v12(true, "MediumSeaGreen", false);
 }
 
-module car_e3d_v5_liftdown_adapter(withNut) {
+module car_e3d_v5_liftdown_adapter(withNut=false, clr="MediumSeaGreen") {
     mdia=CARCentralHoleDiam-0.8;
     vzo=53;
     vbx=CARCentralHoleDiam+6;
@@ -291,7 +270,7 @@ module car_e3d_v5_liftdown_adapter(withNut) {
     zbd=57.5;
     //render()
     difference() {
-        union() {
+        color(clr) union() {
             translate([0, 0, E3Dv5ZOffset+56.7]) cylinder(h=zE3Dv5HolderOffset, d=mdia);
             translate([0, 0, E3Dv5ZOffset+vzo]) cylinder(h=vbz, d=vbx);
             // v5 holder
@@ -320,20 +299,52 @@ module car_e3d_v5_liftdown_adapter(withNut) {
     }
 }
 
-module car_e3d_v5_clamp() {
+module car_e3d_v5_clamp(clr="MediumSeaGreen") {
     difference() {
-        rotate([0, 0, 180]) car_e3d_v5_liftdown_adapter(false);
+        rotate([0, 0, 180]) car_e3d_v5_liftdown_adapter(false, clr);
         translate([-CARCentralHoleDiam, -CARCentralHoleDiam, E3Dv5ZOffset+66.3]) cube([CARCentralHoleDiam*2, CARCentralHoleDiam*2, zE3Dv5HolderOffset+6]);
     }
 }
 
 module car_n_top_middle() {
-    translate([0, 0, 2.5]) carriage_v12(true, "MediumSeaGreen", drawE3D=false);
+    translate([0, 0, 2.5]) carriage_v12(true, "MediumSeaGreen", false);
     //color("Yellow") car_top_middle();
     x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true);
     car_e3d_v5_liftdown_adapter(true);
     translate([0, 1, 0]) car_e3d_v5_clamp();
     //car_sensor_holder();
+}
+
+module full_assemled_carriage() {
+    %x_end_rods_check();
+    color("Red") mirror([1, 0, 0]) translate([95, 0, 0]) x_endstop_term();
+    %translate([115, -XENDCY/2, 10]) r_x_end();
+    color("Red") translate([90, 0, 0]) x_endstop_term();
+    // Каретка с хот-ендом
+    carriage_v12(true, "MediumSeaGreen", false);
+    e3d_v5_temp();
+    color("Yellow") e3d_v5_clamp();
+    color("Yellow") car_top_middle();
+    //car_sensor_holder();
+    x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true);
+    color("Yellow") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
+    // Fan ducts
+    //fan_duct_30_1("Blue");
+    // Motor
+    translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
+    // Feeder
+    //translate([-26.6, 11.8, CARTopZBeg+20]) rotate([0, 0, 0]) rotate([90]) import("experimental/Replicator_2X_Extruder_Drive_Block_Upgrade_New/2X_Extruder_Base_R_V2.STL");
+}
+
+//translate([0, 0, -11]) rotate([0, 0, -90]) import("../parts/Fan_Duct_2_E3D_V6_fixed.stl");
+
+module fan_duct_3() {
+    color("White") //render() 
+    union() {
+        translate([20, -18.49, -46]) cube([6.5, 2, 15]);
+        translate([0, -5, -7]) rotate([0, 0, 180]) rotate([180, 0, 0]) import("../parts/Fan_Duct_3_tiny_v3_fixed.stl");
+        
+    }
 }
 
 //full_assemled_carriage();
@@ -342,9 +353,13 @@ module car_n_top_middle() {
 //x_carriage_top_w2_endstops();
 //translate([0, 0, 24.9-CARTopBaseCZ/2]) rotate([0, 180]) e3d_v5_clamp();   
 //x_carriage_base();
-
-car_e3d_v5_liftdown_adapter(true);
-
+//car_e3d_v5_liftdown_adapter(true);
 //car_e3d_v5_clamp();
 //car_n_top_middle();
 //x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true);
+
+//carriage_v12(true, "MediumSeaGreen", true);
+%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
+car_e3d_v5_clamp("Yellow");
+//fan_duct_3();
+//import("../parts/Fan_Duct_3_tiny_v3_fixed.stl");

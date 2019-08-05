@@ -518,7 +518,7 @@ module car_base_holes() {
     }
 }
 
-module car_base(drawE3D=true, clr="Yellow") {
+module car_base(clr="Yellow", drawE3D=true) {
 	if (drawE3D) {
 		%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
 	}
@@ -560,11 +560,12 @@ module car_lmu88_holders_all(clr="Yellow") {
     mirror([1, 0, 0]) car_lmu88_holder2(clr);
 }
 
-module carriage_v12(skipDims=false, carClr="Yellow", drawE3D=true) {
-    color(carClr) render() difference() {
+module carriage_v12(skipDims=false, carClr="Yellow", e3d=true) {
+    //render()
+    difference() {
         union() {
-            car_base(drawE3D);
-            car_lmu88_holders_all();
+            car_base(carClr, e3d);
+            car_lmu88_holders_all(carClr);
         }
         color("Magenta") car_base_holes();
     }
