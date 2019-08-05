@@ -518,7 +518,7 @@ module car_base_holes() {
 
 module car_base(drawE3D=true, clr="Yellow") {
 	if (drawE3D) {
-		%translate([0, 0, -34.7-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
+		%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
 	}
     color(clr) translate([-CAR2CX/2, -CARCY/2, XENDFullCZ-CARBaseCZ]) cube([CAR2CX, CARCY, CARBaseCZ]);
 }
