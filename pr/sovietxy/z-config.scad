@@ -134,7 +134,7 @@ ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
 
 E3Dv5RadDiam=25;
 
-module e3d_v5_rad(enlarger=0, innerEnlarger=0.2) {
+module e3d_v5_rad(enlarger=0, innerEnlarger=0.2, drawOnlyHolder=false, lchDia=0) {
     bz=19.3+enlarger;
     largeDia=E3Dv5RadDiam+enlarger;
     largeH=31.8;
@@ -147,9 +147,11 @@ module e3d_v5_rad(enlarger=0, innerEnlarger=0.2) {
     hldrInnerDia=12+enlarger+innerEnlarger;
     hldrTopH=3.7;
 	translate([0, 0, 0]) union() {
-        translate([0, 0, bz]) cylinder(h=largeH, d=largeDia);
-        translate([0, 0, bz+largeH-1]) cylinder(h=thrH, d=thrDia);
-        translate([0, 0, bz+largeH+2.2-enlarger*2]) cylinder(h=hldrBottomH+enlarger*2, d=hldrOutterDia);
+        if(!drawOnlyHolder) {
+            translate([0, 0, bz]) cylinder(h=largeH, d=largeDia);
+            translate([0, 0, bz+largeH-1]) cylinder(h=thrH, d=thrDia);
+        }
+        translate([0, 0, bz+largeH+2.2-enlarger*2]) cylinder(h=hldrBottomH+enlarger*2, d=lchDia == 0 ? hldrOutterDia : lchDia);
         translate([0, 0, bz+largeH-1+hldrBottomH]) cylinder(h=hldrInnerH, d=hldrInnerDia);
         translate([0, 0, bz+largeH-1+hldrBottomH+hldrInnerH-0.2-enlarger*2]) cylinder(h=hldrTopH+enlarger*2, d=hldrOutterDia);
     }

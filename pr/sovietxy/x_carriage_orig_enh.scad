@@ -2,6 +2,7 @@ include <z-config.scad>
 use <z.scad>
 use <../../openscad/nema17.scad>
 
+zE3Dv5HolderOffset=16.6;
 E3Dv5STDZOffset=-34.8;
 E3Dv5ZOffset=E3Dv5STDZOffset-17;
 
@@ -15,7 +16,8 @@ module e3d_v5_temp(skipDims=true) {
     }
 }
 
-module car_e3d_v5_holder(withNut, vtH=16.6) {
+/*
+module car_e3d_v5_clamp_temp(withNut, vtH=15) {
     mdia=CARCentralHoleDiam-0.9;
     vzo=53;
     vbx=CARCentralHoleDiam+6;
@@ -27,8 +29,7 @@ module car_e3d_v5_holder(withNut, vtH=16.6) {
     difference() {
         union() {
             translate([0, 0, E3Dv5ZOffset+56.7]) cylinder(h=vtH, d=mdia);
-          //translate([-vbx/2, -vby, E3Dv5ZOffset+vzo]) cube([vbx, vby, vbz]);
-          //translate([0, 0, E3Dv5ZOffset+vzo]) cylinder(h=vbz, d=vbx);
+            translate([0, 0, E3Dv5ZOffset+vzo]) cylinder(h=vbz, d=vbx);
         }
         color("Red") {
             translate([0, 0, E3Dv5ZOffset+64]) cylinder(h=vtH, d=16);
@@ -48,9 +49,10 @@ module car_e3d_v5_holder(withNut, vtH=16.6) {
     }
 }
 
-module e3d_v5_clamp() {
-    rotate([0, 0, 180]) car_e3d_v5_holder(false);
+module car_e3d_v5_clamp() {
+    translate([0, 0, -2]) rotate([0, 0, 180]) car_e3d_v5_clamp_temp(false);
 }
+*/
 
 module fan_duct_30_1(clr="Green") {
     color(clr) rotate([0, 0, 90]) 
@@ -67,32 +69,10 @@ module car_top_middle(noSensor=true) {
     difference() {
         union() {
             translate([0, 0, CARTopZBeg]) linear_extrude(height=CARTopBaseCZ/2)
-                polygon(points=[
-                     [-16, 0]
-                    ,[ 16, 0]
-                    ,[ 16, 20]
-                    ,[ 30, 20]
-                    ,[ 30, -23.355]
-                    ,[ 16, -38]
-                    ,[-26.4, -38]
-                    ,[-38, -15]
-                    ,[-38, 15]
-                    ,[-16, 15]
-                    ]);
+                polygon(points=[[-16, 0],[ 16, 0],[ 16, 20],[ 30, 20],[ 30, -23.355],[ 16, -38],[-26.4, -38],[-38, -15],[-38, 15],[-16, 15]]);
             if (noSensor) {
                 translate([0, 0, CARTopZBeg]) linear_extrude(height=CARTopBaseCZ/2)
-                    polygon(points=[
-                         [ 16, 20]
-                        ,[ 16, 18.5]
-                        ,[-13, 18.5]
-                        ,[-16, 15]
-                        ,[-38, 15]
-                        ,[-38, 32]
-                        ,[-16, 32]
-                        ,[16, 32]
-                        ,[30, 32]
-                        ,[30, 20]
-                        ]);
+                    polygon(points=[[ 16, 20],[ 16, 18.5],[-13, 18.5],[-16, 15],[-38, 15],[-38, 32],[-16, 32],[16, 32],[30, 32],[30, 20]]);
             }
             car_e3d_v5_holder(true, 18);
         }
@@ -147,7 +127,6 @@ module car_sensor_holder() {
 }
 */
 
-
 module car_top_enhanced_1() {
     //render() 
     difference() {
@@ -159,6 +138,9 @@ module car_top_enhanced_1() {
                     translate([16, -22, CARTopZBeg+CARTopBaseCZ/2+13]) cube([14, 18, 16]);
                 }
                 color("Red") {
+                    // E3D v5 enlarger
+                    translate([0, 0, E3Dv5ZOffset-CARTopZOffs+zE3Dv5HolderOffset]) e3d_v5_rad(0.09, 0.4);
+                    translate([0, 0, CARTopZOffs+26]) cylinder(d=16.1, h=50);
                     // M3 vert bolt holes
                     //translate([-8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
                     //translate([ 8, -25, CARTopZBeg+CARTopBaseCZ-5]) cylinder(h=30, d=6.5);
@@ -297,11 +279,60 @@ module x_carriage_base() {
     rotate([180]) carriage_v12(true, "MediumSeaGreen", drawE3D=false);
 }
 
+module car_e3d_v5_liftdown_adapter(withNut) {
+    mdia=CARCentralHoleDiam-0.8;
+    vzo=53;
+    vbx=CARCentralHoleDiam+6;
+    vby=CARCentralHoleDiam/3;
+    vbz=8.9;
+    xfd=2.4;
+    ybd=-CARCentralHoleDiam/3.7;
+    ynd=8;
+    zbd=57.5;
+    //render()
+    difference() {
+        union() {
+            translate([0, 0, E3Dv5ZOffset+56.7]) cylinder(h=zE3Dv5HolderOffset, d=mdia);
+            translate([0, 0, E3Dv5ZOffset+vzo]) cylinder(h=vbz, d=vbx);
+            // v5 holder
+            translate([0, 0, E3Dv5ZOffset-CARTopZOffs+zE3Dv5HolderOffset+3.4]) e3d_v5_rad(drawOnlyHolder=true, lchDia=mdia);
+        }
+        color("Red") {
+            // Central inner hole
+            translate([0, 0, E3Dv5ZOffset+64]) cylinder(h=zE3Dv5HolderOffset-7.5, d=16);
+            // Central hole
+            translate([0, 0, E3Dv5ZOffset+64]) cylinder(h=zE3Dv5HolderOffset+100, d=4.2);
+            // Side slice
+            translate([-CARCentralHoleDiam, 0, E3Dv5ZOffset+43.9]) cube([CARCentralHoleDiam*2, CARCentralHoleDiam, zE3Dv5HolderOffset+6]);
+            // Bolt holes
+            translate([ CARCentralHoleDiam/xfd, CARCentralHoleDiam, E3Dv5ZOffset+zbd]) rotate([90]) cylinder(d=3.05, h=CARCentralHoleDiam*2);
+            translate([-CARCentralHoleDiam/xfd, CARCentralHoleDiam, E3Dv5ZOffset+zbd]) rotate([90]) cylinder(d=3.05, h=CARCentralHoleDiam*2);
+            if (withNut) {
+                translate([ CARCentralHoleDiam/xfd, ybd-ynd, E3Dv5ZOffset+zbd]) rotate([90]) scale([1, 1, 2]) nut("M3");
+                translate([-CARCentralHoleDiam/xfd, ybd-ynd, E3Dv5ZOffset+zbd]) rotate([90]) scale([1, 1, 2]) nut("M3");
+            }
+            else {
+                translate([ CARCentralHoleDiam/xfd, ybd-1, E3Dv5ZOffset+zbd]) rotate([90]) cylinder(d=6.1, h=7);
+                translate([-CARCentralHoleDiam/xfd, ybd-1, E3Dv5ZOffset+zbd]) rotate([90]) cylinder(d=6.1, h=7);
+            }
+        }
+        color("Blue") translate([0, 0, E3Dv5ZOffset-CARTopZOffs]) e3d_v5_rad(0.1, 0.4);
+    }
+}
+
+module car_e3d_v5_clamp() {
+    difference() {
+        rotate([0, 0, 180]) car_e3d_v5_liftdown_adapter(false);
+        translate([-CARCentralHoleDiam, -CARCentralHoleDiam, E3Dv5ZOffset+66.3]) cube([CARCentralHoleDiam*2, CARCentralHoleDiam*2, zE3Dv5HolderOffset+6]);
+    }
+}
+
 module car_n_top_middle() {
-    carriage_v12(true, "MediumSeaGreen", drawE3D=false);
-    color("Yellow") car_top_middle();
+    translate([0, 0, 2.5]) carriage_v12(true, "MediumSeaGreen", drawE3D=false);
+    //color("Yellow") car_top_middle();
     x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true);
-    %translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
+    car_e3d_v5_liftdown_adapter(true);
+    translate([0, 1, 0]) car_e3d_v5_clamp();
     //car_sensor_holder();
 }
 
@@ -312,4 +343,8 @@ module car_n_top_middle() {
 //translate([0, 0, 24.9-CARTopBaseCZ/2]) rotate([0, 180]) e3d_v5_clamp();   
 //x_carriage_base();
 
-car_n_top_middle();
+car_e3d_v5_liftdown_adapter(true);
+
+//car_e3d_v5_clamp();
+//car_n_top_middle();
+//x_carriage_top_w2_endstops("MediumSeaGreen", rendStop=true, lendStop=true);
