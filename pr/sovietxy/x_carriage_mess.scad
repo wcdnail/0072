@@ -4,6 +4,7 @@ use <z.scad>
 use <x_carriage_directdrive_enhanced.scad>
 use <e3d_v5_liftdown_adapter.scad>
 use <x_endstop_term.scad>
+use <x_fan_duct.scad>
 
 E3DnoLiftDown=true;
 
@@ -44,6 +45,7 @@ module CoreXY_Assemled_Carriage(noRordsCheck=false, withMotor=false) {
     else {
         translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp();
     }
+    CoreXY_FanDuct();
     // Направляющие
     if (!noRordsCheck) {
         %x_end_rods_check();

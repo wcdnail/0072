@@ -16,7 +16,7 @@ module FanPlane(thickness, fanDiam, hullDiam, xo=0, yo=0, sx=1, sy=1) {
     }
 }
 
-module FanInnerHull(dist, begThickness, begDiam, begHull, endThickness, endDiam, endHull, begX=0, begY=0, endX=0, endY=0, begSX=1, begSY=1, endSX=1, endSY=1, begHullHole=false) {
+module FanInnerHull(dist, begThickness, begDiam, begHull, endThickness, endDiam, endHull, begX=0, begY=0, endX=0, endY=0, begSX=1, begSY=1, endSX=1, endSY=1, begHullHole=false, useEndHoleCoef=true, EndHoleCoef=0.9) {
     begCoef=endDiam/begDiam+0.2;
     endCoef=endDiam/begDiam+0.35;
     hull() {
@@ -26,12 +26,17 @@ module FanInnerHull(dist, begThickness, begDiam, begHull, endThickness, endDiam,
         else {
             translate([0, 0,  dist/2+1*begCoef]) cylinder(d=begDiam*0.9, h=begThickness);
         }
-        translate([0, 0, -dist/2-1*endCoef]) FanPlane(endThickness, endDiam*endCoef, endHull, endX, endY, endSX, endSY);
+        if (useEndHoleCoef) {
+            translate([0, 0, -dist/2-1*endCoef]) FanPlane(endThickness, endDiam*endCoef, endHull, endX, endY, endSX, endSY);
+        }
+        else {
+            translate([0, 0, -dist/2-1]) FanPlane(endThickness, endDiam*EndHoleCoef, endHull, endX, endY, endSX, endSY);
+        }
     }
 }
 
-module FanHull(dist, begThickness, begDiam, begHull, endThickness, endDiam, endHull, begX=0, begY=0, endX=0, endY=0, begSX=1, begSY=1, endSX=1, endSY=1, begHullHole=false) {
-    bhd=2.8; // M3 bolt diameter
+module FanHull(dist, begThickness, begDiam, begHull, endThickness, endDiam, endHull, begX=0, begY=0, endX=0, endY=0, begSX=1, begSY=1, endSX=1, endSY=1, begHullHole=false, useEndHoleCoef=true, EndHoleCoef=0.9) {
+    bhd=2.5; // M3 bolt diameter
     difference() {
         hull() {
             translate([0, 0,  dist/2]) FanPlane(begThickness, begDiam, begHull, begX, begY, begSX, begSY);
@@ -39,17 +44,15 @@ module FanHull(dist, begThickness, begDiam, begHull, endThickness, endDiam, endH
         }
         color("Red") {
             // Fan hole
-            FanInnerHull(dist, begThickness, begDiam, begHull, endThickness, endDiam, endHull, begX, begY, endX, endY, begSX, begSY, endSX, endSY, begHullHole);
+            FanInnerHull(dist, begThickness, begDiam, begHull, endThickness, endDiam, endHull, begX, begY, endX, endY, begSX, begSY, endSX, endSY, begHullHole, useEndHoleCoef, EndHoleCoef);
             // Bolt holes
-            translate([-begDiam/2+3, -begDiam/2+3, dist/2]) cylinder(d=bhd, h=begThickness+2);
-            translate([ begDiam/2-3, -begDiam/2+3, dist/2]) cylinder(d=bhd, h=begThickness+2);
-            translate([ begDiam/2-3,  begDiam/2-3, dist/2]) cylinder(d=bhd, h=begThickness+2);
-            translate([-begDiam/2+3,  begDiam/2-3, dist/2]) cylinder(d=bhd, h=begThickness+2);
+            translate([-begDiam/2+3, -begDiam/2+3, dist/2-1]) cylinder(d=bhd, h=begThickness+4);
+            translate([ begDiam/2-3, -begDiam/2+3, dist/2-1]) cylinder(d=bhd, h=begThickness+4);
+            translate([ begDiam/2-3,  begDiam/2-3, dist/2-1]) cylinder(d=bhd, h=begThickness+4);
+            translate([-begDiam/2+3,  begDiam/2-3, dist/2-1]) cylinder(d=bhd, h=begThickness+4);
         }
     }
 }
-
-//FanHull(15, 4, 30, 4, 4, 15, 3, 0, 0, 0, 5);
 
 module Fan30(fh=4) {
     fd=30;      // fan diameter
@@ -101,9 +104,9 @@ module CoreXY_Assembled_Carriage_FanDuct() {
         E3D_v5_temp(notTransparent=true);
     }
     else {
-        translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp(notTransparent=true);
+        translate([0, 0, CARTopZOffs+16.6]) rotate([0, 0, 90]) E3D_v5_temp(notTransparent=true);
     }
-    CoreXY_FanDuct_1();
+    CoreXY_FanDuct();
 }
 
 module FanDuct_InnerTor(cz, rad, diam, wall, smooth) {
@@ -120,8 +123,10 @@ module FanDuct_Tor(cz, rad, diam, wall, smooth, slice=false) {
     }
 }
 
-module CoreXY_FanDuct_1() {
-    blowerZ=-30;
+E3DBlowerZ=-30;
+
+module CoreXY_FanDuct_Blower() {
+    blowerZ=E3DBlowerZ;
     blowerFanZOffs=5.1;
     blowerFanXOffs=25;
     blowerEndHullZCoef=-7;
@@ -129,9 +134,7 @@ module CoreXY_FanDuct_1() {
     blowerRad=25;
     torDiam=6;
     bpnt=-torDiam*3+2;
-    // E3D cooler
-    //translate([0, 31, blowerZ+20.8]) rotate([-90]) FanHull(22, 4, 30, 4, 1, 25, 4);
-    // Blower
+    //render() 
     difference() {
         union() {
             FanDuct_Tor(blowerZ, blowerRad, torDiam, 1, 10);
@@ -148,12 +151,24 @@ module CoreXY_FanDuct_1() {
     }
 }
 
-module CoreXY_FanDuct_2() {
-    blowerZ=-30;
-    translate([0, 31, blowerZ+20.8]) rotate([90]) Fan30(20);
+module CoreXY_FanDuct() {
+    blowerZ=E3DBlowerZ;
+    union() {
+        rotate([0, 0, 90]) CoreXY_FanDuct_Blower();
+        difference() {
+            union() {
+                translate([3, 0, blowerZ+20.9]) rotate([0, 0, 90]) rotate([90]) 
+                    FanHull(42, 4, 30, 4, 4, 20, 4, 0, 0, 0, 5, 1, 1, -6, 1, false, false, 0.7);
+                //color("Blue") translate([5, -20, blowerZ+4.75]) cube([17, 40, 3.4]);
+            }
+            color("Blue") translate([0, 0, blowerZ-30]) cylinder(d=E3Dv5RadDiam+0.3, h=100);
+            color("Magenta") {
+                translate([-7.4, -100, blowerZ+28.9]) cube([3, 200, 2.25]);
+                translate([ 4.5, -100, blowerZ+28.9]) cube([3, 200, 2.25]);
+            }
+        }
+    }
 }
 
-
-CoreXY_FanDuct_1();
 //CoreXY_Assembled_Carriage_FanDuct();
-//CoreXY_Carriage_Z_Sensor();
+CoreXY_FanDuct();
