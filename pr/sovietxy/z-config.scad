@@ -69,31 +69,17 @@ CARZE3DOffs=-19.5;
 CARXE=2.5;                      // Длина передней стенки 
 CAR2CX=CARCX+CARXE*2;           // Новая длина каретки
 
+CARTopZOffs=3.5;
+CARVBoltHoleCenterOffs=-6;
+
+CARTopZBeg=21.5;
+CARTopBaseCZ=6.7;
+CARTopE3DHoleDia=16;
+
 // Параметры X терминала
 XENDCX=50;
 XENDCY=70;
 XENDFullCZ=21.5;
-
-CARTopZOffs=3.5;
-CARVBoltHoleCenterOffs=-6;
-
-/*
-carBaseXOffset=-CARXE;          // Смещение каретки по X
-carYShrink=23;                  // Декремент ширины каретки
-carCY=origCARWidth-carYShrink;
-e3dBaseXOffset=12;              // Смещение E3D от центра по X
-e3dBaseYOffset=15;              // Смещение E3D от центра по Y
-e3dNutsYOffset=3;
-carHNutSizeName="M3";           // Размер горизонтальных гаек
-carHBoltHoleDiam=3.2;           // Диаметр горизонтальных отв.
-carHBoltHeadDiam=7;             // Диаметр шляпки горизонтальных винтов
-carHNutXScale=15;               // Масштаб горизонтальных гаек
-carHBoltHeight=8.2;             // Смещение по Z горизонтальных гаек
-carVNutSizeName="M4";           // Размер вертикальных гаек
-carVBoltHoleDiam=4.2;
-
-carBaseZOffset=0;               // Смещение базы каретки по Z 
-*/
 
 ZmotorCX=84.6;
 ZmotorCY=42.3;
@@ -134,7 +120,11 @@ ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
 
 E3Dv5RadDiam=25;
 
-module e3d_v5_rad(enlarger=0, innerEnlarger=0.2, drawOnlyHolder=false, lchDia=0) {
+zE3Dv5HolderOffset=16.6;
+E3Dv5STDZOffset=-34.8;
+E3Dv5ZOffset=E3Dv5STDZOffset-17;
+
+module E3D_v5_cylinders(enlarger=0, innerEnlarger=0.2, drawOnlyHolder=false, lchDia=0) {
     bz=19.3+enlarger;
     largeDia=E3Dv5RadDiam+enlarger;
     largeH=31.8;
@@ -154,6 +144,25 @@ module e3d_v5_rad(enlarger=0, innerEnlarger=0.2, drawOnlyHolder=false, lchDia=0)
         translate([0, 0, bz+largeH+2.2-enlarger*2]) cylinder(h=hldrBottomH+enlarger*2, d=lchDia == 0 ? hldrOutterDia : lchDia);
         translate([0, 0, bz+largeH-1+hldrBottomH]) cylinder(h=hldrInnerH, d=hldrInnerDia);
         translate([0, 0, bz+largeH-1+hldrBottomH+hldrInnerH-0.2-enlarger*2]) cylinder(h=hldrTopH+enlarger*2, d=hldrOutterDia);
+    }
+}
+
+module E3D_v5_stl() {
+    translate([-12.5, -12.5, 0]) import("../parts/E3D_v5_Hot_end.stl");
+}
+
+module E3D_v5_temp(skipDims=true, notTransparent=false, clr="SlateGray") {
+    if (notTransparent) {
+        color(clr) translate([0, 0, E3Dv5ZOffset-CARTopZOffs-CARTopBaseCZ/2]) rotate([0, 0, 90]) E3D_v5_stl();
+    }
+    else {
+        %translate([0, 0, E3Dv5ZOffset-CARTopZOffs-CARTopBaseCZ/2]) rotate([0, 0, 90]) E3D_v5_stl();
+    }
+    if (!skipDims) {
+        color("Black") {
+            z_dim_abs(0, 0, 69, 60, ox=38);
+            z_dim_abs(0, 0, 50, 40, ox=19);
+        }
     }
 }
 
@@ -490,10 +499,6 @@ module x_carriage_v5_std(carClr) {
     %translate([0, 0, 16.5]) rotate([0, 0, 90]) e3d_v6_175();
 }
 
-module e3d_v5_stl() {
-    translate([-12.5, -12.5, 0]) import("../parts/E3D_v5_Hot_end.stl");
-}
-
 module x_end_rods_check() {
     translate([-120, -XENDCY/2, 10]) l_x_end();
     translate([-90,  XRODSDiff/2, XENDFullCZ/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam, h=RODXLen);
@@ -560,7 +565,7 @@ module car_lmu88_holders_all(clr="Yellow") {
     mirror([1, 0, 0]) car_lmu88_holder2(clr);
 }
 
-module carriage_v12(skipDims=false, carClr="Yellow", e3d=true) {
+module CoreXY_X_Carriage_v2(skipDims=false, carClr="Yellow", e3d=true) {
     //render()
     difference() {
         union() {
@@ -578,7 +583,7 @@ module carriage_v12(skipDims=false, carClr="Yellow", e3d=true) {
     }
 }
 
-module carriage_v12_direct(modelClr="Crimson") {
+module CoreXY_Direct_Drive(modelClr="Crimson") {
     color(modelClr) translate([0, 0, -CARTopZOffs]) rotate([0, 0, 180]) translate([-CARCX/2, -CARCY/2, 25]) import("printedparts/1xCoreXY_Direct_Drive.stl");
 }
 
