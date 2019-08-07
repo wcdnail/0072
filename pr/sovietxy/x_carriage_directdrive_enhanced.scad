@@ -1,7 +1,7 @@
 include <z-config.scad>
 use <z.scad>
 
-module CoreXY_Direct_Drive_2(clr="MediumSeaGreen", rendStop=false, lendStop=true, noMotorMount=false, noChainMount=false) {
+module CoreXY_Direct_Drive_v2(clr="MediumSeaGreen", rendStop=false, lendStop=true, noMotorMount=false, noChainMount=false) {
     esbx=CARCX/2-4;
     eslbx=-CARCX/2;
     esby=27;
@@ -82,6 +82,6 @@ module CoreXY_Direct_Drive_2(clr="MediumSeaGreen", rendStop=false, lendStop=true
 
 
 // With chain mount
-//CoreXY_Direct_Drive_2("MediumSeaGreen", rendStop=true, lendStop=true);
+//CoreXY_Direct_Drive_v2("MediumSeaGreen", rendStop=true, lendStop=true);
 // No chain mount
-CoreXY_Direct_Drive_2("MediumSeaGreen", rendStop=true, lendStop=true, noChainMount=true);
+CoreXY_Direct_Drive_v2("MediumSeaGreen", rendStop=true, lendStop=true, noChainMount=true);
