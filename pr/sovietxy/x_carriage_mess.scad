@@ -51,7 +51,7 @@ module CoreXY_Assemled_Carriage(noRordsCheck=false, withMotor=false) {
         %translate([115, -XENDCY/2, 10]) r_x_end();
         translate([90, 0, 0]) X_EndStop_Stand();
     }
-    CoreXY_Direct_Drive_2("MediumSeaGreen", rendStop=true, lendStop=true);
+    CoreXY_Direct_Drive_v2("MediumSeaGreen", rendStop=true, lendStop=true);
     color("Yellow") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
     if (withMotor) {
         translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
