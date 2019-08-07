@@ -3,7 +3,7 @@ include <../../openscad/libs/nutsnbolts/materials.scad>
 include <../../openscad/libs/dim1/dimlines.scad>
 
 // OpenSCAD params...
-$fn=64;
+$fn=16;
 
 // Параметры отображения размеров
 DIM_LINE_WIDTH=1;
