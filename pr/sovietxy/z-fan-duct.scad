@@ -8,21 +8,6 @@ use <x_endstop_term.scad>
 E3DnoLiftDown=true;
 E3DBottomPoint=-38.55;
 
-module CoreXY_Assembled_Carriage_FanDuct() {
-    // Каретка с хот-ендом
-    CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
-    //CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true);
-    if (!E3DnoLiftDown) {
-        E3D_v5_liftdown_adapter(true, "Brown");
-        E3D_v5_liftdown_clamp("Brown");
-        rotate([0, 0, 90]) E3D_v5_temp(notTransparent=true);
-    }
-    else {
-        translate([0, 0, CARTopZOffs+16.6]) rotate([0, 0, 90]) E3D_v5_temp(notTransparent=true);
-    }
-    rotate([0, 0, -90]) Z_FanDuct();
-}
-
 module ChamferCyl(scx, scy, cz, diam=3, center=false) {
     r=diam/2;
     cx=scx-diam;
@@ -92,32 +77,51 @@ module Fan30(thickness=4, edgeHullDiam=4, centralHoleCoef=0.93, boltsDiam=2.8, c
 
 module Z_SinkFan() {
     // Sink fan config
-    sy=32;
+    sy=27.5;
     sz=-10;
     bsx=31;
-    bsy=31;
+    bsy=45;
     bz=20;
+    bzo=6;
     difference() {
         union() {
-            // E3D body
-            translate([0, 0, sz+6]) ChamferBox(bsx, bsy, bz, 4, true, $fn=16);
-            // Sink fan
-            translate([0, -sy, sz]) rotate([90]) {
-                Fan30($fn=64);
-                hull() {
-                    translate([0, 0, -0.9]) ChamferCyl(32, 32, 2, 4, true, $fn=16);
-                    translate([0, 6, -17]) ChamferCyl(bsx, bz, 4, 4, true, $fn=16);
+            difference() {
+                union() {
+                    // E3D body
+                    translate([0, 9, sz+bzo]) rotate([90]) ChamferCyl(bsx, bz, bsy, 4, true, $fn=16);
+                    // Sink fan
+                    translate([0, -sy, sz]) rotate([90]) {
+                        Fan30(drawFan=true, $fn=64);
+                        hull() {
+                            translate([0, 0, -0.9]) ChamferCyl(32, 32, 2, 4, true, $fn=16);
+                            translate([0, bzo, -17]) ChamferCyl(bsx, bz, 4, 4, true, $fn=16);
+                        }
+                    }
+                }
+                color("Red") translate([0, 0, -100]) cylinder(d=25.2, h=200, $fn=32);
+                color("DeepPink") {
+                    // E3D body
+                    translate([0, 9, sz+bzo]) rotate([90]) ChamferCyl(bsx*0.8, bz*0.8, bsy+5, 4, true, $fn=16);
+                    // Sink fan
+                    translate([0, -sy, sz]) rotate([90]) {
+                        hull() {
+                            translate([0, 0, -0.9]) cylinder(d=32*0.9, h=2, $fn=32);
+                            translate([0, bzo, -17]) ChamferCyl(bsx*0.8, bz*0.8, 6, 4, true, $fn=16);
+                        }
+                    }
                 }
             }
+            // Nuts
+            translate([0, -CARCY/2+13, sz+bz/2+1]) cylinder(d1=10, d2=13, h=4, $fn=32);
+            translate([0,  CARCY/2-13, sz+bz/2+1]) cylinder(d1=10, d2=13, h=4, $fn=32);
         }
-        color("DeepPink") translate([0, -sy, sz]) rotate([90]) {
-            hull() {
-                translate([0, 0, 0.3]) mirror([0, 0, 1]) cylinder(d=32*0.9, h=1.5, $fn=32);
-                translate([0, 6.65, -18]) ChamferCyl(bsx-5, bz-5, 4, 4, true);
-            }
-            translate([0, 6.65, -38]) ChamferCyl(bsx-5, bz-5, 40, 4, true);
+        color("Blue") {
+            translate([0, -CARCY/2+13, sz+bz/2+3.6]) scale([1, 1, 2]) nut("M4");
+            translate([0,  CARCY/2-13, sz+bz/2+3.6]) scale([1, 1, 2]) nut("M4");
         }
-        color("Red") translate([0, 0, -100]) cylinder(d=25.2, h=200, $fn=32);
+        // Bolts
+        translate([0, -CARCY/2+13, sz]) cylinder(d=4.2, h=30, $fn=32);
+        translate([0,  CARCY/2-13, sz]) cylinder(d=4.2, h=30, $fn=32);
     }
 }
 
@@ -134,34 +138,64 @@ module BlowerImpl(by, bz, bh, bod, bid, bdc, tdc) {
     }
 }
 
-module Z_FanDuct(blowerSlice=true) {
-    baseYOffset=45;
+module Z_FanDuct(blowerSlice=false) {
     // Blower config
-    bod=70;
-    bid=45;
-    by=baseYOffset/5;
+    bod=55;
+    bid=35;
+    by=0;
     bh=8;
     bz=E3DBottomPoint+BlowerBottomOffset;
     bdc=0.95;
     tdc=1.02;
     bic=2.2;
     // Blower fan config
-    fz=bz+bh+2;
-    fy=baseYOffset-11.5;
+    fz=bz+32/2-0.1;
+    fy=30;
     // Blower fan
-    translate([0, fy, fz]) Fan30($fn=32);
+    translate([0, fy, fz]) rotate([-90]) Fan30(5, drawFan=false, $fn=32);
+    mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) Fan30(5, drawFan=false, $fn=32);
     // Blower
     difference() {
-        BlowerImpl(by, bz, bh, bod, bid, bdc, tdc, $fn=64);
-        color("DeepPink") translate([0, 0, 1]) BlowerImpl(by, bz, bh-2, bod-bic, bid+bic, bdc, tdc, $fn=64);
+        union() {
+            BlowerImpl(by, bz, bh, bod, bid, bdc, tdc, $fn=64);
+            // Fan 1
+            translate([0, fy, fz]) rotate([-90]) hull() {
+                translate([0, 0, -0.9]) ChamferCyl(32, 32, 2, 4, true, $fn=16);
+                translate([0, 10.5, -11.5]) ChamferCyl(20, 11, 2, 4, true, $fn=16);
+            }
+            // Fan 2
+            mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) hull() {
+                translate([0, 0, -0.9]) ChamferCyl(32, 32, 2, 4, true, $fn=16);
+                translate([0, 10.5, -11.5]) ChamferCyl(20, 11, 2, 4, true, $fn=16);
+            }
+        }
+        color("DeepPink") {
+            translate([0, 0, 1]) BlowerImpl(by, bz, bh-2, bod-bic, bid+bic, bdc, tdc, $fn=64);
+            // Fan 1
+            translate([0, fy, fz]) rotate([-90]) hull() {
+                translate([0, 0, -0.9]) cylinder(d=32*0.85, h=4, $fn=32);
+                translate([0, 10.5, -10.8]) ChamferCyl(20*0.8, 11*0.8, 1, 4, true, $fn=16);
+            }
+            // Fan 2
+            mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) hull() {
+                translate([0, 0, -0.9]) cylinder(d=32*0.85, h=4, $fn=32);
+                translate([0, 10.5, -10.8]) ChamferCyl(20*0.8, 11*0.8, 1, 4, true, $fn=16);
+            }
+        }
         if (blowerSlice) {
             color("Red") translate([0, -50, -100]) cube([100, 100, 100]);
         }
+        color("Red") {
+            difference() {
+                translate([0, 0, bz+10]) sphere(d=bod/1.16, $fn=64);
+                translate([0, 0, bz+10]) sphere(d=bod/1.2, $fn=64);
+                translate([0, 0, bz+bod/2+5]) cube([bod, bod, bod], center=true);
+            }
+        }
     }
-    Z_SinkFan();
 }
 
-Z_FanDuct();
-//Z_SinkFan();
+Z_SinkFan();
+rotate([0, 0, 90]) Z_FanDuct();
 //translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp(notTransparent=true);
-//CoreXY_Assembled_Carriage_FanDuct();
+//%render() rotate([0, 0, -90]) CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
