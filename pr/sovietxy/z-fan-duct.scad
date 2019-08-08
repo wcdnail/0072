@@ -71,7 +71,43 @@ module Fan(radius, thickness=4, edgeHullDiam=4, centralHoleCoef=0.93, boltsDiam=
 module Fan30(thickness=4, edgeHullDiam=4, centralHoleCoef=0.93, boltsDiam=2.8, clr="LightSalmon", drawFan=false) {
     color(clr) Fan(30, thickness, edgeHullDiam, centralHoleCoef, boltsDiam);
     if(drawFan) {
-        %translate([0, 0, thickness*2+2.8]) rotate([180]) import("../parts/fan_30mm.stl");
+        %translate([0, 0, 6.8+thickness]) rotate([180]) import("../parts/fan_30mm.stl");
+    }
+}
+
+module M3BoltMount(bz, bh, noBolt=false) {
+    difference() {
+        translate([19, 25, bz-0.1]) {
+            hull() {
+                translate([-8, -8, 0]) cube([5, 5, bh/1.2]);
+                cylinder(d=10, h=bh/2);
+                translate([0, 0, bh/2]) cylinder(d=6, h=bh/2+0.2);
+            }
+        }
+        color("Red") {
+            translate([19, 25, bz+4]) { 
+                if (!noBolt) {
+                    translate([0, 0, -0.1]) cylinder(d=3.3, h=30.1); 
+                    translate([0, 0, -10]) cylinder(d=6.3, h=10); 
+                }
+                else {
+                    translate([0, 0, -30]) cylinder(d=3.3, h=50); 
+                    translate([0, 0, 0]) scale([1, 1, 3]) nut("M3");
+                }
+            }
+        }
+    }
+    if (!noBolt) {
+        %translate([19, 25, bz+4]) { translate([0, 0, -0.1]) cylinder(d=3, h=30.1); translate([0, 0, -2]) cylinder(d=6, h=2); }
+    }
+}
+
+module M3BoltMountAll(bz, bh, noBolts=false) {
+    M3BoltMount(bz, bh, noBolts);
+    mirror([0, 1, 0]) M3BoltMount(bz, bh, noBolts);
+    mirror([1, 0, 0]) {
+        M3BoltMount(bz, bh, noBolts);
+        mirror([0, 1, 0]) M3BoltMount(bz, bh, noBolts);
     }
 }
 
@@ -79,7 +115,7 @@ module Z_SinkFan() {
     // Sink fan config
     sy=27.5;
     sz=-10;
-    bsx=31;
+    bsx=31.5;
     bsy=45;
     bz=20;
     bzo=6;
@@ -91,12 +127,13 @@ module Z_SinkFan() {
                     translate([0, 9, sz+bzo]) rotate([90]) ChamferCyl(bsx, bz, bsy, 4, true, $fn=16);
                     // Sink fan
                     translate([0, -sy, sz]) rotate([90]) {
-                        Fan30(drawFan=true, $fn=64);
+                        Fan30(drawFan=false, $fn=64);
                         hull() {
                             translate([0, 0, -0.9]) ChamferCyl(32, 32, 2, 4, true, $fn=16);
                             translate([0, bzo, -17]) ChamferCyl(bsx, bz, 4, 4, true, $fn=16);
                         }
                     }
+                    mirror([0, 0, 1]) M3BoltMountAll(sz+15, 8, noBolts=true);
                 }
                 color("Red") translate([0, 0, -100]) cylinder(d=25.2, h=200, $fn=32);
                 color("DeepPink") {
@@ -122,6 +159,8 @@ module Z_SinkFan() {
         // Bolts
         translate([0, -CARCY/2+13, sz]) cylinder(d=4.2, h=30, $fn=32);
         translate([0,  CARCY/2-13, sz]) cylinder(d=4.2, h=30, $fn=32);
+        // Hatch
+        color("Black") translate([0, 87.6, -5]) rotate([64]) cube([100, 100, 100], center=true);
     }
 }
 
@@ -138,7 +177,7 @@ module BlowerImpl(by, bz, bh, bod, bid, bdc, tdc) {
     }
 }
 
-module Z_FanDuct(blowerSlice=false) {
+module Z_FanDuct(singleFan=true, blowerSlice=false) {
     // Blower config
     bod=55;
     bid=35;
@@ -150,10 +189,12 @@ module Z_FanDuct(blowerSlice=false) {
     bic=2.2;
     // Blower fan config
     fz=bz+32/2-0.1;
-    fy=30;
+    fy=35;
     // Blower fan
     translate([0, fy, fz]) rotate([-90]) Fan30(5, drawFan=false, $fn=32);
-    mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) Fan30(5, drawFan=false, $fn=32);
+    if(!singleFan) {
+        mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) Fan30(5, drawFan=false, $fn=32);
+    }
     // Blower
     difference() {
         union() {
@@ -161,25 +202,31 @@ module Z_FanDuct(blowerSlice=false) {
             // Fan 1
             translate([0, fy, fz]) rotate([-90]) hull() {
                 translate([0, 0, -0.9]) ChamferCyl(32, 32, 2, 4, true, $fn=16);
-                translate([0, 10.5, -11.5]) ChamferCyl(20, 11, 2, 4, true, $fn=16);
+                translate([0, 12, -11.5]) ChamferCyl(20, 8, 4, 4, true, $fn=16);
             }
             // Fan 2
-            mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) hull() {
-                translate([0, 0, -0.9]) ChamferCyl(32, 32, 2, 4, true, $fn=16);
-                translate([0, 10.5, -11.5]) ChamferCyl(20, 11, 2, 4, true, $fn=16);
+            if(!singleFan) {
+                mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) hull() {
+                    translate([0, 0, -0.9]) ChamferCyl(32, 32, 2, 4, true, $fn=16);
+                    translate([0, 12, -11.5]) ChamferCyl(20, 8, 4, 4, true, $fn=16);
+                }
             }
+            // Bolt mount
+            M3BoltMountAll(bz, bh, noBolts=false);
         }
         color("DeepPink") {
             translate([0, 0, 1]) BlowerImpl(by, bz, bh-2, bod-bic, bid+bic, bdc, tdc, $fn=64);
             // Fan 1
             translate([0, fy, fz]) rotate([-90]) hull() {
                 translate([0, 0, -0.9]) cylinder(d=32*0.85, h=4, $fn=32);
-                translate([0, 10.5, -10.8]) ChamferCyl(20*0.8, 11*0.8, 1, 4, true, $fn=16);
+                translate([0, 12.9, -11.5]) ChamferCyl(20*0.8, 5*0.8, 4, 4, true, $fn=16);
             }
             // Fan 2
-            mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) hull() {
-                translate([0, 0, -0.9]) cylinder(d=32*0.85, h=4, $fn=32);
-                translate([0, 10.5, -10.8]) ChamferCyl(20*0.8, 11*0.8, 1, 4, true, $fn=16);
+            if(!singleFan) {
+                mirror([0, 1, 0]) translate([0, fy, fz]) rotate([-90]) hull() {
+                    translate([0, 0, -0.9]) cylinder(d=32*0.85, h=4, $fn=32);
+                    translate([0, 12.9, -11.5]) ChamferCyl(20*0.8, 5*0.8, 4, 4, true, $fn=16);
+                }
             }
         }
         if (blowerSlice) {
@@ -195,7 +242,10 @@ module Z_FanDuct(blowerSlice=false) {
     }
 }
 
-Z_SinkFan();
-rotate([0, 0, 90]) Z_FanDuct();
+//Z_SinkFan();
+Z_FanDuct(singleFan=true);
+//rotate([0, 0, 90]) Z_FanDuct(singleFan=false);
 //translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp(notTransparent=true);
 //%render() rotate([0, 0, -90]) CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
+// Z sensor
+//%translate([48, 0, E3DBottomPoint+BlowerBottomOffset-2]) cylinder(h=70, d=18, $fn=32);
