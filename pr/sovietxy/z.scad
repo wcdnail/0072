@@ -1,4 +1,7 @@
 include <z-config.scad>
+use <x_carriage_mess.scad>
+use <z-fan-duct.scad>
+use <x_carriage_directdrive_enhanced.scad>
 use <../../openscad/nema17.scad>
 
 BEDZ=ZMax;

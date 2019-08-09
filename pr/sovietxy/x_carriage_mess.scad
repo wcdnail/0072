@@ -6,8 +6,6 @@ use <e3d_v5_liftdown_adapter.scad>
 use <x_endstop_term.scad>
 use <x_fan_duct.scad>
 
-E3DnoLiftDown=true;
-
 module CoreXY_X_Carriage_Middle(noSensor=true) {
     //render() 
     difference() {

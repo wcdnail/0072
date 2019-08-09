@@ -109,7 +109,7 @@ N17ShaftLength=28;
 N17FixingHolesInteraxis=31;
 
 ZMin=ZaxisML8UUCZ+BARCZ*2;
-ZMax=330;
+ZMax=320;
 
 ZmotorXC=BARXLen/2;
 ZrodHolderCenterOffset=25;
@@ -117,6 +117,8 @@ ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // E3Dv5
+
+E3DnoLiftDown=true;
 
 E3Dv5RadDiam=25;
 
@@ -151,7 +153,7 @@ module E3D_v5_stl() {
     translate([-12.5, -12.5, 0]) import("../parts/E3D_v5_Hot_end.stl");
 }
 
-module E3D_v5_temp(skipDims=true, notTransparent=false, clr="SlateGray") {
+module E3D_v5_temp(skipDims=true, notTransparent=false, clr="Gray") {
     if (notTransparent) {
         color(clr) translate([0, 0, E3Dv5ZOffset-CARTopZOffs-CARTopBaseCZ/2]) rotate([0, 0, 90]) E3D_v5_stl();
     }
@@ -565,7 +567,7 @@ module car_lmu88_holders_all(clr="Yellow") {
     mirror([1, 0, 0]) car_lmu88_holder2(clr);
 }
 
-module CoreXY_X_Carriage_v2(skipDims=false, carClr="Yellow", e3d=true) {
+module CoreXY_X_Carriage_v2(skipDims=false, carClr="Green", e3d=true) {
     //render()
     difference() {
         union() {
@@ -583,11 +585,29 @@ module CoreXY_X_Carriage_v2(skipDims=false, carClr="Yellow", e3d=true) {
     }
 }
 
+module CoreXY_X_Carriage_Full(skipDims=false, carClr="Green", e3d=true) {
+    CoreXY_X_Carriage_v2(skipDims, carClr, e3d);
+    if (!E3DnoLiftDown) {
+        E3D_v5_liftdown_adapter(true, "Brown");
+        E3D_v5_liftdown_clamp("Brown");
+        E3D_v5_temp(notTransparent=true);
+    }
+    else {
+        translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp(notTransparent=true);
+    }
+    rotate([0, 0, -90]) {
+        color("Yellow") render() Z_SinkFan();
+        color(carClr) render() Z_FanDuct(singleFan=true);
+    }
+    CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true);
+    color("Blue") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
+}
+
 module CoreXY_Direct_Drive(modelClr="Crimson") {
     color(modelClr) translate([0, 0, -CARTopZOffs]) rotate([0, 0, 180]) translate([-CARCX/2, -CARCY/2, 25]) import("printedparts/1xCoreXY_Direct_Drive.stl");
 }
 
-module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="SlateGray", rodClr="White", carClr="Crimson", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=false) {
+module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="Green", rodClr="White", carClr="Green", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=false) {
     xe_px=bx/2 + px;
     xe_py=by/2 + py;
     if (rAxis) {
@@ -604,7 +624,7 @@ module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0,
         translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
     }
     else {
-        translate([xe_px, xe_py, 0]) carriage_v12(true, carClr, false);
+        translate([xe_px, xe_py, 0]) CoreXY_X_Carriage_Full(true, carClr, false);
     }
 }
 
