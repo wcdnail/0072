@@ -82,6 +82,6 @@ module CoreXY_Direct_Drive_v2(clr="MediumSeaGreen", rendStop=false, lendStop=tru
 
 
 // With chain mount
-//CoreXY_Direct_Drive_v2("MediumSeaGreen", rendStop=true, lendStop=true);
+CoreXY_Direct_Drive_v2("MediumSeaGreen", rendStop=true, lendStop=true);
 // No chain mount
-CoreXY_Direct_Drive_v2("MediumSeaGreen", rendStop=true, lendStop=true, noChainMount=true);
+//CoreXY_Direct_Drive_v2("MediumSeaGreen", rendStop=true, lendStop=true, noChainMount=true);

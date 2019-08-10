@@ -8,44 +8,6 @@ use <x_endstop_term.scad>
 E3DnoLiftDown=true;
 E3DBottomPoint=-38.55;
 
-module ChamferCyl(scx, scy, cz, diam=3, center=false) {
-    r=diam/2;
-    cx=scx-diam;
-    cy=scy-diam;
-    sx=center?-scx/2+r:r;
-    sy=center?-scy/2+r:r;
-    sz=center?-cz/2:0;
-    hull() {
-        translate([sx, sy, sz]) cylinder(d=diam, h=cz);
-        translate([sx+cx, sy, sz]) cylinder(d=diam, h=cz);
-        translate([sx+cx, sy+cy, sz]) cylinder(d=diam, h=cz);
-        translate([sx,  sy+cy, sz]) cylinder(d=diam, h=cz);
-    }
-}
-
-module ChamferBox(scx, scy, scz, diam=3, center=false) {
-    r=diam/2;
-    cx=scx-diam;
-    cy=scy-diam;
-    cz=scz-diam;
-    sx=center?-scx/2+r:r;
-    sy=center?-scy/2+r:r;
-    sz=center?-scz/2+r:r;
-    hull() {
-        // Bottom
-        translate([sx, sy, sz]) sphere(d=diam);
-        translate([sx+cx, sy, sz]) sphere(d=diam);
-        translate([sx+cx, sy+cy, sz]) sphere(d=diam);
-        translate([sx,  sy+cy, sz]) sphere(d=diam);
-        // Top
-        translate([sx, sy, sz+cz]) sphere(d=diam);
-        translate([sx+cx, sy, sz+cz]) sphere(d=diam);
-        translate([sx+cx, sy+cy, sz+cz]) sphere(d=diam);
-        translate([sx,  sy+cy, sz+cz]) sphere(d=diam);
-    }
-}
-
-
 module FanPlane(thickness, fanDiam, hullDiam, xo=0, yo=0, sx=1, sy=1) {
     hull() {
         translate([xo-fanDiam/2+1*sx, yo-fanDiam/2+1*sy, 0]) cylinder(d=hullDiam, h=thickness);
@@ -251,11 +213,20 @@ module Z_FanDuct(singleFan=false, blowerSlice=false, useAngle=true) {
     }
 }
 
-Z_SinkFan();
-//Z_FanDuct(singleFan=true, useAngle=false);
+module Z_Probe_Holder_Temp() {
+    // Z sensor
+    ZprobeCARXOffs=52;
+    ZprobeCZ=4;
+    %translate([ZprobeCARXOffs, 27, E3DBottomPoint+BlowerBottomOffset-2]) cylinder(h=70, d=18, $fn=32);
+    union() {
+        linear_extrude(height=ZprobeCZ) polygon(points=[[20, -10.2],[50, -10.2],[54, -6.2],[54, 30],[40, 30],[38, 28],[38, 10.2],[20, 10.2],[20, 5],[23, 2],[23, -2],[20, -5]]);
+        translate([ZprobeCARXOffs, 27, 0]) cylinder(h=ZprobeCZ, d=22, $fn=12);
+    }
+}
+
+%Z_SinkFan();
 rotate([0, 0, 90]) Z_FanDuct(singleFan=false);
 
-//translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp(notTransparent=true);
-//%render() rotate([0, 0, -90]) CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
-// Z sensor
-//%translate([48, 0, E3DBottomPoint+BlowerBottomOffset-2]) cylinder(h=70, d=18, $fn=32);
+translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp(notTransparent=true);
+%render() rotate([0, 0, -90]) CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
+

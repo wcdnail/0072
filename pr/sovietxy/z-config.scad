@@ -3,7 +3,7 @@ include <../../openscad/libs/nutsnbolts/materials.scad>
 include <../../openscad/libs/dim1/dimlines.scad>
 
 // OpenSCAD params...
-$fn=16;
+$fn=64;
 
 // Параметры отображения размеров
 DIM_LINE_WIDTH=1;
@@ -371,6 +371,61 @@ module z_transm_v2(skipDims=false, modelColor="SlateGray") {
     }
 }
 
+module Z_LM8UU_Holder_16() {
+    zhcx=50;
+    zhcy=22.7;
+    zhcz=48;
+    translate([50+zhcx/2, 38.65+zhcy/2, zhcz]) rotate([0, 0, 180]) rotate([-90]) import("printedparts/Z-Axis LM8uu Halter.stl");
+}
+
+module Z_LM8UU_hld(clr="Yellow") {
+    sx=0;
+    sy=0;
+    sz=XENDFullCZ;
+    ex=2.5;
+    cx=LM8UULen+ex*2;
+    bhy=CARCY/2.8;
+    cy=bhy;
+    bhz=LM8UUOutterDiam-3.5;
+    bslicez=14.6;
+    wsz=5;
+    wz=6.7;
+    rotate([0, 0, 90]) {
+        translate([-(cx-ex*2)/2+0.69, -cy/2, cx]) rotate([0, 90, 0]) {
+            color(clr) difference() {
+                // Bearing holder
+                color(clr) union() {
+                    translate([0, -11.44, 12.2]) ChamferCyl(cx, 50, 10, 10);
+                    translate([sx, sy, sz+0.6]) rotate([0, 90, 0])
+                        linear_extrude(height=cx) polygon(points=[
+                             [0, 0]
+                            ,[CARBaseCZ, 0]
+                            ,[CARBaseCZ+bhz, bhy/6]
+                            ,[CARBaseCZ+bhz, bhy-bhy/7]
+                            ,[CARBaseCZ, bhy]
+                            ,[0, bhy]]);
+                }
+                // Linear bearing
+                color("Red") {
+                    translate([sx-LM8UULen+cx-ex, sy+cy/2, sz/2]) rotate([0, 90, 0]) cylinder(d=LM8UUOutterDiam, h=LM8UULen);
+                    translate([sx-LM8UULen*1.5+cx-ex, sy+cy/2, sz/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam*1.3, h=LM8UULen*2);
+                    translate([sx-LM8UULen/2+cx-ex, sy+cy/2, 0]) scale([1, 1, 0.7]) rotate([45, 0, 0]) cube([LM8UULen*2, LM8UULen, LM8UULen], center=true);
+                }
+                color("Blue") cube([CARCX*2, CARCY*2, bslicez], center=true);
+                // Bolts
+                color("Red") {
+                    translate([10, -3.43, 0]) cylinder(h=30, d=6);
+                    translate([10, 30.57, 0]) cylinder(h=30, d=6);
+                    // Heads
+                    translate([10, -3.43, 0]) cylinder(h=17, d=10);
+                    translate([10, 30.57, 0]) cylinder(h=17, d=10);
+                }
+            }
+            %translate([sx-LM8UULen+cx-ex, sy+cy/2, sz/2]) rotate([0, 90, 0]) cylinder(d=LM8UUOutterDiam, h=LM8UULen);
+        }
+    }
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Рама
 
@@ -509,7 +564,7 @@ module x_end_rods_check() {
 
 CARCentralHoleDiam=E3Dv5RadDiam+1;
 
-module car_base_holes() {
+module XCar_Base_holes() {
     color("Red") {
         translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
         translate([-CARCX/2+13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
@@ -525,14 +580,14 @@ module car_base_holes() {
     }
 }
 
-module car_base(clr="Yellow", drawE3D=true) {
+module XCar_Base(clr="Yellow", drawE3D=true) {
 	if (drawE3D) {
 		%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
 	}
     color(clr) translate([-CAR2CX/2, -CARCY/2, XENDFullCZ-CARBaseCZ]) cube([CAR2CX, CARCY, CARBaseCZ]);
 }
 
-module car_lmu88_holder1(clr="Yellow") {
+module XCar_LM8UU_Holder1(clr="Yellow") {
     sz=XENDFullCZ;
     bhy=CARCY/2.8;
     bhz=LM8UUOutterDiam-3.5;
@@ -558,8 +613,8 @@ module car_lmu88_holder1(clr="Yellow") {
 }
 
 module car_lmu88_holder2(clr="Yellow") {
-    translate([0, 0, -0.35]) car_lmu88_holder1(clr);
-    translate([0, 0, -0.35]) mirror([0, 1, 0]) car_lmu88_holder1(clr);
+    translate([0, 0, -0.35]) XCar_LM8UU_Holder1(clr);
+    translate([0, 0, -0.35]) mirror([0, 1, 0]) XCar_LM8UU_Holder1(clr);
 }
 
 module car_lmu88_holders_all(clr="Yellow") {
@@ -571,10 +626,10 @@ module CoreXY_X_Carriage_v2(skipDims=false, carClr="Green", e3d=true) {
     //render()
     difference() {
         union() {
-            car_base(carClr, e3d);
+            XCar_Base(carClr, e3d);
             car_lmu88_holders_all(carClr);
         }
-        color("Magenta") car_base_holes();
+        color("Magenta") XCar_Base_holes();
     }
     if(!skipDims) {
         color("black") {
@@ -597,7 +652,7 @@ module CoreXY_X_Carriage_Full(skipDims=false, carClr="Green", e3d=true) {
     }
     rotate([0, 0, -90]) {
         color("Yellow") render() Z_SinkFan();
-        color(carClr) render() Z_FanDuct(singleFan=true);
+        color(carClr) render() rotate([0, 0, -90]) Z_FanDuct(singleFan=false);
     }
     CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true);
     color("Blue") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
@@ -657,7 +712,7 @@ module h_plane(h=3) {
             ]);
 }
 
-module z_plane_holes_half(newRodHolders=true) { 
+module Z_Plane_Holes_Half(newRodHolders=true) { 
     hldrCX = (newRodHolders ? ZrodHolder2CX : ZrodHolderCX);
     hldrZO = 0;
     hldrBD = 5.5;
@@ -675,7 +730,7 @@ module z_plane_holes_half(newRodHolders=true) {
     }
 }
 
-module z_plane_holes_sizes(newRodHolders=true, h=5) { 
+module Z_Plane_Holes_Sizes(newRodHolders=true, h=5) { 
     dimz = h + 1;
     hldrCX = (newRodHolders ? ZrodHolder2CX : ZrodHolderCX);
     hldrZO = 0;
@@ -718,20 +773,59 @@ module z_plane_holes_sizes(newRodHolders=true, h=5) {
 }
 
 
-module z_plane(h=4, skipDims=false, newRodHolders=true, planeClr="Cyan") {
+module Z_Plane(h=4, skipDims=false, newRodHolders=true, planeClr="Cyan") {
     difference() {
         color(planeClr) h_plane(h);
-        z_plane_holes_half(newRodHolders);
-        translate([0, BARYLen, 0]) mirror([0, 1, 0]) z_plane_holes_half(newRodHolders);
+        Z_Plane_Holes_Half(newRodHolders);
+        translate([0, BARYLen, 0]) mirror([0, 1, 0]) Z_Plane_Holes_Half(newRodHolders);
     }
     if(!skipDims) {
         dimz = h + 1;
-        z_plane_holes_sizes(newRodHolders, h);
-        translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) z_plane_holes_sizes(newRodHolders, h);
+        Z_Plane_Holes_Sizes(newRodHolders, h);
+        translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) Z_Plane_Holes_Sizes(newRodHolders, h);
         color("Black") {
             // Sides
             x_dim_abs(BARXLen+BARCX*2, 0, dimz, 200, ox=-BARCX);
             y_dim_abs(0, BARYLen+BARCY*2, dimz, -70, ox=-BARCX);
         }
+    }
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+module ChamferCyl(scx, scy, cz, diam=3, center=false) {
+    r=diam/2;
+    cx=scx-diam;
+    cy=scy-diam;
+    sx=center?-scx/2+r:r;
+    sy=center?-scy/2+r:r;
+    sz=center?-cz/2:0;
+    hull() {
+        translate([sx, sy, sz]) cylinder(d=diam, h=cz);
+        translate([sx+cx, sy, sz]) cylinder(d=diam, h=cz);
+        translate([sx+cx, sy+cy, sz]) cylinder(d=diam, h=cz);
+        translate([sx,  sy+cy, sz]) cylinder(d=diam, h=cz);
+    }
+}
+
+module ChamferBox(scx, scy, scz, diam=3, center=false) {
+    r=diam/2;
+    cx=scx-diam;
+    cy=scy-diam;
+    cz=scz-diam;
+    sx=center?-scx/2+r:r;
+    sy=center?-scy/2+r:r;
+    sz=center?-scz/2+r:r;
+    hull() {
+        // Bottom
+        translate([sx, sy, sz]) sphere(d=diam);
+        translate([sx+cx, sy, sz]) sphere(d=diam);
+        translate([sx+cx, sy+cy, sz]) sphere(d=diam);
+        translate([sx,  sy+cy, sz]) sphere(d=diam);
+        // Top
+        translate([sx, sy, sz+cz]) sphere(d=diam);
+        translate([sx+cx, sy, sz+cz]) sphere(d=diam);
+        translate([sx+cx, sy+cy, sz+cz]) sphere(d=diam);
+        translate([sx,  sy+cy, sz+cz]) sphere(d=diam);
     }
 }
