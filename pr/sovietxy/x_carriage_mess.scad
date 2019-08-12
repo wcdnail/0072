@@ -4,7 +4,7 @@ use <z.scad>
 use <x_carriage_directdrive_enhanced.scad>
 use <e3d_v5_liftdown_adapter.scad>
 use <x_endstop_term.scad>
-use <x_fan_duct.scad>
+use <z-fan-duct.scad>
 
 module CoreXY_X_Carriage_Middle(noSensor=true) {
     //render() 
