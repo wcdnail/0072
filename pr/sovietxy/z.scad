@@ -201,7 +201,7 @@ module z_assembly(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
     }
 }
 
-table_sizes();
+//table_sizes();
 //bottom_frame_sizes();
 //top_frame_sizes();
-//z_assembly();
+z_assembly();
