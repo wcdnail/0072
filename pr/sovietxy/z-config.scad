@@ -47,7 +47,7 @@ TOPFrameZ=370;
 
 // Размеры винтовой передачи 
 ZScrewDiam=8;
-ZScrewLen=330;
+ZScrewLen=310;
 ZScrewHolderCX=60;
 
 // Размеры "кровати"
