@@ -122,7 +122,7 @@ E3DnoLiftDown=true;
 
 E3Dv5RadDiam=25;
 
-zE3Dv5HolderOffset=16.6;
+zE3Dv5HolderOffset=22;
 E3Dv5STDZOffset=-34.8;
 E3Dv5ZOffset=E3Dv5STDZOffset-17;
 
@@ -153,12 +153,28 @@ module E3D_v5_stl() {
     translate([-12.5, -12.5, 0]) import("../parts/E3D_v5_Hot_end.stl");
 }
 
-module E3D_v5_temp(skipDims=true, notTransparent=false, clr="Gray") {
+module E3D_v5_std_clamp() {
+	difference() {
+		translate([-16, 10, 26.85]) rotate([90]) import("printedparts/CoreXY_Direct_Drive_Hotend_Clamp.stl");
+		color("Red") {
+			cylinder(d=4, h=500);
+			translate([0, 0, -33]) E3D_v5_cylinders(0.2, 0.4);
+		}
+	}
+}
+
+module E3D_v5_temp(skipDims=true, notTransparent=false, clr="Gray", fitting=false) {
     if (notTransparent) {
         color(clr) translate([0, 0, E3Dv5ZOffset-CARTopZOffs-CARTopBaseCZ/2]) rotate([0, 0, 90]) E3D_v5_stl();
+		if (fitting) {
+			color("White") translate([0, 0, 5]) import("../parts/PC4-M10.stl");
+		}
     }
     else {
         %translate([0, 0, E3Dv5ZOffset-CARTopZOffs-CARTopBaseCZ/2]) rotate([0, 0, 90]) E3D_v5_stl();
+		if (fitting) {
+			%translate([0, 0, 5]) import("../parts/PC4-M10.stl");
+		}
     }
     if (!skipDims) {
         color("Black") {
