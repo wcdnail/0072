@@ -7,7 +7,6 @@ use <x_endstop_term.scad>
 use <z-fan-duct.scad>
 
 module CoreXY_X_Carriage_Middle(noSensor=true) {
-    //render() 
     difference() {
         union() {
             translate([0, 0, CARTopZBeg]) linear_extrude(height=CARTopBaseCZ/2)
@@ -43,7 +42,7 @@ module CoreXY_Assemled_Carriage(noRordsCheck=false, withMotor=false) {
     else {
         translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp();
     }
-    CoreXY_FanDuct();
+    //CoreXY_FanDuct();
     // Направляющие
     if (!noRordsCheck) {
         %x_end_rods_check();
@@ -51,11 +50,12 @@ module CoreXY_Assemled_Carriage(noRordsCheck=false, withMotor=false) {
         %translate([115, -XENDCY/2, 10]) r_x_end();
         translate([90, 0, 0]) X_EndStop_Stand();
     }
-    CoreXY_Direct_Drive_v2("MediumSeaGreen", rendStop=true, lendStop=true);
+    CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true, renderBase=true);
     color("Yellow") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
     if (withMotor) {
         translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
     }
 }
 
-CoreXY_Assemled_Carriage();
+translate([0, 0, 21.5]) rotate([180]) CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
+//CoreXY_Assemled_Carriage();

@@ -53,9 +53,7 @@ module EndStop_Mount(clr="MediumSeaGreen") {
 }
 
 module CoreXY_Direct_Drive_Base(clr="MediumSeaGreen") {
-  color(clr) 
-  //render() 
-  difference() {
+  color(clr) difference() {
     union() {
       CoreXY_Direct_Drive();
       // Right clamp
@@ -70,9 +68,14 @@ module CoreXY_Direct_Drive_Base(clr="MediumSeaGreen") {
   }
 }
 
-module CoreXY_Direct_Drive_v2(clr="MediumSeaGreen", rendStop=false, lendStop=true, noMotorMount=false, noChainMount=false) {
+module CoreXY_Direct_Drive_v2(clr="MediumSeaGreen", rendStop=false, lendStop=true, noMotorMount=false, noChainMount=false, renderBase=false) {
   union() {
-    CoreXY_Direct_Drive_Base(clr);
+    if (renderBase) {
+		color(clr) render() CoreXY_Direct_Drive_Base(clr);
+	}
+	else {
+		CoreXY_Direct_Drive_Base(clr);
+	}
     // Chain mount
     if(!noChainMount) {
       Chain_Mount(clr);
@@ -81,7 +84,7 @@ module CoreXY_Direct_Drive_v2(clr="MediumSeaGreen", rendStop=false, lendStop=tru
       EndStop_Mount(clr);
     }
     if(lendStop) {
-      translate([0, 0, 0]) mirror([1, 0, 0]) EndStop_Mount();
+      translate([0, 0, 0]) mirror([1, 0, 0]) EndStop_Mount(clr);
     }
     // Middle connector
     if(rendStop && lendStop) {

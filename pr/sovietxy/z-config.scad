@@ -580,19 +580,31 @@ module x_end_rods_check() {
 
 CARCentralHoleDiam=E3Dv5RadDiam+1;
 
-module XCar_Base_holes() {
+module XCar_Base_holes(centralHoles=true) {
     color("Red") {
-        translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
+		if (centralHoles) {
+			// E3D hole
+			translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
+			// Wires holes
+			translate([ 0,  CARCY/2-20, XENDFullCZ-200]) cylinder(h=400, d=8);
+			translate([ 0,  CARCY/2-25, XENDFullCZ-100]) cube([8, 10, 300], center=true);
+		}
+		// M4 holes 
         translate([-CARCX/2+13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
         translate([ CARCX/2-13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
+		// M4 nuts 
+        translate([-CARCX/2+13, 0, XENDFullCZ-4]) scale([1, 1, 2]) nut("M4");
+        translate([ CARCX/2-13, 0, XENDFullCZ-4]) scale([1, 1, 2]) nut("M4");
+		// M3 holes
         translate([-8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         translate([ 8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-        translate([ 0,  CARCY/2-20, XENDFullCZ-200]) cylinder(h=400, d=8);
-        translate([ 0,  CARCY/2-25, XENDFullCZ-100]) cube([8, 10, 300], center=true);
-        translate([-CARCX/2+13, 0, XENDFullCZ-4]) scale([1, 1, 2]) nut("M4");
-        translate([ CARCX/2-13, 0, XENDFullCZ-4]) scale([1, 1, 2]) nut("M4");
+		// M3 holes
+        translate([-8,  CARCY/2-13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
+        translate([ 8,  CARCY/2-13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
+        translate([-8, -CARCY/2+13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
+        translate([ 8, -CARCY/2+13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
     }
 }
 
@@ -639,7 +651,6 @@ module car_lmu88_holders_all(clr="Yellow") {
 }
 
 module CoreXY_X_Carriage_v2(skipDims=false, carClr="Green", e3d=true) {
-    //render()
     difference() {
         union() {
             XCar_Base(carClr, e3d);
