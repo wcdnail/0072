@@ -6,4 +6,6 @@ difference() {
     color("Red") translate([65, 56, -12]) rotate([0, 0, 0]) scale([0.6, 0.6, 3]) import("../sm.stl");
 }
 
+//color("Red") translate([65, 56, -12]) rotate([0, 0, 0]) scale([0.6, 0.6, 0.5]) import("../sm.stl");
+
 

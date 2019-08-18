@@ -44,7 +44,7 @@ module E3D_v5_LDA_wxcar(withNut=true, clr="Yellow", halfSlice=false) {
       translate([ 0,  CARCY/2-20, XENDFullCZ-200]) cylinder(h=400, d=8);
     }
     color("Blue") translate([0, 0, E3Dv5ZOffset-CARTopZOffs]) 
-      E3D_v5_cylinders(0.3, 0.4);
+      E3D_v5_cylinders(0.2, 0.4);
   }
 }
 
@@ -73,12 +73,12 @@ module CoreXY_X_Carriage_v3(skipDims=false, carClr="Green", e3d=true) {
   }
 }
 
-module CoreXY_X_Carriage_v3_wLDA() {
+module CoreXY_X_Carriage_v3_wLDA(skipDims=true, carClr="Green", e3d=false) {
   union() {
     translate([0, 0, 21.5]) rotate([180]) 
-      CoreXY_X_Carriage_v3(true, "MediumSeaGreen", false);
+      CoreXY_X_Carriage_v3(skipDims, carClr, e3d);
     translate([0, 0, 26.85]) rotate([180]) {
-      E3D_v5_LDA_wxcar(true, "MediumSeaGreen");
+      E3D_v5_LDA_wxcar(true, carClr);
       //E3D_v5_LDA_wxcar_Clamp();
     }
   }
