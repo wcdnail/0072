@@ -47,7 +47,10 @@ module CoreXY_Assemled_Carriage(noRordsCheck=false, withMotor=false) {
     CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
     translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp();
   }
-  color("Orange") StandAlone_Fan_Duct_x2_40();
+  // Fan duct
+  if (false) {
+    color("Orange") StandAlone_Fan_Duct_x2_40();
+  }
   // Направляющие
   if (!noRordsCheck) {
     %x_end_rods_check();
@@ -56,7 +59,7 @@ module CoreXY_Assemled_Carriage(noRordsCheck=false, withMotor=false) {
     translate([90, 0, 0]) X_EndStop_Stand();
   }
   translate([0, 0, 0.1]) CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true, renderBase=true, noChainMount=false);
-  color("Yellow") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
+  color("SteelBlue") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
   if (withMotor) {
     translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
   }

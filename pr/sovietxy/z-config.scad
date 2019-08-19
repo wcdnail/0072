@@ -525,14 +525,20 @@ module l_x_end_top_new() {
 }
 
 module l_x_end_bottom_new() {
-    translate([0, 0, -0.1]) rotate([0, 0, 0]) import("x_end-nuts-16x25lm8uu.stl");
+    translate([0, 0, -11]) rotate([0, 0, 0]) import("x_end-nuts-16x25lm8uu.stl");
+}
+
+module l_x_end_pulley() {
+	translate([31.7, 26, 0]) cylinder(h=30, d=3.9);
+	translate([31.7, 26, 30]) cylinder(h=4, d=6.9);
+	translate([31.7, 26, 12]) cylinder(h=17, d=18);
 }
 
 module l_x_end() {
-    //render() {
-        l_x_end_bottom_new();
-        l_x_end_top_new();
-    //}
+	l_x_end_pulley();
+	translate([0, 18, 0]) l_x_end_pulley();
+	l_x_end_bottom_new();
+	l_x_end_top_new();
 }
 
 module r_x_end() {
