@@ -1,5 +1,6 @@
-use <../../openscad/bezier.scad>
-use <../../openscad/bezier1.scad>
+use <../../openscad/BezierScad/BezierScad.scad>;
+use <../../openscad/bezier-eh.scad>;
+
 
 module Hammer(shrinkage=0, cz=3) {
   render() union() {
@@ -45,12 +46,37 @@ module Hammer(shrinkage=0, cz=3) {
 }
 
 module Sickle(shrinkage=0, cz=3) {
-  union() {
-    polygon(Bezier([[0,0],/*C*/[5,0],/*C*/SYMMETRIC(),[10,10],/*C*/[15,10],/*C*/OFFSET([-5,0]),[20,0]],precision=0.05));
-  }
+  /*
+  BezArc([
+     [-23.31, 7.07]
+    ,[-25, -10]
+    ,[-15, -32]
+    ,[39.5, -28]
+    ,[19.416, 24.4378]
+   ],[0, 7.07]
+    ,steps=32, showCtlR=1);
+  */
+  /*
+  BezArc([
+    // -- Левый нижний
+     [-23.31, 7.07]
+    ,[-23.65, -17.2]
+    ,[0, -19.6]
+    // -- Правый нижний
+    // -- Правый верхний
+   ],[-23.31, 7.07]
+    ,steps=32, showCtlR=1, height=cz);
+  */
+  polygon(Bezier([
+     [166.577, 138.645l]
+    ,[-33.986, 32.37]
+    ,[18.126, 18.126]
+    ,[15.651, -15.756]
+    ,[19.416, 24.4378]
+    ]));
 }
 
-%translate([-1.75, 9, 0]) rotate([0, 0, -45]) import("sm.stl");
+//%translate([-1.75, 9, 0]) rotate([0, 0, -45]) import("sm.stl");
 //Hammer();
 //Hammer(1);
 Sickle();
