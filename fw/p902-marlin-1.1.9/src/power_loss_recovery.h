@@ -32,7 +32,7 @@
 #include "MarlinConfig.h"
 
 #define SAVE_INFO_INTERVAL_MS 0
-//#define SAVE_EACH_CMD_MODE
+#define SAVE_EACH_CMD_MODE
 //#define DEBUG_POWER_LOSS_RECOVERY
 
 typedef struct {
