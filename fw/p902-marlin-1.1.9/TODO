@@ -1,1 +1,4 @@
-Powerloss enable - M413 S1
+-------------------------------------------------------------------------------
+    Powerloss enable - M413 S1
+             disable - M413 S0
+              status - M413
