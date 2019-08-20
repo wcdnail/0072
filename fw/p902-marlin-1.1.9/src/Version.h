@@ -78,7 +78,7 @@
    * has a distinct Github fork— the Source Code URL should just be the main
    * Marlin repository.
    */
-  #define SOURCE_CODE_URL "https://github.com/MarlinFirmware/Marlin"
+  #define SOURCE_CODE_URL "https://github.com/wcdnail/0072/tree/master/fw/p902-marlin-1.1.9"
 
   /**
    * Default generic printer UUID.
