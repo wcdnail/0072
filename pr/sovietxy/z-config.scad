@@ -520,37 +520,40 @@ module l_x_end_bottom() {
     translate([0, 0, -10.2]) rotate([0, 0, 0]) import("printedparts/2xCoreXY_X-End_Nut.stl");
 }
 
-module l_x_end_top_new() {
-    translate([0, 0, 0.1]) rotate([0, 0, 0]) import("x_end-bolts-16x25lm8uu.stl");
+module l_x_end_top_new(clr=undef, clra=undef) {
+  color(clr, clra) translate([0, 0, 0.1]) rotate([0, 0, 0]) import("x_end-bolts-16x25lm8uu.stl");
 }
 
-module l_x_end_bottom_new() {
-    translate([0, 0, -11]) rotate([0, 0, 0]) import("x_end-nuts-16x25lm8uu.stl");
+module l_x_end_bottom_new(clr=undef, clra=undef) {
+  color(clr, clra) translate([0, 0, -11]) rotate([0, 0, 0]) import("x_end-nuts-16x25lm8uu.stl");
 }
 
-module l_x_end_pulley() {
-	translate([31.7, 26, 0]) cylinder(h=30, d=3.9);
-	translate([31.7, 26, 30]) cylinder(h=4, d=6.9);
-	translate([31.7, 26, 12]) cylinder(h=17, d=18);
+module l_x_end_pulley(clra=undef) {
+  // Bolt
+  color("DimGray", clra) {
+    translate([31.7, 26, 0]) cylinder(h=30, d=3.9);
+    translate([31.7, 26, 30]) cylinder(h=4, d=6.9);
+  }
+  color("Gainsboro", clra) translate([31.7, 26, 12]) cylinder(h=17, d=18);
 }
 
-module l_x_end() {
-	l_x_end_pulley();
-	translate([0, 18, 0]) l_x_end_pulley();
-	l_x_end_bottom_new();
-	l_x_end_top_new();
+module l_x_end(clr=undef, clra=undef) {
+  l_x_end_pulley(clra);
+  translate([0, 18, 0]) l_x_end_pulley(clra);
+  l_x_end_bottom_new(clr, clra);
+  l_x_end_top_new(clr, clra);
 }
 
-module r_x_end() {
-    mirror([1, 0, 0]) l_x_end();
+module r_x_end(clr=undef, clra=undef) {
+  mirror([1, 0, 0]) l_x_end(clr, clra);
 }
 
-module r_idler() {
-    translate([0, 0, 0]) rotate([0, 0, 180]) import("printedparts/1xCoreXY_Idler.stl");
+module r_idler(clr=undef, clra=undef) {
+  color(clr, clra) translate([0, 0, 0]) rotate([0, 0, 180]) import("printedparts/1xCoreXY_Idler.stl");
 }
 
-module r_motor() {
-    translate([0, 0, 25]) rotate([180, 0, 180]) import("printedparts/1xCoreXY_Motor.stl");
+module r_motor(clr=undef, clra=undef) {
+  color(clr, clra) translate([0, 0, 25]) rotate([180, 0, 180]) import("printedparts/1xCoreXY_Motor.stl");
 }
 
 module r_y_axis(by, cy, xe_pos, partClr="SlateGray", rodClr="White") {
@@ -862,3 +865,40 @@ module ChamferBox(scx, scy, scz, diam=3, center=false) {
         translate([sx,  sy+cy, sz+cz]) sphere(d=diam);
     }
 }
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+XEndStopMountCX=5;
+NutScaleInc=0.05;
+
+module X_EndStop_Mount(esbx=CARCX/2-3, cx=XEndStopMountCX, clr=undef, clra=undef, noCon=false, flipTB=false) {
+  eslbx=-CARCX/2;
+  esby=27;
+  esbz=CARTopZBeg+14.3;
+  color(clr, clra) difference() {
+    union() {
+      hlcz=flipTB ? CARTopZBeg+6 : CARTopZBeg+22.5;
+      hlkz=flipTB ? CARTopZBeg+12.5 : CARTopZBeg;
+      hull() {
+        translate([esbx-cx-5, esby-1, hlcz]) rotate([0, 90, 0]) cylinder(d=13.8, h=cx, $fn=17);
+        translate([esbx-cx-5, esby-8, hlkz]) cube([cx, 14, 16]);
+      }
+      // Шайбы
+      translate([esbx-cx-0.2, esby-0.89, CARTopZBeg+5.15]) rotate([0, 90, 0]) cylinder(d=7, h=1.8);
+      translate([esbx-cx-0.2, esby-0.89, CARTopZBeg+23.45]) rotate([0, 90, 0]) cylinder(d=7, h=1.8);
+      if (!noCon) {
+        // Connector
+        translate([esbx-cx-5, esby-16, CARTopZBeg]) cube([cx, 22, 13]);
+      }
+    }
+    // Holes
+    translate([esbx-20, esby-0.89, CARTopZBeg+5.15]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
+    translate([esbx-20, esby-0.89, CARTopZBeg+23.45]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
+    // Nuts
+    translate([esbx-cx-3, esby-0.9, CARTopZBeg+5.2]) scale([3, 1+NutScaleInc, 1+NutScaleInc]) rotate([0, 90]) nut("M3");
+    translate([esbx-cx-3, esby-0.9, CARTopZBeg+23.5]) scale([3, 1+NutScaleInc, 1+NutScaleInc]) rotate([0, 90]) nut("M3");
+  }
+  %translate([esbx, esby-0.89, esbz]) rotate([-90]) opt_endstop();
+}
+
+// ---------------------------------------------------------------------------------------------------------------------

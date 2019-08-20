@@ -1,9 +1,6 @@
 include <z-config.scad>
 use <z.scad>
 
-XEndStopMountCX=5;
-NutScaleInc=0.05;
-
 module Chain_Mount_Holes() {
   hbz=19;
   // Holes
@@ -29,33 +26,6 @@ module Chain_Mount_Solid(clr=undef) {
     }
     translate([-1, -15.3, 0]) Chain_Mount_Holes();
   }
-}
-
-module EndStop_Mount(esbx=CARCX/2-3, cx=XEndStopMountCX, clr="MediumSeaGreen") {
-  eslbx=-CARCX/2;
-  esby=27;
-  esbz=CARTopZBeg+14.3;
-  color(clr) 
-  difference() {
-    union() {
-      hull() {
-        translate([esbx-cx-5, esby-1, CARTopZBeg+22.5]) rotate([0, 90, 0]) cylinder(d=13.8, h=cx, $fn=17);
-        translate([esbx-cx-5, esby-8, CARTopZBeg]) cube([cx, 14, 16]);
-      }
-      // Шайбы
-      translate([esbx-cx-0.2, esby-0.89, CARTopZBeg+5.15]) rotate([0, 90, 0]) cylinder(d=7, h=1.8);
-      translate([esbx-cx-0.2, esby-0.89, CARTopZBeg+23.45]) rotate([0, 90, 0]) cylinder(d=7, h=1.8);
-      // Connector
-      translate([esbx-cx-5, esby-16, CARTopZBeg]) cube([cx, 22, 13]);
-    }
-    // Holes
-    translate([esbx-20, esby-0.89, CARTopZBeg+5.15]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
-    translate([esbx-20, esby-0.89, CARTopZBeg+23.45]) rotate([0, 90, 0]) cylinder(d=3.2, h=30);
-    // Nuts
-    translate([esbx-cx-3, esby-0.9, CARTopZBeg+5.2]) scale([3, 1+NutScaleInc, 1+NutScaleInc]) rotate([0, 90]) nut("M3");
-    translate([esbx-cx-3, esby-0.9, CARTopZBeg+23.5]) scale([3, 1+NutScaleInc, 1+NutScaleInc]) rotate([0, 90]) nut("M3");
-  }
-  %translate([esbx, esby-0.89, esbz]) rotate([-90]) opt_endstop();
 }
 
 module CoreXY_Direct_Drive_Base(clr=undef, noSharper=true) {
@@ -100,10 +70,10 @@ module CoreXY_Direct_Drive_v2(clr="MediumSeaGreen", rendStop=false, lendStop=tru
       }
     }
     if(rendStop) {
-      EndStop_Mount(esbx, cx, clr);
+      X_EndStop_Mount(esbx, cx, clr);
     }
     if(lendStop) {
-      translate([0, 0, 0]) mirror([1, 0, 0]) EndStop_Mount(esbx, cx, clr);
+      translate([0, 0, 0]) mirror([1, 0, 0]) X_EndStop_Mount(esbx, cx, clr);
     }
     // Middle connector
     if(rendStop && lendStop) {
