@@ -88,8 +88,11 @@ module Full_Assembly(smallFan=false) {
   }
 }
 
-translate([0, -70, 0]) Full_Assembly();
-translate([0,  70, 0]) Full_Assembly(true);
+Full_Assembly();
+
+//translate([0, -70, 0]) Full_Assembly();
+//translate([0,  70, 0]) Full_Assembly(true);
+
 //rotate([-90]) Tevo_Titan_Adapter_1();
 //rotate([0, -90]) Tevo_Titan_SinkFan();
 //rotate([0, -90]) Tevo_Titan_SinkFan(smallFan=true);
