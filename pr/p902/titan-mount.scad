@@ -13,17 +13,38 @@ module Tevo_Titan_Adapter_1(clr=undef, cla=undef) {
       Tevo_Titan_Adapter(clr, cla);
       translate([14.35, -BotCY, 24.7]) cube([4.33, BotCY, CarThick+1]);
       translate([16, -BotCY+7, 27.94]) cube([13.47, BotCY-10, CarThick-0.3]);
+      translate([14.35, -4, 31]) cube([36, 4, 47]);
+      translate([19, -2.8, 70]) rotate([90]) cylinder(d=8, h=3);
     }
     color("Red") {
       // Remove 30mm fan
       translate([0, -BotCY-5, 24.7-40]) cube([40, BotCY+10, 40]);
       translate([18.64, -BotCY-3, 24.7]) cube([4.33, BotCY+6, CarThick-2.17]);
       // Remove top garbage
-      translate([-10, -70.9, 33]) cube([100, 20, 40]);
+      translate([40, -70.9, 33]) cube([40, 19.23, 40]);
+      translate([-10, -70.9, 33]) cube([50, 22, 40]);
       translate([44.1, -70, 10]) cube([5, 30, 40]);
       // E3D
       translate([36.5, -38, -30]) cylinder(d=25.2, h=100);
+      // top
+      translate([40, -70.9, 78]) cube([30, 90, 50]);
+      // Fan duct holes
+      translate([18.34, 25, 48]) {
+        hull() {
+          rotate([90]) cylinder(d=3.5, h=50);
+          translate([0, 0, -3]) rotate([90]) cylinder(d=3.5, h=50);
+        }
+      }
+      translate([18.34, 25, 39]) {
+        hull() {
+          rotate([90]) cylinder(d=3.5, h=50);
+          translate([0, 0, -3]) rotate([90]) cylinder(d=3.5, h=50);
+        }
+      }
+      translate([19, 25, 70]) rotate([90]) cylinder(d=3.2, h=50);
     }
+  }
+  color("Red") {
   }
 }
 
@@ -79,20 +100,20 @@ module Full_Assembly(smallFan=false) {
     %translate([-11.1, -11, 35.6]) E3D_Titan_Base(cla=.5);
     %translate([0, -11, 9.12]) rotate([0, 0, 90]) E3D_v6_175(cla=.5);
   }
-  %translate([-40.5, 47, -17]) {
+  translate([-40.5, 47, -17]) {
     Tevo_Titan_Adapter_1("MediumSeaGreen");
-    Tevo_Titan_SinkFan("Red", smallFan=smallFan);
+    Tevo_Titan_SinkFan("Yellow", smallFan=smallFan);
   }
   if (true) {
     %translate([21.7, 75.4, -30]) Tevo_Titan_FanDuct();
   }
 }
 
-Full_Assembly();
+//Full_Assembly();
 
 //translate([0, -70, 0]) Full_Assembly();
 //translate([0,  70, 0]) Full_Assembly(true);
 
-//rotate([-90]) Tevo_Titan_Adapter_1();
+rotate([-90]) Tevo_Titan_Adapter_1();
 //rotate([0, -90]) Tevo_Titan_SinkFan();
 //rotate([0, -90]) Tevo_Titan_SinkFan(smallFan=true);
