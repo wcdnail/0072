@@ -7,14 +7,15 @@ $fn=64;
 module Tevo_Titan_Adapter_1(clr=undef, cla=undef) {
   BotCY=60.26;
   color(clr, cla) 
-  render() 
+  //render() 
   difference() {
     union() {
       Tevo_Titan_Adapter(clr, cla);
       translate([14.35, -BotCY, 24.7]) cube([4.33, BotCY, CarThick+1]);
       translate([16, -BotCY+7, 27.94]) cube([13.47, BotCY-10, CarThick-0.3]);
-      translate([14.35, -4, 31]) cube([36, 4, 47]);
-      translate([19, -2.8, 70]) rotate([90]) cylinder(d=8, h=3);
+      translate([14.35, -3.4, 31]) cube([36, 3.4, 47]);
+      // Wire mount thicker
+      translate([19, -2.6, 70]) rotate([90]) cylinder(d=6.4, h=1.6);
     }
     color("Red") {
       // Remove 30mm fan
@@ -41,10 +42,13 @@ module Tevo_Titan_Adapter_1(clr=undef, cla=undef) {
           translate([0, 0, -3]) rotate([90]) cylinder(d=3.5, h=50);
         }
       }
+      // Holes & holes
       translate([19, 25, 70]) rotate([90]) cylinder(d=3.2, h=50);
+      translate([33.7, 2, 79.7]) rotate([90]) cylinder(d=16, h=8);
     }
   }
   color("Red") {
+    
   }
 }
 
@@ -105,7 +109,7 @@ module Full_Assembly(smallFan=false) {
     Tevo_Titan_SinkFan("Yellow", smallFan=smallFan);
   }
   if (true) {
-    %translate([21.7, 75.4, -30]) Tevo_Titan_FanDuct();
+    %translate([21.7, 75.4, -30]) Tevo_Titan_FanDuct("Yellow");
   }
 }
 
