@@ -864,3 +864,11 @@ module X_EndStop_Mount(esbx=CARCX/2-3, cx=XEndStopMountCX, clr=undef, clra=undef
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+
+module StandAlone_Fan_Duct_x2_40() {
+  translate([97.47, -5.99, -53]) import("../parts/Fan_Duct_5_E3D_v5_40_LQ.stl");
+}
+
+module StandAlone_Fan_Duct_x2_40_HQ() {
+  import("../parts/Fan_Duct_5_E3D_v5_40_HQ.stl");
+}

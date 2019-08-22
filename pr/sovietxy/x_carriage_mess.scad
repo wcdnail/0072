@@ -32,10 +32,6 @@ module CoreXY_X_Carriage_Middle(noSensor=true) {
     }
 }
 
-module StandAlone_Fan_Duct_x2_40() {
-  translate([97, -5.8, -58.9]) import("../parts/Fan_Duct_5_E3D_v5_40_LQ.stl");
-}
-
 module CoreXY_Assemled_Carriage(noRordsCheck=false, withMotor=false) {
   LDA=true;
   // Каретка с хот-ендом
