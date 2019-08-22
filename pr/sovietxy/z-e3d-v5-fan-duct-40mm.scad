@@ -8,9 +8,13 @@ use <x_carriage_lda_v1.3.scad>
 use <../parts/fans.scad>
 use <../parts/chamfers.scad>
 
+$fn=18;
+
+JustFanDuct=false;
 ShowCar=true;
 ShowDuct=true;
 ShowProbeMount=true;
+NoHotEnd=false;
 
 ProbeX=1.86;
 ProbeY=52;
@@ -72,52 +76,60 @@ module SA_FanDuct_2() {
   x=ProbeX+ProbeConSX/2;
   sx=ProbeConSX;
   cz=ProbeHeight*1;
-  translate([0, 0, 0]) StandAlone_Fan_Duct_x2_40();
-  difference() {
-    union() {
-      translate([ProbeX+sx/2, 15, -63+ProbeZ+cz/2+1]) ChamferCyl(ProbeCX-sx, 30, cz, center=true);
-      translate([ProbeX, 0, -63+ProbeZ+cz/2+1]) ChamferCyl(45, 30, cz*2, center=true);
+  //union() {
+    translate([0, 0, 0]) StandAlone_Fan_Duct_x2_40();
+    render() difference() {
+      union() {
+        translate([ProbeX+sx/2, 15, -63+ProbeZ+cz/2+1]) ChamferCyl(ProbeCX-sx, 30, cz, center=true);
+        translate([ProbeX, 0, -63+ProbeZ+cz/2+1]) ChamferCyl(45, 30, cz*2, center=true);
+      }
+      color("Red") {
+        translate([0, 0, -100]) scale([1, 1, 1]) cylinder(h=250, d=25.55);
+        // Back slice
+        translate([ProbeX, 0, -63+ProbeZ+cz/2+1]) cube([100, 3, 100], center=true);
+        // Vert holes
+        translate([x-7, ProbeY-26.5, -63+ProbeZ-20]) cylinder(d=3.2, h=40);
+        translate([x+7, ProbeY-26.5, -63+ProbeZ-20]) cylinder(d=3.2, h=40);
+        // Nuts
+        translate([x-7, ProbeY-26.5, -63+ProbeZ+3]) scale([1, 1, 2]) nut("M3");
+        translate([x+7, ProbeY-26.5, -63+ProbeZ+3]) scale([1, 1, 2]) nut("M3");
+        // Horiz bolt
+        translate([-16, 50, -63+ProbeZ+cz/2+1]) rotate([90]) cylinder(d=4.4, h=100);
+        // Fan slice
+        translate([ProbeX-2, 0, -63+ProbeZ+cz/2+1]) rotate([0, 90]) cylinder(d1=28, d2=44, h=30);
+      }
     }
-    color("Red") {
-      translate([0, 0, -100]) scale([1, 1, 1]) cylinder(h=250, d=24.55);
-      // Fan slice
-      translate([ProbeX-2, 0, -63+ProbeZ+cz/2+1]) rotate([0, 90]) cylinder(d1=28, d2=45, h=30);
-      // Back slice
-      translate([ProbeX, 0, -63+ProbeZ+cz/2+1]) cube([100, 3, 100], center=true);
-      // Vert holes
-      translate([x-7, ProbeY-26.5, -63+ProbeZ-20]) cylinder(d=3.2, h=40);
-      translate([x+7, ProbeY-26.5, -63+ProbeZ-20]) cylinder(d=3.2, h=40);
-      // Nuts
-      translate([x-7, ProbeY-26.5, -63+ProbeZ+3]) scale([1, 1, 2]) nut("M3");
-      translate([x+7, ProbeY-26.5, -63+ProbeZ+3]) scale([1, 1, 2]) nut("M3");
-      // Horiz bolt
-      translate([-16, 50, -63+ProbeZ+cz/2+1]) rotate([90]) cylinder(d=4.4, h=100);
+  //}
+  if (!NoHotEnd) {
+    if (LiftDownHotend) {
+      %translate([0, 0, -5.3]) E3D_v5_temp(fitting=true);
+    }
+    else {
+      %translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp();
     }
   }
-  if (LiftDownHotend) {
-    %translate([0, 0, -5.3]) E3D_v5_temp(fitting=true);
-  }
-  else {
-    %translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp();
-  }
-  color("Red") {
-    
+  color("Red", 0.7) {
   }
 }
 
-if (ShowCar) {
-  if (LiftDownHotend) {
-    %translate([0, 0, 21.5]) rotate([180]) CoreXY_X_Carriage_v3_wLDA(true, "MediumSeaGreen", false);
+if (JustFanDuct) {
+  StandAlone_Fan_Duct_x2_40();
+}
+else {
+  translate([0, 0, 70]) {
+    if (ShowCar) {
+      if (LiftDownHotend) {
+        %translate([0, 0, 21.5]) rotate([180]) CoreXY_X_Carriage_v3_wLDA(true, "MediumSeaGreen", false);
+      }
+      else {
+        %CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
+      }
+    }
+    if (ShowDuct) {
+      SA_FanDuct_2();
+    }
+    if (ShowProbeMount) {
+      Z_Probe_Holder();
+    }
   }
-  else {
-    %CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
-  }
 }
-
-if (ShowDuct) {
-  SA_FanDuct_2();
-}
-if (ShowProbeMount) {
-  Z_Probe_Holder();
-}
-
