@@ -4,11 +4,16 @@ include <titan-common.scad>
 
 $fn=64;
 
+ShowAll=true;
+PreRender=true;
+ShowMounter=false;
+ShowSinkFan40=false;
+ShowSinkFan30=false;
+ShowFanDuct=false;
+
 module Tevo_Titan_Adapter_1(clr=undef, cla=undef) {
   BotCY=60.26;
-  color(clr, cla) 
-  //render() 
-  difference() {
+  color(clr, cla) difference() {
     union() {
       Tevo_Titan_Adapter(clr, cla);
       translate([14.35, -BotCY, 24.7]) cube([4.33, BotCY, CarThick+1]);
@@ -105,7 +110,12 @@ module Full_Assembly(smallFan=false) {
     %translate([0, -11, 9.12]) rotate([0, 0, 90]) E3D_v6_175(cla=.5);
   }
   translate([-40.5, 47, -17]) {
-    Tevo_Titan_Adapter_1("MediumSeaGreen");
+    if (PreRender) {
+      color("MediumSeaGreen") render() Tevo_Titan_Adapter_1();
+    }
+    else {
+      Tevo_Titan_Adapter_1("MediumSeaGreen");
+    }
     Tevo_Titan_SinkFan("Yellow", smallFan=smallFan);
   }
   if (true) {
@@ -113,11 +123,22 @@ module Full_Assembly(smallFan=false) {
   }
 }
 
-//Full_Assembly();
-
-//translate([0, -70, 0]) Full_Assembly();
-//translate([0,  70, 0]) Full_Assembly(true);
-
-rotate([-90]) Tevo_Titan_Adapter_1();
-//rotate([0, -90]) Tevo_Titan_SinkFan();
-//rotate([0, -90]) Tevo_Titan_SinkFan(smallFan=true);
+if (ShowAll) {
+  Full_Assembly();
+}
+if (false) {
+  translate([0, -70, 0]) Full_Assembly();
+  translate([0,  70, 0]) Full_Assembly(true);
+}
+if (ShowMounter) {
+  rotate([-90]) Tevo_Titan_Adapter_1();
+}
+if (ShowSinkFan40) {
+  rotate([0, -90]) Tevo_Titan_SinkFan();
+}
+if (ShowSinkFan30) {
+  rotate([0, -90]) Tevo_Titan_SinkFan(smallFan=true);
+}
+if (ShowFanDuct) {
+  translate([0, 0, 0]) Tevo_Titan_FanDuct("Yellow");
+}

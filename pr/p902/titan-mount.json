@@ -1,0 +1,50 @@
+{
+    "parameterSets": {
+        "All": {
+            "$fn": "64",
+            "ShowAll": "true",
+            "ShowFanDuct": "false",
+            "ShowMounter": "false",
+            "ShowSinkFan30": "false",
+            "ShowSinkFan40": "false"
+        },
+        "SinkFan40": {
+            "$fn": "64",
+            "PreRender": "false",
+            "ShowAll": "false",
+            "ShowFanDuct": "false",
+            "ShowMounter": "false",
+            "ShowSinkFan30": "false",
+            "ShowSinkFan40": "true"
+        },
+        "Mount": {
+            "$fn": "64",
+            "PreRender": "false",
+            "ShowAll": "false",
+            "ShowFanDuct": "false",
+            "ShowMounter": "true",
+            "ShowSinkFan30": "false",
+            "ShowSinkFan40": "false"
+        },
+        "SinkFan30": {
+            "$fn": "64",
+            "PreRender": "false",
+            "ShowAll": "false",
+            "ShowFanDuct": "false",
+            "ShowMounter": "false",
+            "ShowSinkFan30": "true",
+            "ShowSinkFan40": "false"
+        },
+        "FanDuct": {
+            "$fn": "64",
+            "PreRender": "false",
+            "ShowAll": "false",
+            "ShowFanDuct": "true",
+            "ShowMounter": "false",
+            "ShowSinkFan30": "false",
+            "ShowSinkFan40": "false"
+        }
+    },
+    "fileFormatVersion": "1",
+    "parameterSets": ""
+}
