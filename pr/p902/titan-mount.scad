@@ -1,5 +1,6 @@
 use <../parts/fans.scad>
 use <../parts/chamfers.scad>
+use <../parts/open-cable-chain/new-chain.scad>
 include <titan-common.scad>
 
 $fn=64;
@@ -10,17 +11,31 @@ ShowMounter=false;
 ShowSinkFan40=false;
 ShowSinkFan30=false;
 ShowFanDuct=false;
+WithChainMount=false;
+ChainMounterHeight=32;
+ChainMounterXOffs=5.9;
+ChainMounterHullD=18;
 
-module Tevo_Titan_Adapter_1(clr=undef, cla=undef) {
+module Tevo_Titan_Adapter_1(clr=undef, cla=undef, noChain=!WithChainMount) {
   BotCY=60.26;
   color(clr, cla) difference() {
     union() {
       Tevo_Titan_Adapter(clr, cla);
       translate([14.35, -BotCY, 24.7]) cube([4.33, BotCY, CarThick+1]);
       translate([16, -BotCY+7, 27.94]) cube([13.47, BotCY-10, CarThick-0.3]);
-      translate([14.35, -3.4, 31]) cube([36, 3.4, 47]);
-      // Wire mount thicker
-      translate([19, -2.6, 70]) rotate([90]) cylinder(d=6.4, h=1.6);
+      if (noChain) {
+        translate([14.35, -3.4, 31]) cube([36, 3.4, 51.3]);
+        // Wire mount washer
+        translate([19, -2.6, 70]) rotate([90]) cylinder(d=6.4, h=1.6);
+      }
+      else {
+        hull() {
+          cmod=ChainMounterHullD;
+          translate([ChainMounterXOffs+17.5, 0, 69.65+ChainMounterHeight-1.45]) rotate([90]) cylinder(d=cmod, h=3.4);
+          translate([ChainMounterXOffs+27.5, 0, 69.65+ChainMounterHeight-1.45]) rotate([90]) cylinder(d=cmod, h=3.4);
+          translate([14.35, -3.4, 31]) cube([36, 3.4, 49]);
+        }
+      }
     }
     color("Red") {
       // Remove 30mm fan
@@ -32,8 +47,6 @@ module Tevo_Titan_Adapter_1(clr=undef, cla=undef) {
       translate([44.1, -70, 10]) cube([5, 30, 40]);
       // E3D
       translate([36.5, -38, -30]) cylinder(d=25.2, h=100);
-      // top
-      translate([40, -70.9, 78]) cube([30, 90, 50]);
       // Fan duct holes
       translate([18.34, 25, 48]) {
         hull() {
@@ -47,13 +60,20 @@ module Tevo_Titan_Adapter_1(clr=undef, cla=undef) {
           translate([0, 0, -3]) rotate([90]) cylinder(d=3.5, h=50);
         }
       }
-      // Holes & holes
-      translate([19, 25, 70]) rotate([90]) cylinder(d=3.2, h=50);
+      // Titan adjustment
       translate([33.7, 2, 79.7]) rotate([90]) cylinder(d=16, h=8);
+      if (noChain) { // Wire mount hole
+        translate([19, 25, 70]) rotate([90]) cylinder(d=3.2, h=50);
+      }
+      // Top slice
+      //translate([48, noChain ? 60.9 : -70.9, 78]) cube([30, 67.5, 50]);
+      // Chain mount holes
+      cmbhd=3.4;
+      translate([ChainMounterXOffs+17.5, 20, 69.65+ChainMounterHeight-1.45]) rotate([90]) cylinder(d=cmbhd, h=30);
+      translate([ChainMounterXOffs+27.5, 20, 69.65+ChainMounterHeight-1.45]) rotate([90]) cylinder(d=cmbhd, h=30);
     }
   }
   color("Red") {
-    
   }
 }
 
@@ -120,6 +140,24 @@ module Full_Assembly(smallFan=false) {
   }
   if (true) {
     %translate([21.7, 75.4, -30]) Tevo_Titan_FanDuct("Yellow");
+  }
+  if (WithChainMount) { // Chain 
+    color("Pink") translate([ChainMounterXOffs-44, 47.5, ChainMounterHeight+40]) 
+      rotate([-90, 0, 0]) 
+      rotate([0, 0, -90]) {
+        //render() { 
+          nobar_end1();
+          translate([0, -17, 2]) rotate([-5, 0, 0]) {
+            nobar_chain();
+            translate([0, -17, 2]) rotate([-5, 0, 0]) {
+              nobar_chain();
+              translate([0, -17, 2]) rotate([-5, 0, 0]) {
+                nobar_chain();
+              }
+            }
+          }
+        //}
+      }
   }
 }
 
