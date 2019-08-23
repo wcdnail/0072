@@ -37,4 +37,8 @@ module ChamferBox(scx, scy, scz, diam=3, center=false) {
     }
 }
 
+module chamfer_cube(v3, d=3, center=false) {
+    ChamferCyl(v3[0], v3[1], v3[2], diam=d, center=center);
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
