@@ -35,8 +35,11 @@ module Y_EndStop_Mount(clr=undef, clra=undef) {
     difference() {
       union() {
         EndStop_Mount(cy, clr, clra);
-        translate([0, 9, -20.8]) cube([5.84, 38, 2], center=true);
-        translate([0, 9, -18.8]) cube([20, 38, 3], center=true);
+        translate([0, 7.5, -20.8]) cube([5.84, 35, 2], center=true);
+        translate([0, 1, -18.8]) hull() {
+          cube([20, 20, 3], center=true);
+          translate([0, 16, -1.5]) cylinder(d=20, h=3);
+        }
         hull() {
           translate([0, -7, -10]) cube([11, cy, 1], center=true);
           translate([0, -7, -17.8]) cube([20, cy, 5], center=true);
@@ -46,7 +49,7 @@ module Y_EndStop_Mount(clr=undef, clra=undef) {
       color("Red") {
         translate([0, -50, -9.15]) rotate([0, 0, 90]) rotate([0, 90]) cylinder(d=3.3, h=100);
         translate([0, 17, -50]) cylinder(d=5.2, h=100);
-        translate([0, 17, -18]) cylinder(d=10, h=30);
+        //translate([0, 17, -18]) cylinder(d=10, h=30);
       }
     }
   }
