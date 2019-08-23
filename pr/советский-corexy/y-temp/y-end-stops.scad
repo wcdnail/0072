@@ -30,27 +30,27 @@ module EndStop_Mount(cy=6, clr=undef, clra=undef) {
 
 module Y_EndStop_Mount(clr=undef, clra=undef) {
   cy=6;
+  cz=6;
   translate([10.5, -38, 20.5]) {
     difference() {
       union() {
         EndStop_Mount(cy, clr, clra);
         color(clr, clra) {
-          translate([0, 7.5, -20.8]) cube([5.84, 35, 2], center=true);
-          translate([0, 1, -18.8]) hull() {
-            cube([20, 20, 3], center=true);
-            translate([0, 16, -1.5]) cylinder(d=20, h=3);
+          translate([0, 7.5, -21.3]) cube([5.84, 35, 2], center=true);
+          translate([0, 1, -20.47+cz/2]) hull() {
+            cube([20, 20, cz], center=true);
+            translate([0, 16, -cz/2]) cylinder(d=20, h=cz);
           }
           hull() {
             translate([0, -7, -10]) cube([11, cy, 1], center=true);
-            translate([0, -7, -17.8]) cube([20, cy, 5], center=true);
+            translate([0, -7, -20.47+cz/2]) cube([20, cy, cz], center=true);
           }
-          translate([0, 17, -18]) cylinder(d=15, h=2);
         }
       }
       color("Red") {
         translate([0, -50, -9.15]) rotate([0, 0, 90]) rotate([0, 90]) cylinder(d=3.3, h=100);
         translate([0, 17, -50]) cylinder(d=5.2, h=100);
-        //translate([0, 17, -18]) cylinder(d=10, h=30);
+        translate([0, -7.4, -9.15]) rotate([0, 0, 90]) rotate([0, 90]) scale([1+NutScaleInc, 1+NutScaleInc, 1+NutScaleInc+1]) nut("M3");
       }
     }
   }
@@ -119,10 +119,8 @@ module Y_Endstop_Term_Prod() {
   translate([0, 0, 28.85]) rotate([0, 180, 0]) Y_Endstop_Term();
 }
 
-/*
 Two_Endstops();
 translate([7, -40, 0]) rotate([0, 0, -90]) Y_Endstop_Term_Prod();
-mirror([1, 0, 0]) translate([-37, -40, 0]) rotate([0, 0, -90]) Y_Endstop_Term_Prod();
-*/
+translate([45, -40, 0]) rotate([0, 0, 90]) rotate([0, 0, -90]) Y_Endstop_Term_Prod();
 
-Endstops_Mess();
+//Endstops_Mess();
