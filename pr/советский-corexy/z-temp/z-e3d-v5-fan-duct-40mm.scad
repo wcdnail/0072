@@ -7,12 +7,12 @@ use <../e3d-v5/e3d_v5_liftdown_adapter.scad>
 use <../../parts/fans.scad>
 use <../../parts/chamfers.scad>
 
-$fn=18;
+$fn=24;
 
 JustFanDuct=false;
-ShowCar=true;
+ShowCar=false;
 ShowDuct=true;
-ShowProbeMount=true;
+ShowProbeMount=false;
 NoHotEnd=false;
 
 ProbeX=1.86;
