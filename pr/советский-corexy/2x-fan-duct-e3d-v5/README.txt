@@ -36,3 +36,6 @@ EDIT: Some people asked me if there is the possibility for a 40mm hotend fan. It
 
 
 Have fun!
+
+
+2019-08-42 [MadeIn USSR]:  Append mount for capacitive probe LJC18A3-H-Z/BX
