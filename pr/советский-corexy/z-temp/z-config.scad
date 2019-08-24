@@ -1,8 +1,8 @@
 include <../../../openscad/libs/nutsnbolts/cyl_head_bolt.scad>
 include <../../../openscad/libs/nutsnbolts/materials.scad>
 include <../../../openscad/libs/dim1/dimlines.scad>
-use <../../parts/chamfers.scad>
 use <../../../openscad/nema17.scad>
+use <../../parts/chamfers.scad>
 
 // OpenSCAD params...
 $fn=64;

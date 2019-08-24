@@ -1,5 +1,5 @@
 include <z-config.scad>
-use <z-fan-duct.scad>
+use <../z-fan-duct-v5-30mm/z-fan-duct.scad>
 use <../x-carriage/x_carriage_mess.scad>
 use <../x-carriage/x_carriage_directdrive_enhanced.scad>
 

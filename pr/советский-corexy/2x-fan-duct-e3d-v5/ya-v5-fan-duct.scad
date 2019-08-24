@@ -11,6 +11,7 @@ NoHotEnd=false;
 ShowCar=true;
 OnlyFanDuct=false;
 Show4Render=false;
+ShowOnlyBackFanMount=false;
 
 module Z_Probe_Draft(tnutz=21.5, hcz=ProbeMountCZ) {
   nutcz=ProbeNutHeight;
@@ -45,6 +46,7 @@ module YA_FanDuct_Back_Mount_All(onlyMount, showProbe=true) {
               translate([-pmconcx, pmsize[1]-pmhdiam/2, 0]) cylinder(d=pmhdiam, h=pmsize[2]);
             }
           }
+          translate(pmpos+[pmsize[0]-2.5, 0, 30-pmsize[2]]) cube(pmsize-[2.5, 0, 0]);
         }
       }
       else { // Probe holder
@@ -64,8 +66,8 @@ module YA_FanDuct_Back_Mount_All(onlyMount, showProbe=true) {
           bhdsx=1;
           bhdsy=4;
           nutsz=3.5;
-          translate([-pmconcx+bhdsx, pmhdiam/2+bhdsy, -1.5]) { cylinder(d=bhd, h=pmsize[2]*3); translate([0, 0, nutsz]) scale([1.02, 1.02, 2]) nut("M3"); }
-          translate([-pmconcx+bhdsx, pmsize[1]-pmhdiam/2-bhdsy, -1.5]) { cylinder(d=bhd, h=pmsize[2]*3); translate([0, 0, nutsz]) scale([1.02, 1.02, 2]) nut("M3"); }
+          translate([-pmconcx+bhdsx, pmhdiam/2+bhdsy, -1.5]) { cylinder(d=bhd, h=pmsize[2]*3); translate([0, 0, nutsz]) scale([1.05, 1.05, 2]) nut("M3"); }
+          translate([-pmconcx+bhdsx, pmsize[1]-pmhdiam/2-bhdsy, -1.5]) { cylinder(d=bhd, h=pmsize[2]*3); translate([0, 0, nutsz]) scale([1.05, 1.05, 2]) nut("M3"); }
       }
       // Probe hole
       translate(pmpos+[0, 0, pmsize[2]+0.1]) {
@@ -93,7 +95,9 @@ module YA_FanDuct_Full() {
 
 if (Show4Render) {
   YA_FanDuct_Back_Mount_All(false);
-  translate([54, 0, -ProbeMountCZ]) YA_FanDuct_Back_Mount_All(true, false);
+  if (!ShowOnlyBackFanMount) {
+    translate([54, 0, -ProbeMountCZ]) YA_FanDuct_Back_Mount_All(true, false);
+  }
 }
 else if (OnlyFanDuct) {
   YA_FanDuct_Full();

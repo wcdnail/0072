@@ -1,5 +1,5 @@
 include <../z-temp/z-config.scad>
-use <../z-temp/z-fan-duct.scad>
+use <../z-fan-duct-v5-30mm/z-fan-duct.scad>
 use <../z-temp/z.scad>
 use <../e3d-v5/e3d_v5_liftdown_adapter.scad>
 use <x_carriage_directdrive_enhanced.scad>
