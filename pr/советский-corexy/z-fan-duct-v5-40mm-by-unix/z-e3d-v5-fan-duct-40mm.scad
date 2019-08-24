@@ -1,5 +1,5 @@
-include <z-config.scad>
-use <z.scad>
+include <../z-temp/z-config.scad>
+use <../z-temp/z.scad>
 use <../x-carriage/x_carriage_directdrive_enhanced.scad>
 use <../x-carriage/x_endstop_term.scad>
 use <../x-carriage/x_carriage_lda_v1.3.scad>
