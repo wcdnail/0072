@@ -248,7 +248,7 @@ module Top_Frame_sizes(center=true) {
   }
 }
 
-module Belt_6(itsY=false) {
+module Belt_6_Bad(itsY=false) {
   BPs=[N17Width/2, N17Width/2, 0];
   translate([0, 0, TOPFrameZ+BARCZ+28.9]) {
     Xl=-6.1;
@@ -287,6 +287,15 @@ module Belt_6(itsY=false) {
   }
 }
 
+module Belt_6() {
+  GT2H=1.5;
+  BPs=[N17Width/2, N17Width/2, 0];
+  
+  translate(BPs+[0, BARYLen/2-23.45, 0]) cube([BARXLen/2-20, 2, 6]);
+  translate(BPs+[0, BARYLen/2-23.45, 0]) cylinder(d=12+GT2H, h=6);
+  translate(BPs) cylinder(d=12+GT2H, h=6);
+}
+
 // Assembly
 module SovietXY_Asm(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
   sx = center ? -BARXLen/2 : 0;
@@ -302,10 +311,12 @@ module SovietXY_Asm(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
     }
     Bed_v2();
     if (true) {
-      // X Belt
-      %color("Blue", 0.7) Belt_6($fn=3);
-      // Y Belt
-      %color("Red", 0.7) translate([BARXLen, 0, 7]) mirror([1, 0, 0]) Belt_6(itsY=true, $fn=3);
+      translate([0.2, 0, TOPFrameZ+BARCZ+28.9]) {
+        // X Belt
+        %color("Blue", 0.7) Belt_6();
+        // Y Belt
+        //%color("Red", 0.7) translate([BARXLen, 0, 7]) mirror([1, 0, 0]) Belt_6();
+      }
     }
     if (!skipDims) {
       color("Black") {
