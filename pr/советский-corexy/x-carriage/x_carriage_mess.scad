@@ -1,10 +1,16 @@
 include <../z-temp/z-config.scad>
 use <../z-fan-duct-v5-30mm/z-fan-duct.scad>
+use <../2x-fan-duct-e3d-v5/ya-v5-fan-duct.scad>
 use <../z-temp/z.scad>
 use <../e3d-v5/e3d_v5_liftdown_adapter.scad>
 use <x_carriage_directdrive_enhanced.scad>
 use <x_endstop_term.scad>
 use <x_carriage_lda_v1.3.scad>
+
+OnlyXYA=false;
+ShowLeftSide=true;
+ShowRightSide=true;
+ShowPulleys=false;
 
 module CoreXY_X_Carriage_Middle(noSensor=true) {
     difference() {
@@ -32,31 +38,46 @@ module CoreXY_X_Carriage_Middle(noSensor=true) {
 }
 
 module CoreXY_Assemled_Carriage(noRordsCheck=false, withMotor=false) {
+  CarZOffs=-0.8;
   LDA=true;
-  // Каретка с хот-ендом
-  if (LDA) {
-    translate([0, 0, 21.5]) rotate([180]) CoreXY_X_Carriage_v3_wLDA(true, "MediumSeaGreen", false);
-    translate([0, 0, -5.3]) E3D_v5_temp(fitting=true);
-  }
-  else {
-    CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
-    translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp();
-  }
-  // Fan duct
-  if (false) {
-    color("Orange") StandAlone_Fan_Duct_x2_40();
+  if (!OnlyXYA) {
+    // Каретка с хот-ендом
+    if (LDA) {
+      translate([0, 0, 21.5+CarZOffs]) rotate([180]) CoreXY_X_Carriage_v3_wLDA(true, "MediumSeaGreen", false);
+      translate([0, 0, -5.3]) E3D_v5_temp(fitting=true);
+    }
+    else {
+      CoreXY_X_Carriage_v2(true, "MediumSeaGreen", false);
+      translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp();
+    }
+    // Fan duct
+    if (true) {
+      rotate([0, 0, -90]) YA_FanDuct_Full(62);
+    }
+    translate([0, 0, CarZOffs]) {
+      translate([0, 0, 0.1]) CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true, renderBase=true, noChainMount=false);
+      color("SteelBlue") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
+      if (withMotor) {
+        translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
+      }
+      mirror([1, 0, 0]) translate([95, 0, CarZOffs]) X_EndStop_Stand();
+      translate([90, 0, CarZOffs]) X_EndStop_Stand();
+    }
   }
   // Направляющие
   if (!noRordsCheck) {
-    %x_end_rods_check();
-    mirror([1, 0, 0]) translate([95, 0, 0]) X_EndStop_Stand();
-    %translate([115, -XENDCY/2, 10]) r_x_end();
-    translate([90, 0, 0]) X_EndStop_Stand();
-  }
-  translate([0, 0, 0.1]) CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true, renderBase=true, noChainMount=false);
-  color("SteelBlue") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
-  if (withMotor) {
-    translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
+    if (ShowLeftSide) {
+      %x_end_rods_check(175, showPulleys=ShowPulleys);
+      %translate([-123.5, -XENDCY/2+120, -5]) { l_idler("Green", 0.8, showPulleys=ShowPulleys); L_Idler_Pulley_Nut(); }
+      %translate([-120, -XENDCY/2, 10]) L_Pulley_Nut();
+      %translate([-118.5, -XENDCY/2-70, -5]) l_motor("Green", 0.8);
+    }
+    if (ShowRightSide){
+      %translate([115, -XENDCY/2, 10]) r_x_end(showPulleys=ShowPulleys);
+      %translate([118.5, -XENDCY/2+120, -5]) { r_idler("Green", 0.8, showPulleys=ShowPulleys); R_Idler_Pulley_Nut(); }
+      %translate([115, -XENDCY/2, 10]) R_Pulley_Nut();
+      %translate([118.5, -XENDCY/2-70, -5]) r_motor("Green", 0.8);
+    }
   }
 }
 

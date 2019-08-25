@@ -8,7 +8,7 @@ ProbeMountCZ=4.6;
 ProbeNutHeight=4.6;
 LiftDownHotend=true;
 NoHotEnd=false;
-ShowCar=true;
+ShowCar=false;
 OnlyFanDuct=false;
 Show4Render=false;
 ShowOnlyBackFanMount=false;
@@ -82,8 +82,8 @@ module YA_FanDuct_Back_Mount_All(onlyMount, showProbe=true) {
   }
 }
 
-module YA_FanDuct_Full() {
-  translate([0, 0, -62]) {
+module YA_FanDuct_Full(zoffs=62) {
+  translate([0, 0, -zoffs]) {
     color("Green", 1) translate([0., 0, 0]) import("circular_duct.stl");
     color("Yellow", 0.5) translate([0.05, 0, 14.9]) import("fan_mount_40mm.stl");
     translate([-0.05, 0, 19.9]) {

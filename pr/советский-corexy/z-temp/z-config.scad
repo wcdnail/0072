@@ -530,32 +530,171 @@ module l_x_end_bottom_new(clr=undef, clra=undef) {
   color(clr, clra) translate([0, 0, -11]) rotate([0, 0, 0]) import("../x-carriage/x_end-nuts-16x25lm8uu.stl");
 }
 
-module l_x_end_pulley(clra=undef) {
+module XY_Pulley(clra=0.5, pz=0, bz=40, noBoltHead=false) {
   // Bolt
-  color("DimGray", clra) {
-    translate([31.7, 26, 0]) cylinder(h=30, d=3.9);
-    translate([31.7, 26, 30]) cylinder(h=4, d=6.9);
+  %translate([0, 0, -bz+pz+21]) color("DimGray", 0.99) {
+    translate([31.7, 26, 0]) cylinder(h=bz, d=3.9);
+	if (!noBoltHead) {
+	  translate([31.7, 26, bz]) cylinder(h=4, d=6.9);
+	}
   }
-  color("Gainsboro", clra) translate([31.7, 26, 12]) cylinder(h=17, d=18);
+  %color("Gainsboro", clra) translate([31.7, 26, 12 + pz]) {
+    render() union() {
+      cylinder(h=0.7, d=18);
+	  translate([0, 0, 0]) cylinder(h=8.4, d=12.6);
+	  translate([0, 0, 8.4-0.7]) cylinder(h=0.7, d=18);
+	}
+  }
 }
 
-module l_x_end(clr=undef, clra=undef) {
-  l_x_end_pulley(clra);
-  translate([0, 18, 0]) l_x_end_pulley(clra);
+module L_Pulley_Washer() {
+  hdia=20;
+  hcz=1.9;
+  translate([0, 0, 10.8]) color("Red", 0.99) {
+    difference() {
+      union() {
+        hull() {
+          translate([31.7, 26, 0]) cylinder(h=hcz, d=hdia);
+          translate([31.7, 26+18, 0]) cylinder(h=hcz, d=hdia);
+        }
+	    translate([31.7, 26+18, 0]) cylinder(h=6, d1=19, d2=16);
+	    translate([31.7, 26+18, 5.99]) cylinder(h=2.9, d1=12, d2=10);
+      }
+	  translate([31.7, 26, -1]) cylinder(h=20, d=4.2);
+	  translate([31.7, 26+18, -1]) cylinder(h=20, d=4.2);
+	}
+  }
+}
+
+module R_Pulley_Washer() {
+  translate([0, XENDCY, 0]) rotate([0, 0, 180]) L_Pulley_Washer();
+}
+
+XYNutExtDiam=16.99;
+XYNutBoltDiam=4.1;
+XYNutTextScale=[0.35, 0.35, 5];
+
+module L_Pulley_Nut() {
+  hdia=XYNutExtDiam;
+  hcz=1.9;
+  htop=hcz+6.9;
+  translate([0, 0, 10.8]) {
+    color("Lime", 0.7) difference() {
+      union() {
+	    translate([31.7, 26, 0]) cylinder(h=hcz, d=hdia, $fn=6);
+	    translate([31.7, 26+18, 0]) cylinder(h=htop, d=hdia, $fn=6);
+      }
+	  translate([31.7, 26, -1]) cylinder(h=20, d=XYNutBoltDiam);
+	  translate([31.7, 26+18, -1]) cylinder(h=20, d=XYNutBoltDiam);
+	  translate([31.7, 26+18, hcz+3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
+      color("Black") {
+        translate([28, 26, hcz-0.4]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("XE");
+		translate([27.2, 26.5+18, htop-1.2]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("XE");
+      }
+	}
+  }
+}
+
+module R_Pulley_Nut() {
+  translate([0, XENDCY, 0]) rotate([0, 0, 180]) L_Pulley_Nut();
+}
+
+module R_Idler_Pulley_Nut(leftSide=false) {
+  hdia=XYNutExtDiam;
+  hcz=2.6;
+  bncz=hcz + 6.99;
+  h1=leftSide ? bncz : hcz;
+  h2=leftSide ? hcz : bncz;
+  translate([31.7, 26, 25.01]) color("Lime", 0.7) {
+    difference() {
+      union() {
+		translate([-67.05, -51.5, 0]) cylinder(h=h1, d=hdia, $fn=6);
+		translate([-53.85, -36, 0]) cylinder(h=h2, d=hdia, $fn=6);
+      }
+	  translate([-67.05, -51.5, -1]) cylinder(h=20, d=XYNutBoltDiam);
+	  translate([-53.85, -36, -1]) cylinder(h=20, d=XYNutBoltDiam);
+	  if (leftSide) {
+	    translate([-67.05, -51.5, bncz-3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
+	  }
+	  else {
+	    translate([-53.85, -36, bncz-3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
+	  }
+	}
+  }
+}
+
+module L_Idler_Pulley_Nut() {
+  translate([0, 0, 0]) mirror([1, 0, 0]) R_Idler_Pulley_Nut(leftSide=true);
+}
+
+module R_Idler_Pulley_Washer(leftSide=false) {
+  hdia=20;
+  hcz=2.6;
+  translate([31.7, 26, 25.01]) color("Red", 0.99) {
+    difference() {
+      union() {
+        hull() {
+          translate([-67.05, -51.5, 0]) cylinder(h=hcz, d=hdia/2);
+          translate([-53.85, -36, 0]) cylinder(h=hcz, d=hdia);
+        }
+		if (leftSide) {
+		  translate([-67.05, -51.5, 0]) cylinder(h=6+3.6, d1=hdia/2, d2=hdia/2-0.5);
+		}
+		else {
+		  translate([-53.85, -36, 0]) cylinder(h=6, d1=19, d2=16);
+		  translate([-53.85, -36, 5.99]) cylinder(h=3.6, d1=12, d2=10);
+		}
+      }
+	  translate([-67.05, -51.5, -1]) cylinder(h=20, d=4.2);
+	  translate([-53.85, -36, -1]) cylinder(h=20, d=4.2);
+	}
+  }
+}
+
+module L_Idler_Pulley_Washer() {
+  translate([0, 0, 0]) mirror([1, 0, 0]) R_Idler_Pulley_Washer(leftSide=true);
+}
+
+module l_x_end(clr=undef, clra=0.5, togglePulleys=false, showPulleys=true) {
+  if (showPulleys) {
+    shortBolt=33;
+    longBolt=40;
+    pulleyZOffs=0.72;
+    pz1=togglePulleys?pulleyZOffs+7:pulleyZOffs;
+    pz2=togglePulleys?pulleyZOffs:pulleyZOffs+7;
+    bz1=togglePulleys ? longBolt : shortBolt;
+    bz2=togglePulleys ? shortBolt : longBolt;
+    XY_Pulley(clra, pz1, bz1);
+    translate([0, 18, 0]) XY_Pulley(clra, pz2, bz2);
+  }
   l_x_end_bottom_new(clr, clra);
   l_x_end_top_new(clr, clra);
 }
 
-module r_x_end(clr=undef, clra=undef) {
-  mirror([1, 0, 0]) l_x_end(clr, clra);
+module r_x_end(clr=undef, clra=0.5, showPulleys=true) {
+  mirror([1, 0, 0]) l_x_end(clr, clra, togglePulleys=true, showPulleys=showPulleys);
 }
 
-module r_idler(clr=undef, clra=undef) {
+module r_idler(clr=undef, clra=0.5, togglePulleys=false, showPulleys=true) {
+  if (showPulleys) {
+    pulleyZOffs=15.72;
+    pz1=togglePulleys?pulleyZOffs+7:pulleyZOffs;
+    pz2=togglePulleys?pulleyZOffs:pulleyZOffs+7;
+    translate([-67.05, -51.5, pz1]) XY_Pulley(clra);
+    translate([-53.85, -36, pz2]) XY_Pulley(clra);
+  }
   color(clr, clra) translate([0, 0, 0]) rotate([0, 0, 180]) import("../vulcanus-v1/1xCoreXY_Idler.stl");
+}
+
+module l_idler(clr=undef, clra=0.5, showPulleys=true) {
+  translate([0, 0, 0]) mirror([1, 0, 0]) r_idler(clr, clra, true, showPulleys);
 }
 
 module r_motor(clr=undef, clra=undef) {
   color(clr, clra) translate([0, 0, 25]) rotate([180, 0, 180]) import("../vulcanus-v1/1xCoreXY_Motor.stl");
+}
+module l_motor(clr=undef, clra=undef) {
+  mirror([1, 0, 0]) r_motor(clr, clra);
 }
 
 module r_y_axis(by, cy, xe_pos, partClr="SlateGray", rodClr="White") {
@@ -583,10 +722,10 @@ module x_carriage_v5_std(carClr) {
     %translate([0, 0, 16.5]) rotate([0, 0, 90]) e3d_v6_175();
 }
 
-module x_end_rods_check() {
-    translate([-120, -XENDCY/2, 10]) l_x_end();
-    translate([-90,  XRODSDiff/2, XENDFullCZ/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam, h=RODXLen);
-    translate([-90, -XRODSDiff/2, XENDFullCZ/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam, h=RODXLen);
+module x_end_rods_check(cx=RODXLen, clr=undef, cla=0.5, showPulleys=true) {
+    translate([-120, -XENDCY/2, 10]) l_x_end(clr, cla, showPulleys=showPulleys);
+    translate([-90,  XRODSDiff/2, XENDFullCZ/2-1]) rotate([0, 90, 0]) cylinder(d=RODXYDiam, h=cx);
+    translate([-90, -XRODSDiff/2, XENDFullCZ/2-1]) rotate([0, 90, 0]) cylinder(d=RODXYDiam, h=cx);
 }
 
 CARCentralHoleDiam=E3Dv5RadDiam+1;
