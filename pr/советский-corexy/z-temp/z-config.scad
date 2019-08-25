@@ -110,8 +110,9 @@ N17ShaftDiameter=5;
 N17ShaftLength=28;
 N17FixingHolesInteraxis=31;
 
-ZMin=ZaxisML8UUCZ+BARCZ*2;
-ZMax=320;
+E3DnoLiftDown=true;
+ZMin=80;
+ZMax=E3DnoLiftDown ? 306 : 320;
 
 ZmotorXC=BARXLen/2;
 ZrodHolderCenterOffset=25;
@@ -119,8 +120,6 @@ ZrodHolderDistToCenter=ZrodHolderCenterOffset+ZmotorCX/2+ZrodHolderCX/2;
 
 // ---------------------------------------------------------------------------------------------------------------------
 // E3Dv5
-
-E3DnoLiftDown=true;
 
 E3Dv5RadDiam=25;
 
@@ -572,7 +571,8 @@ module R_Pulley_Washer() {
 
 XYNutExtDiam=16.99;
 XYNutBoltDiam=4.1;
-XYNutTextScale=[0.35, 0.35, 5];
+XYNutTextXYScale=0.3;
+XYNutTextScale=[XYNutTextXYScale, XYNutTextXYScale, 5];
 
 module L_Pulley_Nut() {
   hdia=XYNutExtDiam;
@@ -588,8 +588,8 @@ module L_Pulley_Nut() {
 	  translate([31.7, 26+18, -1]) cylinder(h=20, d=XYNutBoltDiam);
 	  translate([31.7, 26+18, hcz+3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
       color("Black") {
-        translate([28, 26, hcz-0.4]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("XE");
-		translate([27.2, 26.5+18, htop-1.2]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("XE");
+        translate([28, 26, hcz-0.4]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("E");
+		translate([27.2, 26.5+18, htop-0.4]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("E");
       }
 	}
   }
@@ -697,16 +697,14 @@ module l_motor(clr=undef, clra=undef) {
   mirror([1, 0, 0]) r_motor(clr, clra);
 }
 
-module r_y_axis(by, cy, xe_pos, partClr="SlateGray", rodClr="White") {
-    color(partClr) {
-        translate([0, 0, 0]) r_motor();
-        translate([0, by + BARCX, 0]) r_idler();
-        translate([-3.5, xe_pos - XENDCY/2, 14.5]) r_x_end();
-    }
+module r_y_axis(by, cy, xe_pos, clr=undef, rodClr="White", cla=0.7) {
+	translate([0, 0, 0]) r_motor(clr, cla);
+	translate([0, by + BARCX, 0]) r_idler(clr, cla);
+	translate([-3.5, xe_pos - XENDCY/2, 14.5]) r_x_end(clr, cla);
     translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
 }
 
-module l_y_axis(by, cy, xe_pos, partClr="SlateGray", rodClr="White") {
+module l_y_axis(by, cy, xe_pos, partClr=undef, rodClr="White") {
     mirror([1, 0, 0]) r_y_axis(by, cy, xe_pos, partClr, rodClr);
 }
 
@@ -760,7 +758,7 @@ module XCar_Base_holes(centralHoles=true) {
 
 module XCar_Base(clr="Yellow", drawE3D=true) {
 	if (drawE3D) {
-		%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) e3d_v5_stl();
+		%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) E3D_v5_temp();
 	}
     color(clr) translate([-CAR2CX/2, -CARCY/2, XENDFullCZ-CARBaseCZ]) cube([CAR2CX, CARCY, CARBaseCZ]);
 }
@@ -817,46 +815,52 @@ module CoreXY_X_Carriage_v2(skipDims=false, carClr="Green", e3d=true) {
     }
 }
 
-module CoreXY_X_Carriage_Full(skipDims=false, carClr="Green", e3d=true) {
-    CoreXY_X_Carriage_v2(skipDims, carClr, e3d);
-    if (!E3DnoLiftDown) {
-        E3D_v5_liftdown_adapter(true, "Brown");
-        E3D_v5_liftdown_clamp("Brown");
-        E3D_v5_temp(notTransparent=true);
+module CoreXY_X_Carriage_Full(skipDims=false, carClr="Green", e3d=true, withMotor=false) {
+  CarZOffs=3.6;
+  // Каретка с хот-ендом
+  translate([0, 0, 21.5+CarZOffs]) rotate([180]) CoreXY_X_Carriage_v3_wLDA(true, "MediumSeaGreen", false);
+  translate([0, 0, -2]) E3D_v5_temp(fitting=true);
+  translate([0, 0, CarZOffs]) {
+    translate([0, 0, 0.1]) CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true, renderBase=true, noChainMount=false);
+    color("SteelBlue") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
+    if (withMotor) {
+  	  translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
     }
-    else {
-        translate([0, 0, CARTopZOffs+16.6]) E3D_v5_temp(notTransparent=true);
-    }
-    rotate([0, 0, -90]) {
-        color("Yellow") render() Z_SinkFan();
-        color(carClr) render() rotate([0, 0, -90]) Z_FanDuct(singleFan=false);
-    }
-    CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true);
-    color("Blue") translate([CARCX/2-2, 2, CARTopZBeg]) x_belt_clamp();
+	if (false) {
+	  translate([90, 0, CarZOffs]) X_EndStop_Stand();
+      mirror([1, 0, 0]) translate([95, 0, CarZOffs]) X_EndStop_Stand();
+	}
+    // Fan duct
+    rotate([0, 0, 0]) YA_FanDuct_Full(61);
+  }
 }
 
 module CoreXY_Direct_Drive(modelClr="Crimson") {
     color(modelClr) translate([0, 0, -CARTopZOffs]) rotate([0, 0, 180]) translate([-CARCX/2, -CARCY/2, 25]) import("../vulcanus-v1/1xCoreXY_Direct_Drive.stl");
 }
 
-module core_xy_frame(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="Green", rodClr="White", carClr="Green", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=false) {
+module Core_XY_Full(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="Green", rodClr="White", carClr="Green", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=false, showXAxis=true, showCarriage=true) {
     xe_px=bx/2 + px;
     xe_py=by/2 + py;
     if (rAxis) {
-        translate([bx, 0, 0]) r_y_axis(by, cy, xe_py, partClr, rodClr);
+      translate([bx, 0, 0]) r_y_axis(by, cy, xe_py, partClr, rodClr);
     }
     if (lAxis) {
-        translate([-0, 0, 0]) l_y_axis(by, cy, xe_py, partClr, rodClr);
-    }
-    color(rodClr) {
+      translate([-0, 0, 0]) l_y_axis(by, cy, xe_py, partClr, rodClr);
+	}
+	if (showXAxis) {
+      color(rodClr) {
         translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
         translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
-    }
-    if (newCar) {
+      }
+	}
+	if (showCarriage) {
+      if (newCar) {
         translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
-    }
-    else {
-        translate([xe_px, xe_py, 0]) CoreXY_X_Carriage_Full(true, carClr, false);
+      }
+      else {
+        translate([xe_px, xe_py, 0]) rotate([0, 0, 180]) CoreXY_X_Carriage_Full(true, carClr, false);
+      }
     }
 }
 
@@ -1006,9 +1010,5 @@ module X_EndStop_Mount(esbx=CARCX/2-3, cx=XEndStopMountCX, clr=undef, clra=undef
 // ---------------------------------------------------------------------------------------------------------------------
 
 module StandAlone_Fan_Duct_x2_40() {
-  translate([97.47, -5.99, -53]) import("../../parts/Fan_Duct_5_E3D_v5_40_LQ.stl");
-}
-
-module StandAlone_Fan_Duct_x2_40_HQ() {
-  import("../../parts/Fan_Duct_5_E3D_v5_40_HQ.stl");
+  translate([97.47, -5.99, -53]) import("../../parts/fanduct-by-unix-remix/z-e3d-v5-fan-duct-40mm.stl");
 }
