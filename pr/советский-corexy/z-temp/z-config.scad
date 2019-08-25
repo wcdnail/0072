@@ -677,11 +677,15 @@ module r_x_end(clr=undef, clra=0.5, showPulleys=true) {
 
 module r_idler(clr=undef, clra=0.5, togglePulleys=false, showPulleys=true) {
   if (showPulleys) {
+    shortBolt=21.5;
+    longBolt=28.5;
     pulleyZOffs=15.72;
     pz1=togglePulleys?pulleyZOffs+7:pulleyZOffs;
     pz2=togglePulleys?pulleyZOffs:pulleyZOffs+7;
-    translate([-67.05, -51.5, pz1]) XY_Pulley(clra);
-    translate([-53.85, -36, pz2]) XY_Pulley(clra);
+    bz1=togglePulleys ? longBolt : shortBolt;
+    bz2=togglePulleys ? shortBolt : longBolt;
+    translate([-67.05, -51.5, 0]) XY_Pulley(clra, pz1, bz1);
+    translate([-53.85, -36, 0]) XY_Pulley(clra, pz2, bz2);
   }
   color(clr, clra) translate([0, 0, 0]) rotate([0, 0, 180]) import("../vulcanus-v1/1xCoreXY_Idler.stl");
 }
@@ -700,12 +704,17 @@ module l_motor(clr=undef, clra=undef) {
 module r_y_axis(by, cy, xe_pos, clr=undef, rodClr="White", cla=0.7) {
 	translate([0, 0, 0]) r_motor(clr, cla);
 	translate([0, by + BARCX, 0]) r_idler(clr, cla);
-	translate([-3.5, xe_pos - XENDCY/2, 14.5]) r_x_end(clr, cla);
+	translate([-3.5, xe_pos - XENDCY/2, 15]) r_x_end(clr, cla);
     translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
 }
 
-module l_y_axis(by, cy, xe_pos, partClr=undef, rodClr="White") {
-    mirror([1, 0, 0]) r_y_axis(by, cy, xe_pos, partClr, rodClr);
+module l_y_axis(by, cy, xe_pos, partClr=undef, rodClr="White", cla=0.7) {
+    mirror([1, 0, 0]) {
+		translate([0, 0, 0]) r_motor(partClr, cla);
+		translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
+	}
+	translate([0, xe_pos - XENDCY/2, 15]) l_x_end(partClr, cla);
+	translate([0, by + BARCX, 0]) l_idler(partClr, cla);
 }
 
 module x_carriage() {
@@ -839,7 +848,7 @@ module CoreXY_Direct_Drive(modelClr="Crimson") {
     color(modelClr) translate([0, 0, -CARTopZOffs]) rotate([0, 0, 180]) translate([-CARCX/2, -CARCY/2, 25]) import("../vulcanus-v1/1xCoreXY_Direct_Drive.stl");
 }
 
-module Core_XY_Full(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="Green", rodClr="White", carClr="Green", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=false, showXAxis=true, showCarriage=true) {
+module CoreXY_Full(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="Green", rodClr="White", carClr="Green", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=false, showXAxis=true, showCarriage=true) {
     xe_px=bx/2 + px;
     xe_py=by/2 + py;
     if (rAxis) {
@@ -859,7 +868,7 @@ module Core_XY_Full(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, 
         translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
       }
       else {
-        translate([xe_px, xe_py, 0]) rotate([0, 0, 180]) CoreXY_X_Carriage_Full(true, carClr, false);
+        translate([xe_px, xe_py, 0.6]) rotate([0, 0, 180]) CoreXY_X_Carriage_Full(true, carClr, false);
       }
     }
 }

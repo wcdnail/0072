@@ -19,8 +19,8 @@ module CoreXY_X_Carriage_v6_PLM() {
   difference() {
     //translate([-CARCX/2, -CARCY/2, 0]) import("../vulcanus-v1/1xCoreXY_X-Carriage-v6.stl");
     //translate([-CARCX/2, -CARCY/2, 0]) import("x_carriage_orgignal_no-lm8uu.stl");
-    import("x_carriage_orgignal_no-lm8uu.stl");
-    XCar_LM8UU();
+    translate([-CARCX/2, -CARCY/2, 0]) import("x_carriage_orgignal_no-lm8uu.stl");
+    translate([0, 0, 0]) XCar_LM8UU();
   }
 }
 

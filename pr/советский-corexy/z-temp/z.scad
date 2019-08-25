@@ -11,10 +11,12 @@ BEDZ=ZMax;
 
 ShowDims=false;
 ShowAll=true;
+ShowProfiles=true;
 ShowCoreXY=true;
 ShowXAxis=true;
 ShowXCar=true;
 ShowBed=true;
+ShowZ=true;
 BedColor="White";
 ShowTableSize=false;
 ShowZFrameSize=false;
@@ -53,11 +55,13 @@ module Bed_Holders(skipDims=!ShowDims, newRodHolders=true) {
 }
 
 module Bed_Frame(skipDims=!ShowDims, profClr="Gainsboro") {
-  translate([ZmotorXC-BEDPlateCX/2, (BARYLen-BEDPlateCY)/2+BARCY/2, BEDZ-BARCZ/2]) rotate([0, 90, 0]) profile_2020(BEDProfLen, profClr);
-  translate([ZmotorXC-BEDPlateCX/2, BARYLen-(BARYLen-BEDPlateCY)/2-BARCY/2, BEDZ-BARCZ/2]) rotate([0, 90, 0]) profile_2020(BEDProfLen, profClr);
-  //translate([ZmotorXC-BEDPlateCX/2-BARCX/2, (BARYLen-BEDPlateCY)/2-BEDYProfOffs/2, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfLen, profClr);
-  translate([ZmotorXC-BEDPlateCX/2+BARCX/2, (BARYLen-BEDPlateCY)/2+BARCY, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfileCY, profClr);
-  translate([BARXLen-(ZmotorXC-BEDPlateCX/2+BARCX/2), (BARYLen-BEDPlateCY)/2+BARCY, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfileCY, profClr);
+  if (ShowProfiles) {
+    translate([ZmotorXC-BEDPlateCX/2, (BARYLen-BEDPlateCY)/2+BARCY/2, BEDZ-BARCZ/2]) rotate([0, 90, 0]) profile_2020(BEDProfLen, profClr);
+    translate([ZmotorXC-BEDPlateCX/2, BARYLen-(BARYLen-BEDPlateCY)/2-BARCY/2, BEDZ-BARCZ/2]) rotate([0, 90, 0]) profile_2020(BEDProfLen, profClr);
+    //translate([ZmotorXC-BEDPlateCX/2-BARCX/2, (BARYLen-BEDPlateCY)/2-BEDYProfOffs/2, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfLen, profClr);
+    translate([ZmotorXC-BEDPlateCX/2+BARCX/2, (BARYLen-BEDPlateCY)/2+BARCY, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfileCY, profClr);
+    translate([BARXLen-(ZmotorXC-BEDPlateCX/2+BARCX/2), (BARYLen-BEDPlateCY)/2+BARCY, BEDZ-BARCZ/2]) rotate([-90, 0, 0]) profile_2020(BEDProfileCY, profClr);
+  }
   if(!skipDims) {
     color("black") {
       x_dim_abs(BEDPlateCX, BEDPlateCY, 0, 200, ox=ZmotorXC-BEDPlateCX/2, oy=(BARYLen-BEDPlateCY)/2+BARCY/2, oz=BEDZ);
@@ -76,9 +80,11 @@ module Bed_v2(skipDims=!ShowDims, plateClr="Silver", heaterClr=BedColor, newRodH
   }
   // Frame
   Bed_Frame(skipDims);
-  // Bed rod holders
-  Bed_Holders(skipDims, newRodHolders);
-  translate([0, BARYLen, 0]) mirror([0, 1, 0]) Bed_Holders(skipDims, newRodHolders);
+  if (ShowZ) {
+    // Bed rod holders
+    Bed_Holders(skipDims, newRodHolders);
+    translate([0, BARYLen, 0]) mirror([0, 1, 0]) Bed_Holders(skipDims, newRodHolders);
+  }
   if(!skipDims) {
     color("Black") {
     }
@@ -170,9 +176,13 @@ module Z_Motor_Half(skipDims=!ShowDims, withMotor=true, withRods=true, newRodHol
 }
 
 module Bottom_Frame(skipDims=!ShowDims, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=false, transparentBars=false, shortRodHolders=false) {
-  h_frame_2020(skipDims, transparentBars);
-  Z_Motor_Half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor, transparentBars, shortRodHolders);
-  translate([0, BARYLen, 0]) mirror([0, 1, 0]) Z_Motor_Half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor, transparentBars, shortRodHolders);
+  if (ShowProfiles) {
+    h_frame_2020(skipDims, transparentBars);
+  }
+  if (ShowZ) {
+    Z_Motor_Half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor, transparentBars, shortRodHolders);
+    translate([0, BARYLen, 0]) mirror([0, 1, 0]) Z_Motor_Half(skipDims, withMotor, withRods, newRodHolders, rodHolderBottom, drawMotor, transparentBars, shortRodHolders);
+  }
 }
 
 // Z frame w/new holders
@@ -215,13 +225,17 @@ module Z_Endstop_Term() {
 }
 
 module Top_Frame(skipDims=!ShowDims, transparentBars=false) {
-  translate([0, 0, TOPFrameZ-BARCZ]) h_frame_2020(true);
+  if (ShowProfiles) {
+    translate([0, 0, TOPFrameZ-BARCZ]) h_frame_2020(true);
+  }
   translate([0, 0, TOPFrameZ]) Bottom_Frame(skipDims=true, withMotor=false, withRods=false, newRodHolders=true, shortRodHolders=true);
  
-  translate([0, 0, TOPFrameZ]) {
-    translate([60, 0, 0.5]) rotate([0, 0, 90]) rotate([0, 90, 0]) Y_EndStop_Mount();
+  if (false) {
+    translate([0, 0, TOPFrameZ]) {
+      translate([60, 0, 0.5]) rotate([0, 0, 90]) rotate([0, 90, 0]) Y_EndStop_Mount();
+    }
+    translate([92, 20.5, BEDZ-BARCZ]) Z_Endstop_Term();
   }
-  translate([92, 20.5, BEDZ-BARCZ]) Z_Endstop_Term();
 }
 
 // Z frame w/old holders
@@ -234,19 +248,66 @@ module Top_Frame_sizes(center=true) {
   }
 }
 
+module Belt_6(itsY=false) {
+  BPs=[N17Width/2, N17Width/2, 0];
+  translate([0, 0, TOPFrameZ+BARCZ+28.9]) {
+    Xl=-6.1;
+    Yl=BARYLen-8;
+    Xl2=-1.4;
+    Yl2=BARYLen-3.6;
+    Xr2=BARXLen-55;
+    Yr2=BARYLen-19.2;
+    Xr=Xr2+5.8 + (itsY ? 3.2 : 0);
+    Yr=Yr2-5;
+    translate(BPs+[0.2, 0, 0]) cylinder(d=22, h=15, $fn=16);
+    hull() {
+      translate(BPs+[BARXLen/2.5, BARYLen/2-22.45, 0]) cylinder(d=2, h=6);
+      translate(BPs+[Xl+16, BARYLen/2-22.45, 0]) cylinder(d=2, h=6);
+    }
+    hull() {
+      translate(BPs+[Xl+9.5, BARYLen/2-27.85, 0]) cylinder(d=2, h=6);
+      translate(BPs+[Xl+9.5, -5, 0]) cylinder(d=2, h=6);
+    }
+    hull() {
+      translate(BPs+[Xl+2, -5, 0]) cylinder(d=2, h=6);
+      translate(BPs+[Xl+2, Yl, 0]) cylinder(d=2, h=6);
+    }
+    hull() {
+      translate(BPs+[Xl2, Yl2, 0]) cylinder(d=2, h=6);
+      translate(BPs+[Xr2, Yr2, 0]) cylinder(d=2, h=6);
+    }
+    hull() {
+      translate(BPs+[Xr, Yr, 0]) cylinder(d=2, h=6);
+      translate(BPs+[Xr, BARYLen/2-14, 0]) cylinder(d=2, h=6);
+    }
+    hull() {
+      translate(BPs+[Xr-4, BARYLen/2-19.5, 0]) cylinder(d=2, h=6);
+      translate(BPs+[Xr-BARXLen/2.5, BARYLen/2-19.5, 0]) cylinder(d=2, h=6);
+    }
+  }
+}
+
 // Assembly
 module SovietXY_Asm(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
   sx = center ? -BARXLen/2 : 0;
   sy = center ? -BARYLen/2 : 0;
   sz = 0;
   translate([sx, sy, sz]) {
-    Bottom_Frame(rodHolderBottom=false, drawMotor=true);
+    if (ShowZ) {
+      Bottom_Frame(rodHolderBottom=false, drawMotor=true);
+    }
     Top_Frame(transparentBars=true);
     if (ShowCoreXY) {
-      translate([0, 0, TOPFrameZ+BARCZ]) Core_XY_Full(withE3D=withE3D, showXAxis=ShowXAxis, showCarriage=ShowXCar);
+      %translate([0, 0, TOPFrameZ+BARCZ]) CoreXY_Full(withE3D=withE3D, showXAxis=ShowXAxis, showCarriage=ShowXCar);
     }
     Bed_v2();
-    if(!skipDims) {
+    if (true) {
+      // X Belt
+      %color("Blue", 0.7) Belt_6($fn=3);
+      // Y Belt
+      %color("Red", 0.7) translate([BARXLen, 0, 7]) mirror([1, 0, 0]) Belt_6(itsY=true, $fn=3);
+    }
+    if (!skipDims) {
       color("Black") {
       }
     }
