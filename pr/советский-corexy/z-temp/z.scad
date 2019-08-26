@@ -248,52 +248,121 @@ module Top_Frame_sizes(center=true) {
   }
 }
 
-module Belt_6_Bad(itsY=false) {
-  BPs=[N17Width/2, N17Width/2, 0];
-  translate([0, 0, TOPFrameZ+BARCZ+28.9]) {
-    Xl=-6.1;
-    Yl=BARYLen-8;
-    Xl2=-1.4;
-    Yl2=BARYLen-3.6;
-    Xr2=BARXLen-55;
-    Yr2=BARYLen-19.2;
-    Xr=Xr2+5.8 + (itsY ? 3.2 : 0);
-    Yr=Yr2-5;
-    translate(BPs+[0.2, 0, 0]) cylinder(d=22, h=15, $fn=16);
-    hull() {
-      translate(BPs+[BARXLen/2.5, BARYLen/2-22.45, 0]) cylinder(d=2, h=6);
-      translate(BPs+[Xl+16, BARYLen/2-22.45, 0]) cylinder(d=2, h=6);
-    }
-    hull() {
-      translate(BPs+[Xl+9.5, BARYLen/2-27.85, 0]) cylinder(d=2, h=6);
-      translate(BPs+[Xl+9.5, -5, 0]) cylinder(d=2, h=6);
-    }
-    hull() {
-      translate(BPs+[Xl+2, -5, 0]) cylinder(d=2, h=6);
-      translate(BPs+[Xl+2, Yl, 0]) cylinder(d=2, h=6);
-    }
-    hull() {
-      translate(BPs+[Xl2, Yl2, 0]) cylinder(d=2, h=6);
-      translate(BPs+[Xr2, Yr2, 0]) cylinder(d=2, h=6);
-    }
-    hull() {
-      translate(BPs+[Xr, Yr, 0]) cylinder(d=2, h=6);
-      translate(BPs+[Xr, BARYLen/2-14, 0]) cylinder(d=2, h=6);
-    }
-    hull() {
-      translate(BPs+[Xr-4, BARYLen/2-19.5, 0]) cylinder(d=2, h=6);
-      translate(BPs+[Xr-BARXLen/2.5, BARYLen/2-19.5, 0]) cylinder(d=2, h=6);
+module Belt_GT2_6(cx, cy, oz, sx=0, sy=0, clr=undef, pulleyAlpha=0.4, Yaxis=false, skipDims=true) {
+  GT2H=1.5;
+  GT2Z=6;
+  // Pulley inner diameter & radius
+  pid=11.8;
+  pir=pid/2;
+  // Mottor inner diameter & radius
+  MotorInnerPulleyDiam=12;
+  mid=MotorInnerPulleyDiam;
+  mir=mid/2;
+  // Pulley outter diameter
+  pod=18;
+  // Base points
+  adjx=(Yaxis ? 3.5 : 0);
+  adjt=(Yaxis ? 4 : 0);
+  szd=3.2; // tail bend diam
+  P0=[sx+adjt-35, sy-szd-2.3, oz];
+  P1=[-cx/2+31.7+adjx, sy-9, oz];
+  P2=[-cx/2+22.15, cy/2+10, oz];
+  P3=[cx/2-35.35, cy/2-5.5, oz];
+  P4=[cx/2-35.2+adjx, sy+9, oz];
+  P5=[sx+adjt+31, sy-szd+2.3, oz];
+  MP=[-(cx-N17Width)/2, -(cy-N17Width)/2, oz];
+  // Belt
+  pgt2r=pir+GT2H/2;  // pulley with GT2 radius
+  mgt2r=mir+GT2H/2;  // motor with GT2 radius
+  tcx=15;            // belt tail
+  bccx=cx/2-66-sx;   // distance from carriage to 1st pulley
+  bccy=cy/2-30-sy;   // distance to motor
+  bpcy=cy-10;        // distance from motor to 2nd pulley
+  bpcx=cx-56;        // distance from 2nd pulley to 3dr pulley
+  bppy=bccy+16;      // distance from 3dr pulley to 4th
+  bppx=bccx;         // distance from 4th pulley to carriage
+  color(clr) {
+    // Хвостик
+    translate(P0-[tcx, szd+0.7, 0]) cube([tcx, GT2H, GT2Z]);
+    translate(P0) linear_extrude(GT2Z) arc(270, 450, szd, GT2H);
+    // От каретки к первой шпуле
+    translate([P1[0], P1[1]+pir, P1[2]])
+      linear_extrude(GT2Z) polygon(points=[[0, 0], [bccx, 0], [bccx, GT2H], [0, GT2H]]);
+    translate(P1) linear_extrude(GT2Z) arc(90, 180, pgt2r, GT2H);
+    // От первой шпули до мотора
+    translate([P1[0]-(pir+GT2H), P1[1]-1, P1[2]])
+      linear_extrude(GT2Z) polygon(points=[[0, 1], [mir/2-0.3-adjx, -bccy], [mir/2+GT2H-0.3-adjx, -bccy], [GT2H, 1]]);
+    translate(MP) linear_extrude(GT2Z) arc(180, 360, mgt2r, GT2H);
+    // От мотора до второй шпули 
+    translate([P1[0]-(pir+GT2H)*2-GT2H/2-adjx, MP[1]-1, MP[2]])
+      linear_extrude(GT2Z) polygon(points=[[-mir/2+0.35, 0], [-mir/2+GT2H+0.07, bpcy], [-mir/2+GT2H*2+0.07, bpcy], [-mir/2+GT2H+0.35, 0]]);
+    translate(P2) linear_extrude(GT2Z) arc(90, 180, pgt2r, GT2H);
+    // От второй шпули до третьей
+    translate([P1[0]-pid+1-adjx, P2[1]+pir-GT2H, P2[2]]) 
+      linear_extrude(GT2Z) polygon(points=[[0.3, GT2H], [bpcx, -14], [bpcx, -14+GT2H], [0.3, GT2H+GT2H]]);
+    translate(P3) linear_extrude(GT2Z) arc(0, 90, pgt2r, GT2H);
+    // От третьей до последней
+    translate([P3[0]+pir, P3[1], P3[2]]) 
+      linear_extrude(GT2Z) polygon(points=[[0, 0], [adjx+0.15, -bppy], [adjx+0.15+GT2H, -bppy], [GT2H, 0]]);
+    translate(P4) linear_extrude(GT2Z) arc(270, 360, pgt2r, GT2H);
+    // От последней до каретки 
+    translate([P4[0], P4[1]-pir-GT2H, P4[2]]) 
+      linear_extrude(GT2Z) polygon(points=[[0, 0], [-bppx, 0], [-bppx, GT2H], [0, GT2H]]);
+    // Хвостик
+    translate(P5-[0, szd+0.7, 0]) cube([tcx, GT2H, GT2Z]);
+    translate(P5) linear_extrude(GT2Z) arc(90, 270, szd, GT2H);
+  }
+  if (!skipDims) {
+    color("Black") {
+      // От каретки к первой шпуле
+      x_dim_abs(bccx, 0, oz, -100, 10, 10, P1[0]-1);
+      y_dim_abs(0, (3.1415926/2)*pgt2r, oz, -50, 0, 0, ox=P1[1], oy=-P1[0]-pir-GT2H, textLoc=DIM_OUTSIDE);
+      // От первой шпули до мотора
+      y_dim_abs(0, bccy, oz, -60, 20, 20, ox=MP[1]-1, oy=-P1[0]-pir-GT2H);
+      x_dim_abs((3.1415926)*(MotorInnerPulleyDiam/2), 0, oz, 50, 0, 0, MP[0]-MotorInnerPulleyDiam+2, -cy/2+20, textLoc=DIM_OUTSIDE);
+      // От мотора до второй шпули 
+      y_dim_abs(0, bpcy, oz, -80, 20, 20, ox=MP[1]-1, oy=-P2[0]-pir-GT2H);
+      x_dim_abs((3.1415926/2)*pgt2r, 0, oz, -50, 0, 0, P2[0]-pgt2r+1, cy/2+20, textLoc=DIM_OUTSIDE);
+      // От второй шпули до третьей
+      x_dim_abs(bpcx, 0, oz, -60, 10, 10, P2[0], P3[1]);
+      x_dim_abs((3.1415926/2)*pgt2r, 0, oz, -50, 0, 0, P3[0]-pgt2r+1, cy/2+20, textLoc=DIM_OUTSIDE);
+      // От третьей до последней
+      y_dim_abs(0, bppy, oz, 80, 20, 20, ox=P4[1]-1, oy=-P4[0]-pir-GT2H);
+      y_dim_abs(0, (3.1415926/2)*pgt2r, oz, 50, 0, 0, ox=P4[1]-pir-GT2H, oy=-P4[0]-pir, textLoc=DIM_OUTSIDE);
+      // От последней до каретки
+      x_dim_abs(bppx, 0, oz, -100, 10, 10, ox=P4[1]+pir);
+      // Размеры ремней
+      beltLen=tcx*2 + (3.1415926)*(szd/2) +
+      // От каретки к первой шпуле
+      + bccx
+      + (3.1415926/2)*pgt2r
+      // От первой шпули до мотора
+      + bccy
+      + (3.1415926)*(MotorInnerPulleyDiam/2)
+      // От мотора до второй шпули 
+      + bpcy
+      + (3.1415926/2)*pgt2r
+      // От второй шпули до третьей
+      + bpcx
+      + (3.1415926/2)*pgt2r
+      // От третьей до последней
+      + bppy
+      + (3.1415926/2)*pgt2r
+      // От последней до каретки
+      + bppx;
+
+      translate([-cx/2+70, -cy/2+120, 0]) rotate([0, 0, 0]) scale(2) drawtext(str("1x GT2 belt length : ", beltLen, "mm"));
+      translate([-cx/2+70, -cy/2+90, 0]) rotate([0, 0, 0]) scale(2) drawtext(str("2x GT2 belt length : ", beltLen*2, "mm"));
     }
   }
-}
-
-module Belt_6() {
-  GT2H=1.5;
-  BPs=[N17Width/2, N17Width/2, 0];
-  
-  translate(BPs+[0, BARYLen/2-23.45, 0]) cube([BARXLen/2-20, 2, 6]);
-  translate(BPs+[0, BARYLen/2-23.45, 0]) cylinder(d=12+GT2H, h=6);
-  translate(BPs) cylinder(d=12+GT2H, h=6);
+  // Pulleys & motor
+  %color(clr, pulleyAlpha) {
+    translate(P1) cylinder(d=pid, h=6);
+    translate(P2) cylinder(d=pid, h=6);
+    translate(P3) cylinder(d=pid, h=6);
+    translate(P4) cylinder(d=pid, h=6);
+    translate(MP) cylinder(d=mid, h=6);
+  }
 }
 
 // Assembly
@@ -310,17 +379,16 @@ module SovietXY_Asm(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
       %translate([0, 0, TOPFrameZ+BARCZ]) CoreXY_Full(withE3D=withE3D, showXAxis=ShowXAxis, showCarriage=ShowXCar);
     }
     Bed_v2();
-    if (true) {
-      translate([0.2, 0, TOPFrameZ+BARCZ+28.9]) {
-        // X Belt
-        %color("Blue", 0.7) Belt_6();
-        // Y Belt
-        //%color("Red", 0.7) translate([BARXLen, 0, 7]) mirror([1, 0, 0]) Belt_6();
-      }
-    }
     if (!skipDims) {
       color("Black") {
       }
+    }
+  }
+  if (true) {
+    beltZ=0;
+    translate([0, 0, TOPFrameZ+BARCZ+28.9]) {
+      Belt_GT2_6(BARXLen, BARYLen, 0, 0, 0, "Blue", skipDims=false);
+      mirror([1, 0, 0]) Belt_GT2_6(BARXLen, BARYLen, 7, 0, 0, "Red", Yaxis=true);
     }
   }
 }

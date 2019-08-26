@@ -1,6 +1,7 @@
 include <../../../openscad/libs/nutsnbolts/cyl_head_bolt.scad>
 include <../../../openscad/libs/nutsnbolts/materials.scad>
 include <../../../openscad/libs/dim1/dimlines.scad>
+include <../../../openscad/arc.scad>
 use <../../../openscad/nema17.scad>
 use <../../parts/chamfers.scad>
 
@@ -831,7 +832,7 @@ module CoreXY_X_Carriage_Full(skipDims=false, carClr="Green", e3d=true, withMoto
   translate([0, 0, -2]) E3D_v5_temp(fitting=true);
   translate([0, 0, CarZOffs]) {
     translate([0, 0, 0.1]) CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true, renderBase=true, noChainMount=false);
-    color("SteelBlue") translate([CARCX/2-2, 2, CARTopZBeg+0.2]) x_belt_clamp();
+    color("SteelBlue") translate([CARCX/2+2, 2, CARTopZBeg+0.2]) x_belt_clamp();
     if (withMotor) {
   	  translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
     }
