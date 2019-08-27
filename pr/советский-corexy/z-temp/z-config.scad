@@ -482,12 +482,7 @@ module profile_2020_raw(h) {
 }
 
 module profile_2020(h, transparentBars=false, profClr="Gainsboro") {
-    if (transparentBars) {
-        %profile_2020_raw(h);
-    }
-    else {
-        color(profClr) profile_2020_raw(h);
-    }
+  color(profClr, transparentBars ? 0.5 : 1) profile_2020_raw(h);
 }
 
 module h_frame_half(skipDims=false, transparentBars=false, profClr="Gainsboro") {
@@ -502,8 +497,8 @@ module h_frame_half(skipDims=false, transparentBars=false, profClr="Gainsboro") 
 }
 
 module h_frame_2020(skipDims=false, transparentBars=false, profClr="Gainsboro") {
-    h_frame_half(skipDims, profClr, transparentBars);
-    translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) h_frame_half(true, profClr, transparentBars);
+    h_frame_half(skipDims, transparentBars, profClr);
+    translate([BARXLen, BARYLen, 0]) rotate([0, 0, 180]) h_frame_half(true, transparentBars, profClr);
 }
 
 module h_frame_2040(skipDims=false, profClr="Gainsboro") {
@@ -702,20 +697,20 @@ module l_motor(clr=undef, clra=undef) {
   mirror([1, 0, 0]) r_motor(clr, clra);
 }
 
-module r_y_axis(by, cy, xe_pos, clr=undef, rodClr="White", cla=0.7) {
-	translate([0, 0, 0]) r_motor(clr, cla);
-	translate([0, by + BARCX, 0]) r_idler(clr, cla);
-	translate([-3.5, xe_pos - XENDCY/2, 15]) r_x_end(clr, cla);
-    translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
+module CoreXY_Right_Y(by, cy, xe_pos, clr=undef, rodClr="White", cla=0.7) {
+  translate([0, 0, 0]) r_motor(clr, cla);
+  translate([0, by + BARCX, 0]) r_idler(clr, cla);
+  translate([-3.5, xe_pos - XENDCY/2, 15]) r_x_end(clr, cla);
+  translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
 }
 
-module l_y_axis(by, cy, xe_pos, partClr=undef, rodClr="White", cla=0.7) {
-    mirror([1, 0, 0]) {
-		translate([0, 0, 0]) r_motor(partClr, cla);
-		translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
-	}
-	translate([0, xe_pos - XENDCY/2, 15]) l_x_end(partClr, cla);
-	translate([0, by + BARCX, 0]) l_idler(partClr, cla);
+module CoreXY_Left_Y(by, cy, xe_pos, partClr=undef, rodClr="White", cla=0.7) {
+  mirror([1, 0, 0]) {
+    translate([0, 0, 0]) r_motor(partClr, cla);
+    translate([-21, cy + 43, 15]) rotate([90, 0, 0]) color(rodClr) cylinder(h=cy, d=8);
+  }
+  translate([3.5, xe_pos - XENDCY/2, 15]) l_x_end(partClr, cla);
+  translate([0, by + BARCX, 0]) l_idler(partClr, cla);
 }
 
 module x_carriage() {
@@ -850,28 +845,30 @@ module CoreXY_Direct_Drive(modelClr="Crimson") {
 }
 
 module CoreXY_Full(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, partClr="Green", rodClr="White", carClr="Green", withE3D=true, rAxis=true, lAxis=true, e3dClr="White", newCar=false, showXAxis=true, showCarriage=true) {
-    xe_px=bx/2 + px;
-    xe_py=by/2 + py;
-    if (rAxis) {
-      translate([bx, 0, 0]) r_y_axis(by, cy, xe_py, partClr, rodClr);
+  xe_px=bx/2 + px;
+  xe_py=by/2 + py;
+  if (rAxis) {
+    translate([bx, 0, 0]) CoreXY_Right_Y(by, cy, xe_py, partClr, rodClr);
+  }
+  if (lAxis) {
+    translate([0, 0, 0]) CoreXY_Left_Y(by, cy, xe_py, partClr, rodClr);
+  }
+  /**/
+  if (showXAxis) {
+    color(rodClr) {
+      translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
+      translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
     }
-    if (lAxis) {
-      translate([-0, 0, 0]) l_y_axis(by, cy, xe_py, partClr, rodClr);
-	}
-	if (showXAxis) {
-      color(rodClr) {
-        translate([(bx-cx)/2, xe_py - 25, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
-        translate([(bx-cx)/2, xe_py - 25 + 50, 14.8]) rotate([0, 90, 0]) cylinder(h=cx, d=8);
-      }
-	}
-	if (showCarriage) {
-      if (newCar) {
-        translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
-      }
-      else {
-        translate([xe_px, xe_py, 0.6]) rotate([0, 0, 180]) CoreXY_X_Carriage_Full(true, carClr, false);
-      }
+  }
+  if (showCarriage) {
+    if (newCar) {
+  	  translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
     }
+    else {
+  	  translate([xe_px, xe_py, 0.6]) rotate([0, 0, 180]) CoreXY_X_Carriage_Full(true, carClr, false);
+    }
+  }
+  /**/
 }
 
 module x_carriage_new_check(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, rodClr="White", carClr="Crimson", withE3D=true) {

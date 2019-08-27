@@ -15,6 +15,7 @@ ShowProfiles=true;
 ShowCoreXY=true;
 ShowXAxis=true;
 ShowXCar=true;
+ShowBelts=true;
 ShowBed=true;
 ShowZ=true;
 BedColor="White";
@@ -77,9 +78,9 @@ module Bed_v2(skipDims=!ShowDims, plateClr="Silver", heaterClr=BedColor, newRodH
     color(plateClr) translate([ZmotorXC-BEDPlateCX/2, (BARYLen-BEDPlateCY)/2, BEDZ]) cube([BEDPlateCX, BEDPlateCY, BEDPlateCZ]);
     // Bed
     color(heaterClr) translate([ZmotorXC-BEDCX/2, (BARYLen-BEDCY)/2, BEDZ+BEDSpringMinH]) cube([BEDCX, BEDCY, BEDCZ]);
+    // Frame
+    Bed_Frame(skipDims);
   }
-  // Frame
-  Bed_Frame(skipDims);
   if (ShowZ) {
     // Bed rod holders
     Bed_Holders(skipDims, newRodHolders);
@@ -226,7 +227,7 @@ module Z_Endstop_Term() {
 
 module Top_Frame(skipDims=!ShowDims, transparentBars=false) {
   if (ShowProfiles) {
-    translate([0, 0, TOPFrameZ-BARCZ]) h_frame_2020(true);
+    translate([0, 0, TOPFrameZ-BARCZ]) h_frame_2020(skipDims=!ShowDims, transparentBars=true);
   }
   translate([0, 0, TOPFrameZ]) Bottom_Frame(skipDims=true, withMotor=false, withRods=false, newRodHolders=true, shortRodHolders=true);
  
@@ -248,7 +249,7 @@ module Top_Frame_sizes(center=true) {
   }
 }
 
-module Belt_GT2_6(cx, cy, oz, sx=0, sy=0, clr=undef, pulleyAlpha=0.4, Yaxis=false, skipDims=true) {
+module Belt_GT2_6(cx, cy, oz, sx=0, sy=0, clr=undef, pulleyAlpha=0.4, Yaxis=false, skipDims=!ShowDims) {
   GT2H=1.5;
   GT2Z=6;
   // Pulley inner diameter & radius
@@ -261,15 +262,13 @@ module Belt_GT2_6(cx, cy, oz, sx=0, sy=0, clr=undef, pulleyAlpha=0.4, Yaxis=fals
   // Pulley outter diameter
   pod=18;
   // Base points
-  adjx=(Yaxis ? 3.5 : 0);
-  adjt=(Yaxis ? 4 : 0);
   szd=3.2; // tail bend diam
-  P0=[sx+adjt-35, sy-szd-2.3, oz];
-  P1=[-cx/2+31.7+adjx, sy-9, oz];
+  P0=[sx-31, sy-szd-2.3, oz];
+  P1=[-cx/2+31.7+3.5, sy-9, oz];
   P2=[-cx/2+22.15, cy/2+10, oz];
   P3=[cx/2-35.35, cy/2-5.5, oz];
-  P4=[cx/2-35.2+adjx, sy+9, oz];
-  P5=[sx+adjt+31, sy-szd+2.3, oz];
+  P4=[cx/2-35.2, sy+9, oz];
+  P5=[sx+31, sy-szd+2.3, oz];
   MP=[-(cx-N17Width)/2, -(cy-N17Width)/2, oz];
   // Belt
   pgt2r=pir+GT2H/2;  // pulley with GT2 radius
@@ -286,28 +285,22 @@ module Belt_GT2_6(cx, cy, oz, sx=0, sy=0, clr=undef, pulleyAlpha=0.4, Yaxis=fals
     translate(P0-[tcx, szd+0.7, 0]) cube([tcx, GT2H, GT2Z]);
     translate(P0) linear_extrude(GT2Z) arc(270, 450, szd, GT2H);
     // От каретки к первой шпуле
-    translate([P1[0], P1[1]+pir, P1[2]])
-      linear_extrude(GT2Z) polygon(points=[[0, 0], [bccx, 0], [bccx, GT2H], [0, GT2H]]);
+    translate([P1[0], P1[1]+pir, P1[2]]) linear_extrude(GT2Z) polygon(points=[[0, 0], [bccx, 0], [bccx, GT2H], [0, GT2H]]);
     translate(P1) linear_extrude(GT2Z) arc(90, 180, pgt2r, GT2H);
     // От первой шпули до мотора
-    translate([P1[0]-(pir+GT2H), P1[1]-1, P1[2]])
-      linear_extrude(GT2Z) polygon(points=[[0, 1], [mir/2-0.3-adjx, -bccy], [mir/2+GT2H-0.3-adjx, -bccy], [GT2H, 1]]);
+    translate([P1[0]-(pir+GT2H), P1[1]-1, P1[2]]) linear_extrude(GT2Z) polygon(points=[[0, 1], [mir/2-3.8, -bccy], [mir/2+GT2H-3.8, -bccy], [GT2H, 1]]);
     translate(MP) linear_extrude(GT2Z) arc(180, 360, mgt2r, GT2H);
     // От мотора до второй шпули 
-    translate([P1[0]-(pir+GT2H)*2-GT2H/2-adjx, MP[1]-1, MP[2]])
-      linear_extrude(GT2Z) polygon(points=[[-mir/2+0.35, 0], [-mir/2+GT2H+0.07, bpcy], [-mir/2+GT2H*2+0.07, bpcy], [-mir/2+GT2H+0.35, 0]]);
+    translate([P1[0]-(pir+GT2H)*2-GT2H/2-3.5, MP[1]-1, MP[2]]) linear_extrude(GT2Z) polygon(points=[[-mir/2+0.35, 0], [-mir/2+GT2H+0.07, bpcy], [-mir/2+GT2H*2+0.07, bpcy], [-mir/2+GT2H+0.35, 0]]);
     translate(P2) linear_extrude(GT2Z) arc(90, 180, pgt2r, GT2H);
     // От второй шпули до третьей
-    translate([P1[0]-pid+1-adjx, P2[1]+pir-GT2H, P2[2]]) 
-      linear_extrude(GT2Z) polygon(points=[[0.3, GT2H], [bpcx, -14], [bpcx, -14+GT2H], [0.3, GT2H+GT2H]]);
+    translate([P1[0]-pid+1-3.5, P2[1]+pir-GT2H, P2[2]]) linear_extrude(GT2Z) polygon(points=[[0.3, GT2H], [bpcx, -14], [bpcx, -14+GT2H], [0.3, GT2H+GT2H]]);
     translate(P3) linear_extrude(GT2Z) arc(0, 90, pgt2r, GT2H);
     // От третьей до последней
-    translate([P3[0]+pir, P3[1], P3[2]]) 
-      linear_extrude(GT2Z) polygon(points=[[0, 0], [adjx+0.15, -bppy], [adjx+0.15+GT2H, -bppy], [GT2H, 0]]);
+    translate([P3[0]+pir, P3[1], P3[2]]) linear_extrude(GT2Z) polygon(points=[[0, 0], [0.15, -bppy], [0.15+GT2H, -bppy], [GT2H, 0]]);
     translate(P4) linear_extrude(GT2Z) arc(270, 360, pgt2r, GT2H);
     // От последней до каретки 
-    translate([P4[0], P4[1]-pir-GT2H, P4[2]]) 
-      linear_extrude(GT2Z) polygon(points=[[0, 0], [-bppx, 0], [-bppx, GT2H], [0, GT2H]]);
+    translate([P4[0], P4[1]-pir-GT2H, P4[2]]) linear_extrude(GT2Z) polygon(points=[[0, 0], [-bppx, 0], [-bppx, GT2H], [0, GT2H]]);
     // Хвостик
     translate(P5-[0, szd+0.7, 0]) cube([tcx, GT2H, GT2Z]);
     translate(P5) linear_extrude(GT2Z) arc(90, 270, szd, GT2H);
@@ -376,7 +369,7 @@ module SovietXY_Asm(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
     }
     Top_Frame(transparentBars=true);
     if (ShowCoreXY) {
-      %translate([0, 0, TOPFrameZ+BARCZ]) CoreXY_Full(withE3D=withE3D, showXAxis=ShowXAxis, showCarriage=ShowXCar);
+      translate([0, 0, TOPFrameZ+BARCZ]) CoreXY_Full(withE3D=withE3D, showXAxis=ShowXAxis, showCarriage=ShowXCar);
     }
     Bed_v2();
     if (!skipDims) {
@@ -384,10 +377,10 @@ module SovietXY_Asm(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
       }
     }
   }
-  if (true) {
+  if (ShowBelts) {
     beltZ=0;
-    translate([0, 0, TOPFrameZ+BARCZ+28.9]) {
-      Belt_GT2_6(BARXLen, BARYLen, 0, 0, 0, "Blue", skipDims=false);
+    %translate([0, 0, TOPFrameZ+BARCZ+28.9]) {
+      Belt_GT2_6(BARXLen, BARYLen, 0, 0, 0, "Blue");
       mirror([1, 0, 0]) Belt_GT2_6(BARXLen, BARYLen, 7, 0, 0, "Red", Yaxis=true);
     }
   }
