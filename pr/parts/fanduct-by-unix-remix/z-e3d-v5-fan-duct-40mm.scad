@@ -89,7 +89,7 @@ module SA_FanDuct_2() {
   sx=ProbeConSX;
   cz=ProbeHeight*1;
   z=-63+ProbeZ+cz/2+1;
-  %translate([0, 0, 0]) StandAlone_Fan_Duct_x2_40();
+  translate([0, 0, 0]) StandAlone_Fan_Duct_x2_40();
   translate([-ProbeConXOffset, 0, -4]) difference() {
     union() {
       hull() {
