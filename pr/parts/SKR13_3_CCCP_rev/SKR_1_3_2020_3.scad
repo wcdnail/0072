@@ -40,4 +40,4 @@ module SKR13_Top_Cover(clr=undef, lift=SKR13TopLift) {
 
 //SKR13_Bottom_Cover("Yellow");
 //SKR13_Top_Cover("Red");
-SKR13_SM(0.2, "Yellow", SKR13TopLift+10, 0.6, 0.6);
+SKR13_SM(1.1, "Yellow", SKR13TopLift+10, 0.6, 0.6);
