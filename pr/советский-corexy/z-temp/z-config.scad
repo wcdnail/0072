@@ -45,7 +45,7 @@ XRODSDiff=50;
 RODXLen=420;
 RODYLen=405;
 RODZLen=373;
-RODZUp=-3;
+RODZUp=40;
 TOPFrameZ=370;
 
 // Размеры винтовой передачи 
