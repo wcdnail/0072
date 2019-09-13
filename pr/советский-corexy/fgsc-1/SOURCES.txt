@@ -1,0 +1,5 @@
+Sources for RepRap Full Graphics LCD Snap-Swivel Case
+
+FT-5 3D RepRap Full Graphics LCD Swivel Case (https://www.thingiverse.com/thing:2141320)
+FT-5 REPRAP Side Mount (https://www.thingiverse.com/thing:2741729)
+ReprapDiscount Smart Controller Snap Case  (https://www.thingiverse.com/thing:3071178)
