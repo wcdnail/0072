@@ -1,0 +1,3 @@
+LCD 1602 with I2C interface (http://www.thingiverse.com/thing:3283426) by valand70 is licensed under the Creative Commons - Attribution - Non-Commercial license.
+http://creativecommons.org/licenses/by-nc/3.0/
+

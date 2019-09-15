@@ -1,10 +1,12 @@
 module Z_Parts_Mount_Assistant() {
   cz=115;
-  cy=13;
+  cy=8;
+  cya=4.4;
+  cxi=6;
   difference() {
     union() {
       translate([0, 0, cz/2]) cube([20, cy, cz], center=true);
-      translate([0, 0, cz/2]) cube([20-(6.65*2), cy+2.8, cz], center=true);
+      translate([0, 0, cz/2]) cube([cxi, cy+cya, cz], center=true);
     }
     color("Red") {
       //translate([0, 14, cz/2-2]) cube([20-(4*2), 24, cz+10], center=true);
