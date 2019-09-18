@@ -52,6 +52,12 @@ void setup()
   }
   driver[X_MOTOR]->setEnableActiveState(LOW);
   driver[X_MOTOR]->enable();
+
+  BasicStepperDriver::Profile prof;
+  prof.accel = 50;
+  prof.decel = 50;
+  prof.mode = BasicStepperDriver::LINEAR_SPEED;
+  driver[X_MOTOR]->setSpeedProfile(prof);
 }
 
 void loop() 
