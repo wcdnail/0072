@@ -1,6 +1,7 @@
 #include <LiquidCrystal_I2C.h>
+#include <ClickEncoder.h>
 
-enum LCD_Config_Int {
+enum LCD_Config {
   LCD_I2C_ADDR = 0x20,
   LCD_BACKLIGHT_PIN = 3,
   LCD_En_pin = 2,
@@ -9,10 +10,17 @@ enum LCD_Config_Int {
   LCD_D4_pin = 4,
   LCD_D5_pin = 5,
   LCD_D6_pin = 6,
-  LCD_D7_pin = 7,  
+  LCD_D7_pin = 7,
+  ENC_PIN1 = A0,
+  ENC_PIN2 = A1,
+  ENC_BPIN = A2,
 };
 
 static LiquidCrystal_I2C lcd(LCD_I2C_ADDR, LCD_En_pin, LCD_Rw_pin, LCD_Rs_pin, LCD_D4_pin, LCD_D5_pin, LCD_D6_pin, LCD_D7_pin, LCD_BACKLIGHT_PIN, POSITIVE);
+static ClickEncoder      enc(ENC_PIN1, ENC_PIN2, ENC_BPIN);
+
+extern const char   AppTitle[];
+extern const char AppVersion[];
 
 extern "C" 
 {
@@ -23,9 +31,9 @@ extern "C"
         lcd.clear();
         lcd.home();
         lcd.setCursor(0, 0);
-        lcd.print("-= MOTO BENCH =-");
+        lcd.print(AppTitle);
         lcd.setCursor(0, 1);
-        lcd.print("-==== v1.0 ====-");
+        lcd.print(AppVersion);
     }
 
 #if _EXTRA_DEBUG
