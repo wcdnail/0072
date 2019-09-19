@@ -1,6 +1,9 @@
 #include "BasicStepperDriver.h"
 #include "lcd.h"
 
+const char   AppTitle[] = "-= MOTO BENCH =-";
+const char AppVersion[] = "-==== v1.0 ====-";
+
 enum StepperMotorConsts {
   X_MOTOR = 0,
   Y_MOTOR,
