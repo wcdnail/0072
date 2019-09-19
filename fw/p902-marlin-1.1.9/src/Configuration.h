@@ -613,7 +613,9 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 100.29/2, 100.42/2, 802.4, 94 }
+// X prev (TMC2208) 50.145 (A4988 - 100.29)
+// Y prev (TMC2208) 50.21 (A4988 - 100.42)
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 50.145, 50.31062124248497, 802.4, 94 }
 
 /**
  * Default Max Feed Rate (mm/s)
