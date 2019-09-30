@@ -327,9 +327,9 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // Travel limits after homing
 #define X_MAX_POS 150
-#define X_MIN_POS 0
+#define X_MIN_POS 5
 #define Y_MAX_POS 140
-#define Y_MIN_POS 0
+#define Y_MIN_POS 10
 #define Z_MAX_POS 120
 #define Z_MIN_POS 0
 
@@ -469,7 +469,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define _MC3_Y_STEPS                      171.3 // For example: M92 X<value>
 #define DEFAULT_AXIS_STEPS_PER_UNIT     { (200 * 32)/(2 * 20), _MC3_Y_STEPS, 8000, 200 }
 #define DEFAULT_MAX_FEEDRATE            { 500, 500,  5,  25 }     // (mm/sec)
-#define DEFAULT_MAX_ACCELERATION        { 1500, 1500, 20, 10000 } // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
+#define DEFAULT_MAX_ACCELERATION        { 3000, 3000, 20, 10000 } // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
 
 #define DEFAULT_ACCELERATION            2000  // X, Y, Z and E max acceleration in mm/s^2 for printing moves
 #define DEFAULT_RETRACT_ACCELERATION    2000  // X, Y, Z and E max acceleration in mm/s^2 for retracts
@@ -495,10 +495,10 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // M501 - reads parameters from EEPROM (if you need reset them after you changed them temporarily).
 // M502 - reverts to the default "factory settings".  You still need to store them in EEPROM afterwards if you want to.
 //define this to enable EEPROM support
-#define EEPROM_SETTINGS
+//#define EEPROM_SETTINGS
 //to disable EEPROM Serial responses and decrease program space by ~1700 byte: comment this out:
 // please keep turned on if you can.
-#define EEPROM_CHITCHAT
+//#define EEPROM_CHITCHAT
 
 // Preheat Constants
 #define PLA_PREHEAT_HOTEND_TEMP 210
@@ -537,7 +537,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
 // ==> REMEMBER TO INSTALL U8glib to your ARDUINO library folder: http://code.google.com/p/u8glib/wiki/u8glib
-#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 // The RepRapWorld REPRAPWORLD_KEYPAD v1.1
 // http://reprapworld.com/?products_details&products_id=202&cPath=1591_1626
