@@ -32,3 +32,5 @@ difference() {
     translate([cx + sliceX, cy + sliceY, -cz]) cylinder(d=sliceDia, h=cz*3, $fn=20);
   }
 }
+
+import("bed-support-1.stl");
