@@ -330,7 +330,7 @@ void drawImage(const uint8_t *data, uint16_t length, uint16_t height) {
 }
 #if ENABLED(MKS_ROBIN_TFT35)
 void drawUI(void) {
-  lcd.setWindow(10+80, 170+40, 309+80, 171+40);
+  lcd.setWindow(20+80, 185+40, 99+80, 224+40);
   lcd.writeMultiple(color, 600);
 
   lcd.setWindow( 20+80, 185+40,  99+80, 224+40);
