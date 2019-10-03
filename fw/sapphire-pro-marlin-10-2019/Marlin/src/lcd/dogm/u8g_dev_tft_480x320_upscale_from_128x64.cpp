@@ -113,22 +113,22 @@
 #define COLOR_ORANGE      0xFC00  // #FF7F00
 
 #ifndef TFT_MARLINUI_COLOR
-  #define TFT_MARLINUI_COLOR COLOR_WHITE
+  #define TFT_MARLINUI_COLOR 0xFFE7
 #endif
 #ifndef TFT_MARLINBG_COLOR
-  #define TFT_MARLINBG_COLOR COLOR_BLACK
+  #define TFT_MARLINBG_COLOR 0x0292
 #endif
 #ifndef TFT_DISABLED_COLOR
   #define TFT_DISABLED_COLOR COLOR_DARK
 #endif
 #ifndef TFT_BTCANCEL_COLOR
-  #define TFT_BTCANCEL_COLOR COLOR_RED
+  #define TFT_BTCANCEL_COLOR COLOR_MAGENTA
 #endif
 #ifndef TFT_BTARROWS_COLOR
-  #define TFT_BTARROWS_COLOR COLOR_BLUE
+  #define TFT_BTARROWS_COLOR COLOR_AQUA
 #endif
 #ifndef TFT_BTOKMENU_COLOR
-  #define TFT_BTOKMENU_COLOR COLOR_RED
+  #define TFT_BTOKMENU_COLOR COLOR_WHITE
 #endif
 
 static uint32_t lcd_id = 0;
@@ -151,44 +151,60 @@ static const uint8_t clear_screen_sequence[] = {
 
 #if ENABLED(TOUCH_BUTTONS)
 
+  #define UI_BUTTON_CX  63
+  #define UI_BUTTON_CY  39
+  #define BS_BUTTON_TOP (LCD_FULL_PIXEL_HEIGHT-(UI_BUTTON_CY+16))
+  #define BS_BUTTON_BOT (BS_BUTTON_TOP+39)
+  #define BS_BUTTON_PCX (LCD_FULL_PIXEL_WIDTH/4)
+  #define BS_BUTTON_XO  ((BS_BUTTON_PCX-UI_BUTTON_CX)/2)
+  #define BS_BUTTON_1L  ((BS_BUTTON_PCX * 0) + BS_BUTTON_XO) 
+  #define BS_BUTTON_2L  ((BS_BUTTON_PCX * 1) + BS_BUTTON_XO)
+  #define BS_BUTTON_3L  ((BS_BUTTON_PCX * 2) + BS_BUTTON_XO)
+  #define BS_BUTTON_4L  ((BS_BUTTON_PCX * 3) + BS_BUTTON_XO)
+
+#if 0
+  #define BS_SEPLINE_TOP (BS_BUTTON_TOP-4)
+  #define BS_SEP_SUB     (LCD_PIXEL_OFFSET_X/2)
+
   static const uint8_t separation_line_sequence_left[] = {
-    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(10), U8G_ESC_DATA(159),
-    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(170), U8G_ESC_DATA(173),
+    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA((X_LO - BS_SEP_SUB)), U8G_ESC_DATA((X_HI + BS_SEP_SUB)),
+    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(BS_SEPLINE_TOP), U8G_ESC_DATA(BS_SEPLINE_TOP),
     U8G_ESC_ADR(0), LCD_WRITE_RAM, U8G_ESC_ADR(1),
     U8G_ESC_END
   };
 
   static const uint8_t separation_line_sequence_right[] = {
-    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(160), U8G_ESC_DATA(309),
-    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(170), U8G_ESC_DATA(173),
+    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA((X_LO - BS_SEP_SUB)), U8G_ESC_DATA((X_HI + BS_SEP_SUB)),
+    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA((BS_SEPLINE_TOP+2)), U8G_ESC_DATA((BS_SEPLINE_TOP+2)),
     U8G_ESC_ADR(0), LCD_WRITE_RAM, U8G_ESC_ADR(1),
     U8G_ESC_END
   };
+#endif  
 
   static const uint8_t buttonD_sequence[] = {
-    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(14), U8G_ESC_DATA(77),
-    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(185), U8G_ESC_DATA(224),
+    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_1L), U8G_ESC_DATA((BS_BUTTON_1L+UI_BUTTON_CX)),
+    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_TOP), U8G_ESC_DATA(BS_BUTTON_BOT),
     U8G_ESC_ADR(0), LCD_WRITE_RAM, U8G_ESC_ADR(1),
     U8G_ESC_END
   };
 
   static const uint8_t buttonA_sequence[] = {
-    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(90), U8G_ESC_DATA(153),
-    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(185), U8G_ESC_DATA(224),
+    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_2L), U8G_ESC_DATA((BS_BUTTON_2L+UI_BUTTON_CX)),
+    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_TOP), U8G_ESC_DATA(BS_BUTTON_BOT),
     U8G_ESC_ADR(0), LCD_WRITE_RAM, U8G_ESC_ADR(1),
     U8G_ESC_END
   };
 
   static const uint8_t buttonB_sequence[] = {
-    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(166), U8G_ESC_DATA(229),
-    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(185), U8G_ESC_DATA(224),
+    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_3L), U8G_ESC_DATA((BS_BUTTON_3L+UI_BUTTON_CX)),
+    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_TOP), U8G_ESC_DATA(BS_BUTTON_BOT),
     U8G_ESC_ADR(0), LCD_WRITE_RAM, U8G_ESC_ADR(1),
     U8G_ESC_END
   };
 
   static const uint8_t buttonC_sequence[] = {
-    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(242), U8G_ESC_DATA(305),
-    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(185), U8G_ESC_DATA(224),
+    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_4L), U8G_ESC_DATA((BS_BUTTON_4L+UI_BUTTON_CX)),
+    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_TOP), U8G_ESC_DATA(BS_BUTTON_BOT),
     U8G_ESC_ADR(0), LCD_WRITE_RAM, U8G_ESC_ADR(1),
     U8G_ESC_END
   };
@@ -465,6 +481,7 @@ uint8_t u8g_dev_tft_480x320_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, u
       // bottom line and buttons
       #if ENABLED(TOUCH_BUTTONS)
 
+      #if 0
         #ifdef LCD_USE_DMA_FSMC
           u8g_WriteEscSeqP(u8g, dev, separation_line_sequence_left);
           LCD_IO_WriteMultiple(TFT_DISABLED_COLOR, 300);
@@ -479,6 +496,7 @@ uint8_t u8g_dev_tft_480x320_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, u
           for (uint8_t i = 4; i--;)
             u8g_WriteSequence(u8g, dev, 150, (uint8_t *)buffer);
         #endif
+      #endif
 
         u8g_WriteEscSeqP(u8g, dev, buttonD_sequence);
         drawImageFn(buttonD, u8g, dev, 32, 20, TFT_BTCANCEL_COLOR);
