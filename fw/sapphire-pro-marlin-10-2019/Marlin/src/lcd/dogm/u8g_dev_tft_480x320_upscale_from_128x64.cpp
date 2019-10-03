@@ -22,7 +22,7 @@
 
 /*
 
-  u8g_dev_tft_320x240_upscale_from_128x64.cpp
+  u8g_dev_tft_480x320_upscale_from_128x64.cpp
 
   Universal 8bit Graphics Library
 
@@ -387,7 +387,7 @@ static const uint8_t ili9341_init_sequence[] = { // 0x9341 - ILI9341
     B01111111,B11111111,B11111111,B11111110,
   };
 
-  static void drawImage(const uint8_t *data, u8g_t *u8g, u8g_dev_t *dev, uint16_t length, uint16_t height, uint16_t color) {
+  static void drawImageFn(const uint8_t *data, u8g_t *u8g, u8g_dev_t *dev, uint16_t length, uint16_t height, uint16_t color) {
     uint16_t buffer[128];
 
     for (uint16_t i = 0; i < height; i++) {
@@ -427,7 +427,7 @@ inline void memset2(const void *ptr, uint16_t fill, size_t cnt) {
 static bool preinit = true;
 static uint8_t page;
 
-uint8_t u8g_dev_tft_320x240_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
+uint8_t u8g_dev_tft_480x320_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, uint8_t msg, void *arg) {
   u8g_pb_t *pb = (u8g_pb_t *)(dev->dev_mem);
   #ifdef LCD_USE_DMA_FSMC
     static uint16_t bufferA[512], bufferB[512];
@@ -455,7 +455,7 @@ uint8_t u8g_dev_tft_320x240_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, u
       // Clear Screen Sequence
       u8g_WriteEscSeqP(u8g, dev, clear_screen_sequence);
       #ifdef LCD_USE_DMA_FSMC
-        LCD_IO_WriteMultiple(TFT_MARLINBG_COLOR, (320*240));
+        LCD_IO_WriteMultiple(TFT_MARLINBG_COLOR, (LCD_FULL_PIXEL_WIDTH * LCD_FULL_PIXEL_HEIGHT));
       #else
         memset2(buffer, TFT_MARLINBG_COLOR, 160);
         for (uint16_t i = 0; i < 960; i++)
@@ -481,16 +481,16 @@ uint8_t u8g_dev_tft_320x240_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, u
         #endif
 
         u8g_WriteEscSeqP(u8g, dev, buttonD_sequence);
-        drawImage(buttonD, u8g, dev, 32, 20, TFT_BTCANCEL_COLOR);
+        drawImageFn(buttonD, u8g, dev, 32, 20, TFT_BTCANCEL_COLOR);
 
         u8g_WriteEscSeqP(u8g, dev, buttonA_sequence);
-        drawImage(buttonA, u8g, dev, 32, 20, TFT_BTARROWS_COLOR);
+        drawImageFn(buttonA, u8g, dev, 32, 20, TFT_BTARROWS_COLOR);
 
         u8g_WriteEscSeqP(u8g, dev, buttonB_sequence);
-        drawImage(buttonB, u8g, dev, 32, 20, TFT_BTARROWS_COLOR);
+        drawImageFn(buttonB, u8g, dev, 32, 20, TFT_BTARROWS_COLOR);
 
         u8g_WriteEscSeqP(u8g, dev, buttonC_sequence);
-        drawImage(buttonC, u8g, dev, 32, 20, TFT_BTOKMENU_COLOR);
+        drawImageFn(buttonC, u8g, dev, 32, 20, TFT_BTOKMENU_COLOR);
       #endif // TOUCH_BUTTONS
 
       return 0;
@@ -548,6 +548,6 @@ uint8_t u8g_dev_tft_320x240_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, u
   return u8g_dev_pb8v1_base_fn(u8g, dev, msg, arg);
 }
 
-U8G_PB_DEV(u8g_dev_tft_320x240_upscale_from_128x64, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_tft_320x240_upscale_from_128x64_fn, U8G_COM_HAL_FSMC_FN);
+U8G_PB_DEV(u8g_dev_tft_480x320_upscale_from_128x64, WIDTH, HEIGHT, PAGE_HEIGHT, u8g_dev_tft_480x320_upscale_from_128x64_fn, U8G_COM_HAL_FSMC_FN);
 
 #endif // HAS_GRAPHICAL_LCD && FSMC_CS

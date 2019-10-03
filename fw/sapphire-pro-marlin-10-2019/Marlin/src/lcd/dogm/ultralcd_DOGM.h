@@ -174,7 +174,11 @@
 
   // Unspecified 320x240 TFT pre-initialized by built-in bootloader
 
-  #define U8G_CLASS U8GLIB_TFT_320X240_UPSCALE_FROM_128X64
+  #ifdef MKS_ROBIN_NANO_TFT35
+    #define U8G_CLASS U8GLIB_TFT_480X320_UPSCALE_FROM_128X64
+  #else
+    #define U8G_CLASS U8GLIB_TFT_320X240_UPSCALE_FROM_128X64
+  #endif
   #define U8G_PARAM FSMC_CS_PIN, FSMC_RS_PIN
 
 #else
@@ -206,17 +210,17 @@
 // LCD_FULL_PIXEL_WIDTH =
 // LCD_PIXEL_OFFSET_X + (LCD_PIXEL_WIDTH * 2) + LCD_PIXEL_OFFSET_X
 #if ENABLED(FSMC_GRAPHICAL_TFT)
-//#  if ENABLED(MKS_ROBIN_TFT35)
-//#    define LCD_FULL_PIXEL_WIDTH  480
-//#    define LCD_PIXEL_OFFSET_X    (32+80)
-//#    define LCD_FULL_PIXEL_HEIGHT 320
-//#    define LCD_PIXEL_OFFSET_Y    (28+40)
-//#  else
-#    define LCD_FULL_PIXEL_WIDTH  320
-#    define LCD_PIXEL_OFFSET_X    32
-#    define LCD_FULL_PIXEL_HEIGHT 240
-#    define LCD_PIXEL_OFFSET_Y    32
-//#  endif
+  #ifdef MKS_ROBIN_NANO_TFT35
+    #define LCD_FULL_PIXEL_WIDTH  480
+    #define LCD_PIXEL_OFFSET_X    112
+    #define LCD_FULL_PIXEL_HEIGHT 320
+    #define LCD_PIXEL_OFFSET_Y    96
+  #else
+    #define LCD_FULL_PIXEL_WIDTH  320
+    #define LCD_PIXEL_OFFSET_X    32
+    #define LCD_FULL_PIXEL_HEIGHT 240
+    #define LCD_PIXEL_OFFSET_Y    32
+  #endif
 #endif
 
 // For selective rendering within a Y range
