@@ -128,7 +128,7 @@
   #define TFT_BTARROWS_COLOR COLOR_AQUA
 #endif
 #ifndef TFT_BTOKMENU_COLOR
-  #define TFT_BTOKMENU_COLOR COLOR_WHITE
+  #define TFT_BTOKMENU_COLOR COLOR_ORANGE
 #endif
 
 static uint32_t lcd_id = 0;
@@ -161,25 +161,6 @@ static const uint8_t clear_screen_sequence[] = {
   #define BS_BUTTON_2L  ((BS_BUTTON_PCX * 1) + BS_BUTTON_XO)
   #define BS_BUTTON_3L  ((BS_BUTTON_PCX * 2) + BS_BUTTON_XO)
   #define BS_BUTTON_4L  ((BS_BUTTON_PCX * 3) + BS_BUTTON_XO)
-
-#if 0
-  #define BS_SEPLINE_TOP (BS_BUTTON_TOP-4)
-  #define BS_SEP_SUB     (LCD_PIXEL_OFFSET_X/2)
-
-  static const uint8_t separation_line_sequence_left[] = {
-    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA((X_LO - BS_SEP_SUB)), U8G_ESC_DATA((X_HI + BS_SEP_SUB)),
-    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA(BS_SEPLINE_TOP), U8G_ESC_DATA(BS_SEPLINE_TOP),
-    U8G_ESC_ADR(0), LCD_WRITE_RAM, U8G_ESC_ADR(1),
-    U8G_ESC_END
-  };
-
-  static const uint8_t separation_line_sequence_right[] = {
-    U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA((X_LO - BS_SEP_SUB)), U8G_ESC_DATA((X_HI + BS_SEP_SUB)),
-    U8G_ESC_ADR(0), LCD_ROW,    U8G_ESC_ADR(1), U8G_ESC_DATA((BS_SEPLINE_TOP+2)), U8G_ESC_DATA((BS_SEPLINE_TOP+2)),
-    U8G_ESC_ADR(0), LCD_WRITE_RAM, U8G_ESC_ADR(1),
-    U8G_ESC_END
-  };
-#endif  
 
   static const uint8_t buttonD_sequence[] = {
     U8G_ESC_ADR(0), LCD_COLUMN, U8G_ESC_ADR(1), U8G_ESC_DATA(BS_BUTTON_1L), U8G_ESC_DATA((BS_BUTTON_1L+UI_BUTTON_CX)),
@@ -480,24 +461,6 @@ uint8_t u8g_dev_tft_480x320_upscale_from_128x64_fn(u8g_t *u8g, u8g_dev_t *dev, u
 
       // bottom line and buttons
       #if ENABLED(TOUCH_BUTTONS)
-
-      #if 0
-        #ifdef LCD_USE_DMA_FSMC
-          u8g_WriteEscSeqP(u8g, dev, separation_line_sequence_left);
-          LCD_IO_WriteMultiple(TFT_DISABLED_COLOR, 300);
-          u8g_WriteEscSeqP(u8g, dev, separation_line_sequence_right);
-          LCD_IO_WriteMultiple(TFT_DISABLED_COLOR, 300);
-        #else
-          memset2(buffer, TFT_DISABLED_COLOR, 150);
-          u8g_WriteEscSeqP(u8g, dev, separation_line_sequence_left);
-          for (uint8_t i = 4; i--;)
-            u8g_WriteSequence(u8g, dev, 150, (uint8_t *)buffer);
-          u8g_WriteEscSeqP(u8g, dev, separation_line_sequence_right);
-          for (uint8_t i = 4; i--;)
-            u8g_WriteSequence(u8g, dev, 150, (uint8_t *)buffer);
-        #endif
-      #endif
-
         u8g_WriteEscSeqP(u8g, dev, buttonD_sequence);
         drawImageFn(buttonD, u8g, dev, 32, 20, TFT_BTCANCEL_COLOR);
 
