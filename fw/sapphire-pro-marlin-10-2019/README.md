@@ -27,6 +27,10 @@
 `Marlin\_Statusscreen.h` - `Marlin\Configuration.h:94 #define CUSTOM_STATUS_SCREEN_IMAGE`<br/>
 Так же для модификации смотрите директорию `pixmaps`<br/>
 
+### Тюнинг PID
+Нагреватель: `M303 E0 S200 C8`<br/>
+Стол: `M303 E-1 C8 S90`<br/>
+
 # Железо SapphirePro
 
 Дисплей - MKS TFT35 (3.5" (~9см)) 480*320<br/>
