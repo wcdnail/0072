@@ -19,8 +19,9 @@
   Linear Advanced|`Marlin\Configuration_adv.h`|1329
 
 ### Графика
+[Более гибкий конвертер графики](http://marlinfw.org/tools/u8glib/converter.html)
 `Marlin\_Bootscreen.h` - `Marlin\Configuration.h:91 #define SHOW_CUSTOM_BOOTSCREEN`<br/>
-Для модификации смотри директорию `..\marlin-gfx`
+Так же для модификации смотри директорию `..\marlin-gfx`
 
 # Железо SapphirePro
 
