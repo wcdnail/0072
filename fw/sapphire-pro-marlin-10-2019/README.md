@@ -3,7 +3,7 @@
 ### Версия марлин - 2.0.x bugfix, взята 03.10.2019
 
 Собирать лучше всего с помощью Visual Studio Code + PlatformIO<br/>
-[Инструкция по установке Visual Studio Code + PlatformIO](https://docs.platformio.org/en/latest/ide/vscode.html)
+[Инструкция по установке Visual Studio Code + PlatformIO](https://docs.platformio.org/en/latest/ide/vscode.html)<br/>
 
 ### Прошивка SapphirePro:
 * Скопировать файл `.pio\build\mks_robin_nano\Robin_nano.bin` на sd карту
@@ -19,9 +19,9 @@
   Linear Advanced|`Marlin\Configuration_adv.h`|1329
 
 ### Графика
-[Более гибкий конвертер графики](http://marlinfw.org/tools/u8glib/converter.html)
+[Более гибкий конвертер графики](http://marlinfw.org/tools/u8glib/converter.html)<br/>
 `Marlin\_Bootscreen.h` - `Marlin\Configuration.h:91 #define SHOW_CUSTOM_BOOTSCREEN`<br/>
-Так же для модификации смотри директорию `..\marlin-gfx`
+Так же для модификации смотри директорию `..\marlin-gfx`<br/>
 
 # Железо SapphirePro
 
