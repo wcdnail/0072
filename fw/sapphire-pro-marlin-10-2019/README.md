@@ -17,7 +17,7 @@
   Размер стола|`Marlin\Configuration.h`|1070
   Linear Advanced|`Marlin\Configuration_adv.h`|1329
 
-Графика
+### Графика
 `Marlin\_Bootscreen.h` - `Marlin\Configuration.h:91 #define SHOW_CUSTOM_BOOTSCREEN`<br/>
 Для модификации смотри директорию `..\marlin-gfx`
 
