@@ -4,12 +4,12 @@
 Собирать лучше всего с помощью Visual Studio Code + PlatformIO
 [Инструкция по установке Visual Studio Code + PlatformIO](https://docs.platformio.org/en/latest/ide/vscode.html)
 
-Прошивка SapphirePro:
+### Прошивка SapphirePro:
 * Скопировать файл `.pio\build\mks_robin_nano\Robin_nano.bin` на sd карту
 * Установить sd карту в принтер
 * Включить/перезагрузить принтер
 
-Конфигурация прошивки
+### Конфигурация прошивки
   Конфигурация|Файл|Строка
   ------------|----|------
   PID|`Marlin\Configuration.h`|483
