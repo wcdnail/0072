@@ -16,12 +16,16 @@
   PID|`Marlin\Configuration.h`|483
   Шаг и ускорение|`Marlin\Configuration.h`|730
   Размер стола|`Marlin\Configuration.h`|1070
+  M73 прогресс|`Marlin\Configuration_adv.h`|888
+  Отображение статуса|`Marlin\Configuration_adv.h`|1143
   Linear Advanced|`Marlin\Configuration_adv.h`|1329
+  Расширенная пауза|`Marlin\Configuration_adv.h`|1639
 
 ### Графика
-[Более гибкий конвертер графики](http://marlinfw.org/tools/u8glib/converter.html)<br/>
+[Конвертер графики](http://marlinfw.org/tools/u8glib/converter.html)<br/>
 `Marlin\_Bootscreen.h` - `Marlin\Configuration.h:91 #define SHOW_CUSTOM_BOOTSCREEN`<br/>
-Так же для модификации смотри директорию `..\marlin-gfx`<br/>
+`Marlin\_Statusscreen.h` - `Marlin\Configuration.h:94 #define CUSTOM_STATUS_SCREEN_IMAGE`<br/>
+Так же для модификации смотрите директорию `pixmaps`<br/>
 
 # Железо SapphirePro
 
