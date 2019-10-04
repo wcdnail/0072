@@ -1,7 +1,8 @@
 # Marlin 2.0.x 
 
-Версия марлин - 2.0.x bugfix, взята 03.10.2019
-Собирать лучше всего с помощью Visual Studio Code + PlatformIO
+### Версия марлин - 2.0.x bugfix, взята 03.10.2019
+
+Собирать лучше всего с помощью Visual Studio Code + PlatformIO<br/>
 [Инструкция по установке Visual Studio Code + PlatformIO](https://docs.platformio.org/en/latest/ide/vscode.html)
 
 ### Прошивка SapphirePro:
