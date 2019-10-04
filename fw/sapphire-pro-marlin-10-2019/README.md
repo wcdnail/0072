@@ -3,7 +3,7 @@
 ### Версия марлин - 2.0.x bugfix, взята 03.10.2019
 
 Собирать лучше всего с помощью Visual Studio Code + PlatformIO<br/>
-<a href="https://docs.platformio.org/en/latest/ide/vscode.html" target="_blank">Инструкция по установке Visual Studio Code + PlatformIO</a>
+[https://docs.platformio.org/en/latest/ide/vscode.html](Инструкция по установке Visual Studio Code + PlatformIO){target="_blank"}
 
 ### Прошивка SapphirePro:
 * Скопировать файл `.pio\build\mks_robin_nano\Robin_nano.bin` на sd карту
