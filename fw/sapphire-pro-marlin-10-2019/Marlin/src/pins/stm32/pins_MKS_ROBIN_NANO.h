@@ -88,7 +88,7 @@
 #define E0_DIR_PIN         PD3
 
 #define E1_ENABLE_PIN      PA3
-#define E1_STEP_PIN        -1 // PA6
+#define E1_STEP_PIN        PA6
 #define E1_DIR_PIN         PA1
 
 //
@@ -129,7 +129,6 @@
 // LCD / Controller
 //
 #define BEEPER_PIN         PC5
-#define SD_DETECT_PIN      -1 // PD12
 //
 // Use the on-board card socket labeled TF_CARD_SOCKET
 //
@@ -137,7 +136,7 @@
 #define SCK_PIN          PC12
 #define MOSI_PIN         PD2
 #define MISO_PIN         PC8
-#define SD_DETECT_PIN    -1 //PD12
+#define SD_DETECT_PIN    PD12
 #define SDSS             SS_PIN
 #define SDIO_SUPPORT
 
