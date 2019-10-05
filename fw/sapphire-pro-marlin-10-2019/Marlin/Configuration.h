@@ -138,7 +138,7 @@
 
 // Printer's unique ID, used by some programs to differentiate between machines.
 // Choose your own or use a service like http://www.uuidgenerator.net/version4
-//#define MACHINE_UUID "00000000-0000-0000-0000-000000000000"
+#define MACHINE_UUID "521ba1fe-4e9d-4eed-9f6f-3779385f5824"
 
 // @section extruder
 
@@ -479,10 +479,10 @@
   //#define DEFAULT_Ki 1.08
   //#define DEFAULT_Kd 114
 
-  //SapphirePro MonsterHeater
-  #define DEFAULT_Kp 15.36
-  #define DEFAULT_Ki 1.13
-  #define DEFAULT_Kd 52.03
+  // SapphirePro M303 E0 S200 C8
+  #define DEFAULT_Kp 27.42
+  #define DEFAULT_Ki 2.71
+  #define DEFAULT_Kd 69.23
 
   // MakerGear
   //#define DEFAULT_Kp 7.0
@@ -535,10 +535,10 @@
   //#define DEFAULT_bedKi .023
   //#define DEFAULT_bedKd 305.4
 
-  // SapphirePro 24V Heater C5 S50
-  #define DEFAULT_bedKp 45.99
-  #define DEFAULT_bedKi 8.69
-  #define DEFAULT_bedKd 60.84
+  // SapphirePro M303 E-1 C8 S90
+  #define DEFAULT_bedKp 48.24
+  #define DEFAULT_bedKi 8.24
+  #define DEFAULT_bedKd 188.20
 
   //120V 250W silicone heater into 4mm borosilicate (MendelMax 1.5+)
   //from pidautotune
@@ -727,7 +727,7 @@
  * Override with M92
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80.3, 80.4, 1600, 415 }
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { 80.12, 80.05, 1599, 412 }
 
 /**
  * Default Max Feed Rate (mm/s)
@@ -747,7 +747,7 @@
  * Override with M201
  *                                      X, Y, Z, E0 [, E1[, E2[, E3[, E4[, E5]]]]]
  */
-#define DEFAULT_MAX_ACCELERATION      { 1500, 1500, 100, 1000 }
+#define DEFAULT_MAX_ACCELERATION      { 1000, 1000, 100, 1000 }
 
 //#define LIMITED_MAX_ACCEL_EDITING     // Limit edit via M201 or LCD to DEFAULT_MAX_ACCELERATION * 2
 #if ENABLED(LIMITED_MAX_ACCEL_EDITING)
@@ -762,9 +762,9 @@
  *   M204 R    Retract Acceleration
  *   M204 T    Travel Acceleration
  */
-#define DEFAULT_ACCELERATION          1500    // X, Y, Z and E acceleration for printing moves
-#define DEFAULT_RETRACT_ACCELERATION  1500    // E acceleration for retracts
-#define DEFAULT_TRAVEL_ACCELERATION   1500    // X, Y, Z acceleration for travel (non printing) moves
+#define DEFAULT_ACCELERATION          4000    // X, Y, Z and E acceleration for printing moves
+#define DEFAULT_RETRACT_ACCELERATION  1000    // E acceleration for retracts
+#define DEFAULT_TRAVEL_ACCELERATION   4000    // X, Y, Z acceleration for travel (non printing) moves
 
 /**
  * Junction Deviation
@@ -789,8 +789,8 @@
  * value set here, it may happen instantaneously.
  */
 #if DISABLED(JUNCTION_DEVIATION)
-  #define DEFAULT_XJERK 10.0
-  #define DEFAULT_YJERK 10.0
+  #define DEFAULT_XJERK 20.0
+  #define DEFAULT_YJERK 20.0
   #define DEFAULT_ZJERK  0.4
 
   //#define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
@@ -1066,19 +1066,19 @@
 
 // The size of the print bed
 
-// Restricted bed for SapphirePro
-#define X_BED_SIZE 210
-#define Y_BED_SIZE 210
+// SapphirePro
+#define X_BED_SIZE 220
+#define Y_BED_SIZE 220
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
 
-// Sapphire Pro -5 from endstops
-#define X_MIN_POS -5
+// Sapphire Pro
+#define X_MIN_POS 0
 #define Y_MIN_POS 0
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
-#define Y_MAX_POS 215
-#define Z_MAX_POS 220
+#define Y_MAX_POS X_BED_SIZE
+#define Z_MAX_POS 200
 
 /**
  * Software Endstops
@@ -1319,8 +1319,8 @@
 
 // Manually set the home position. Leave these undefined for automatic settings.
 // For DELTA this is the top-center of the Cartesian print volume.
-//#define MANUAL_X_HOME_POS 0
-//#define MANUAL_Y_HOME_POS 0
+#define MANUAL_X_HOME_POS -2.9
+#define MANUAL_Y_HOME_POS (Y_BED_SIZE + 7.5)
 //#define MANUAL_Z_HOME_POS 0
 
 // Use "Z Safe Homing" to avoid homing with a Z probe outside the bed area.
