@@ -1,27 +1,29 @@
 # Marlin 2.0.x 
 
 ### Версия марлин - 2.0.x bugfix, взята 03.10.2019
-![sapphire-pro-0-marlin-boot1](docs/hints/sapphire-pro-0-marlin-boot1.jpg?raw=true)
+![sapphire-pro-0-marlin-boot](docs/hints/sapphire-pro-0-marlin-boot1.jpg?raw=true)
+![sapphire-pro-0-marlin-status](docs/hints/sapphire-pro-2-marlin-status1.jpg?raw=true)
 
 Собирать лучше всего с помощью Visual Studio Code + PlatformIO<br/>
 [Инструкция по установке Visual Studio Code + PlatformIO](https://docs.platformio.org/en/latest/ide/vscode.html)<br/>
 
 ### Прошивка SapphirePro:
-* Скопировать файл `.pio\build\mks_robin_nano\Robin_nano.bin` на sd карту
+* После успешной сборки скопировать файл `.pio\build\mks_robin_nano\Robin_nano.bin` на sd карту
 * Установить sd карту в принтер
 * Включить/перезагрузить принтер
+* Дождаться обновления
 
 ### Конфигурация прошивки
   Конфигурация|Файл|Строка
   ------------|----|------
-  PID|`Marlin\Configuration.h`|483
-  Шаг и ускорение|`Marlin\Configuration.h`|730
-  Размер стола|`Marlin\Configuration.h`|1070
-  Home offsets|`Marlin\Configuration.h`|1322
-  M73 прогресс|`Marlin\Configuration_adv.h`|888
-  Отображение статуса|`Marlin\Configuration_adv.h`|1143
-  Linear Advanced|`Marlin\Configuration_adv.h`|1329
-  Расширенная пауза|`Marlin\Configuration_adv.h`|1639
+  PID|Marlin\Configuration.h|483
+  Шаг и ускорение|Marlin\Configuration.h|730
+  Размер стола|Marlin\Configuration.h|1070
+  Home offsets|Marlin\Configuration.h|1322
+  M73 прогресс|Marlin\Configuration_adv.h|888
+  Отображение статуса|Marlin\Configuration_adv.h|1143
+  Linear Advanced|Marlin\Configuration_adv.h|1329
+  Расширенная пауза|Marlin\Configuration_adv.h|1639
 
 ### Графика
 [Конвертер графики](http://marlinfw.org/tools/u8glib/converter.html)<br/>
