@@ -1,6 +1,7 @@
 # Marlin 2.0.x 
 
 ### Версия марлин - 2.0.x bugfix, взята 03.10.2019
+![sapphire-pro-0-marlin-boot1](docs/hints/sapphire-pro-0-marlin-boot1.jpg?raw=true)
 
 Собирать лучше всего с помощью Visual Studio Code + PlatformIO<br/>
 [Инструкция по установке Visual Studio Code + PlatformIO](https://docs.platformio.org/en/latest/ide/vscode.html)<br/>
@@ -31,6 +32,15 @@
 ### Тюнинг PID
 Нагреватель: `M303 E0 S200 C8`<br/>
 Стол: `M303 E-1 C8 S90`<br/>
+
+### Настройки ПО/слайсеров
+  Конфигурация|Значение|Примечание
+  ------------|----|------
+  Размер стола|220х220 мм|Ни каких дополнительных смещений настраивать не надо
+  Скорость соединения с принтером|115200 бод|
+
+#### Пример настройки Repetier-Host
+![sapphire-pro-bed-size-repetier](docs/hints/sapphire-pro-bed-size-repetier.png?raw=true "Размер стола в Repetier-Host")
 
 # Железо SapphirePro
 
