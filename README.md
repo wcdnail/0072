@@ -31,4 +31,4 @@
 
 # FlyingBear P902. Прошивки
 `fw/p902-marlin-1.1.8`
-`fw/p902-marlin-1.1.9` - Power-loss Recovery
+`fw/p902-marlin-1.1.9` - Power-loss Recovery OFF
