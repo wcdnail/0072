@@ -27,8 +27,8 @@
 ![mc3-stalin-v-1-2019](v/mc3-stalin/IMG_20190720_144437.jpg?raw=true "MC3 СТАЛИН")
 
 # MC3-2. Прошивки
-`fw/mc3/Marlin_MC3_STALIN_vsc` - Marlin 1.0.0
+`fw/mc3/Marlin_MC3_STALIN_vsc` - Marlin 1.0.0<br/>
 
 # FlyingBear P902. Прошивки
-`fw/p902-marlin-1.1.8`
-`fw/p902-marlin-1.1.9` - Power-loss Recovery OFF
+`fw/p902-marlin-1.1.8`<br/>
+`fw/p902-marlin-1.1.9` - Power-loss Recovery OFF<br/>
