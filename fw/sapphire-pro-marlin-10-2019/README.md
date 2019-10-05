@@ -16,6 +16,7 @@
   PID|`Marlin\Configuration.h`|483
   Шаг и ускорение|`Marlin\Configuration.h`|730
   Размер стола|`Marlin\Configuration.h`|1070
+  Home offsets|`Marlin\Configuration.h`|1322
   M73 прогресс|`Marlin\Configuration_adv.h`|888
   Отображение статуса|`Marlin\Configuration_adv.h`|1143
   Linear Advanced|`Marlin\Configuration_adv.h`|1329
@@ -26,6 +27,10 @@
 `Marlin\_Bootscreen.h` - `Marlin\Configuration.h:91 #define SHOW_CUSTOM_BOOTSCREEN`<br/>
 `Marlin\_Statusscreen.h` - `Marlin\Configuration.h:94 #define CUSTOM_STATUS_SCREEN_IMAGE`<br/>
 Так же для модификации смотрите директорию `pixmaps`<br/>
+
+### Тюнинг PID
+Нагреватель: `M303 E0 S200 C8`<br/>
+Стол: `M303 E-1 C8 S90`<br/>
 
 # Железо SapphirePro
 
