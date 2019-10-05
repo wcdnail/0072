@@ -16,6 +16,7 @@
   PID|`Marlin\Configuration.h`|483
   Шаг и ускорение|`Marlin\Configuration.h`|730
   Размер стола|`Marlin\Configuration.h`|1070
+  Home offsets|`Marlin\Configuration.h`|1322
   M73 прогресс|`Marlin\Configuration_adv.h`|888
   Отображение статуса|`Marlin\Configuration_adv.h`|1143
   Linear Advanced|`Marlin\Configuration_adv.h`|1329
