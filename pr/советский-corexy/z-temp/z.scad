@@ -11,6 +11,7 @@ BEDZ=ZMax;
 
 ShowDims=false;
 ShowAll=true;
+ShowHalfZ=false;
 ShowProfiles=true;
 ShowCoreXY=true;
 ShowXAxis=true;
@@ -101,12 +102,24 @@ module Bed_Table_sizes(center=true) {
   }
 }
 
+module Z_Motor_MK2() {
+  import("Z-Motor-Mount-MK2.stl");
+}
+
 module Z_Motor_Half(skipDims=!ShowDims, withMotor=true, withRods=true, newRodHolders=true, rodHolderBottom=false, drawMotor=true, transparentBars=false, shortRodHolders=false) {
+  NewZMotorMount=true;
+  N17Zoffs=NewZMotorMount ? 40 : -5.3;
+  N17NCZ=NewZMotorMount ? 34 : N17Height;
   // Motor
   if (withMotor) {
-    translate([ZmotorXC, BARCY+1.15, 0]) z_motor_c1(skipDims);
+    if (NewZMotorMount) {
+      color("Green", 1) translate([ZmotorXC, BARCY+1.15, 0]) rotate([0, 0, 180]) Z_Motor_MK2();
+    }
+    else {
+      translate([ZmotorXC, BARCY+1.15, 0]) z_motor_c1(skipDims);
+    }
     if (drawMotor) {
-      translate([ZmotorXC, BARCY+1.15, -N17Height/2-5.3]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
+      translate([ZmotorXC, BARCY+1.15, -N17Height/2+N17Zoffs]) rotate([0, 0, 90]) Nema17(N17NCZ, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
     }
   }
   // Rod holder
@@ -136,22 +149,25 @@ module Z_Motor_Half(skipDims=!ShowDims, withMotor=true, withRods=true, newRodHol
       translate([ZmotorXC+ZrodHolderDistToCenter, ZaxisML8UUCY, hldrZO+RODZUp]) cylinder(d=8, h=RODZLen);
     }
     // Coupler
-    color("White") {
-      translate([ZmotorXC, ZaxisML8UUCY, hldrZO+10]) cylinder(d=18.5, h=25);
+    if (!NewZMotorMount) {
+      color("White") {
+        translate([ZmotorXC, ZaxisML8UUCY, hldrZO+N17Zoffs]) cylinder(d=18.5, h=25);
+      }
     }
     // Z screw
     color("DimGray") {
-      translate([ZmotorXC, ZaxisML8UUCY, hldrZO+25]) cylinder(d=8, h=ZScrewLen);
+      translate([ZmotorXC, ZaxisML8UUCY, hldrZO+N17Zoffs-5]) cylinder(d=8, h=ZScrewLen);
     }
   }
   if(!skipDims) {
+    NZMotorCX = NewZMotorMount ? 76.6 : ZmotorCX;
     color("Black") {
       // Motor
       if (withMotor) {
         x_dim_abs(ZmotorXC, 0, BARCZ, 280);
         x_dim_abs(BARXLen-ZmotorXC, 0, BARCZ, 280, ox=ZmotorXC);
-        x_dim_abs(ZmotorXC-ZmotorCX/2, 0, BARCZ, 260);
-        x_dim_abs(BARXLen-ZmotorXC-ZmotorCX/2, 0, BARCZ, 260, ox=ZmotorXC+ZmotorCX/2);
+        x_dim_abs(ZmotorXC-NZMotorCX/2, 0, BARCZ, 260);
+        x_dim_abs(BARXLen-ZmotorXC-NZMotorCX/2, 0, BARCZ, 260, ox=ZmotorXC+NZMotorCX/2);
       }
       // Rod holder left
       x_dim_abs(ZmotorXC-ZrodHolderDistToCenter+hldrCX/2, 0, BARCZ, 240);
@@ -388,6 +404,9 @@ module SovietXY_Asm(carx=0, cary=0, skipDims=false, withE3D=true, center=true) {
 
 if (ShowAll) {
   SovietXY_Asm();
+}
+else if (ShowHalfZ) {
+  Z_Motor_Half();
 }
 else if (ShowTableSize) {
   Bed_Table_sizes();
