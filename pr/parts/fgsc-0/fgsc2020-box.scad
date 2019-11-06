@@ -17,6 +17,7 @@ This parts are designed to fit the RepRapDiscount Full Graphic Smart Controller 
 */
 
 use <../sm.scad>
+use <../chamfers.scad>
 
 // #####################################################################################################################################
 
@@ -187,12 +188,18 @@ module lcdbox_top() {
 						filletring_diff([lcd_width+compensate*6+small_wall*2,lcd_depth+compensate*6+small_wall*2,lcd_top_hight-normal_wall],r=1);
 				}
 			}
+      mpsx=(lcd_mountoffset_sides+compensate+small_wall) * 2.4;
+      mpsy=(lcd_mountoffset_sides+compensate+small_wall) * 2.3;
 			// mount posts
-			for(i1=[	[lcd_mountoffset_sides,lcd_mountoffset_bottom],
+			color("Red") 
+      for(i1=[	[lcd_mountoffset_sides,lcd_mountoffset_bottom],
 						[lcd_width-lcd_mountoffset_sides,lcd_mountoffset_bottom],
 						[lcd_mountoffset_sides,lcd_depth-lcd_mountoffset_sides],
-						[lcd_width-lcd_mountoffset_sides,lcd_depth-lcd_mountoffset_sides]]) 
-						translate(i1) fncylinder(r=lcd_mountoffset_sides+compensate+small_wall,h=lcdbox_topmount_hight);
+						[lcd_width-lcd_mountoffset_sides,lcd_depth-lcd_mountoffset_sides]]) {
+						//translate(i1) fncylinder(r=lcd_mountoffset_sides+compensate+small_wall,h=lcdbox_topmount_hight);
+            translate(i1) translate([0, 0, lcdbox_topmount_hight/2]) 
+              ChamferCyl(mpsx, mpsy, lcdbox_topmount_hight, 4, center=true, $fn=16);
+      }
 
 			translate([lcdbox_top_reset_offset,lcdbox_top_bottomparts_offset,0])
 				fncylinder(r=lcdbox_top_reset_button_r, r2=lcdbox_top_reset_button_r*2/3,h=lcdbox_top_reset_button_h+small_wall);
@@ -333,13 +340,13 @@ module filletring_diff(xyz, r, x=false, y=false, z=false) {
 }
 
 module lcdbox_top_ussr() {
-  smScale = 0.22;
-  smScaleZ = 3;
-  shrink = -3;
-  difference() {
-    lcdbox_top();
-    color("red") translate([47, 21, 10])
-      scale([smScale, smScale, smScaleZ]) rotate([180, 0, 135]) 
+  smScale = 0.33;
+  smScaleZ = 1;
+  shrink = -2;
+  rotate([0, 0, 180]) difference() {
+    rotate([0, 0, 180]) lcdbox_top();
+    color("red") translate([-79, -10, 1.2])
+      scale([smScale, smScale, smScaleZ]) rotate([0, 0, 135]) rotate([0, 180, 0])
         HammerAndSickle(shrink);
   }
 }
