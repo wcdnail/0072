@@ -9,10 +9,6 @@ if(DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 endif()
 
 find_package(Boost REQUIRED)
-#if (Boost_LIBRARIES STREQUAL "")
-#    set(Boost_LIBRARIES 
-#    )
-#endif() 
 
 set(MCPP_HEADERS
     dumps.hxx
@@ -34,10 +30,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_compile_options(${PROJECT_NAME} PRIVATE 
 )
 
-#target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE
+)
 
 message(STATUS "=======================================================")
 message(STATUS "Boost ver  : ${Boost_VERSION}")
 message(STATUS "Boost incs : ${Boost_INCLUDE_DIRS}")
-message(STATUS "Boost libs : ${Boost_LIBRARIES}")
 message(STATUS "=======================================================")
