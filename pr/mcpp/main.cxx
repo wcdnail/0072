@@ -20,10 +20,12 @@ static inline void printBuildHeader()
               << "Compiler   : " << BOOST_COMPILER << "\n"
               << "Library    : " << BOOST_STDLIB << "\n"
               << "Boost v.   : " << BOOST_VERSION << "\n"
+              << "C++        : " << __cplusplus << "\n"
               ;
     DMP_SEP();
 }
 
+#if 0
 static inline void testMiscStuff()
 {
     std::vector c1 = { 1, 2, 3 };
@@ -31,6 +33,7 @@ static inline void testMiscStuff()
         std::cout << DMP_DECLTYPE_NAME(el) << " : " << el << "\n";
     }
 }
+#endif
 
 int main()
 {

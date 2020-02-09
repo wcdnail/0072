@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <initializer_list>
 #include <string>
+#include <numeric>
 
 struct A
 {
@@ -22,12 +23,24 @@ struct B
     template <typename T>
     B(std::initializer_list<T> il)
     {
-        std::cout << FUNC_DNAME << "\n";
+        std::cout << FUNC_DNAME << " >> for (auto&& it: il) :\n";
         for (auto&& it: il) {
             std::cout << DMP_DECLTYPE_NAME(it) << " : " << it << "\n";
         }
     }
 };
+
+#define DECL_CURVE_INIT(type, var, ...)  \
+    type var { __VA_ARGS__ }; \
+    do { \
+        std::cout << std::setw(DMP_LW + 16) << std::setfill(' ') << std::right << DMP_DECLTYPE_NAME(var) << ": " #type " " #var " {" #__VA_ARGS__ << "}; " << "\n"; \
+    } while (0)
+
+#define DECL_CURVE_INIT_EQ(type, var, ...)  \
+    type var = { __VA_ARGS__ }; \
+    do { \
+        std::cout << std::setw(DMP_LW + 16) << std::setfill(' ') << std::right << DMP_DECLTYPE_NAME(var) << ": " #type " " #var " = {" #__VA_ARGS__ << "}; " << "\n"; \
+    } while (0)
 
 void curve_brackets_init()
 {
@@ -36,13 +49,35 @@ void curve_brackets_init()
     A a0{};
     A a1{10};
     A a2{10.0};
+    A a21 = {11.0};
     A a3{5, 10.0};
+    A a31 = {6, 11.0};
     A a4(7, 12);
 
     B b0{};
     B b1{10};
     B b2{10.0};
     B b3{5, 10};
+    B b31 = {6, 11};
     B b4(5, 10);
     B b5{"раз"s, "два"s, "три"s};
+    B b6{5u, 10.0};
+  //B b7{10.0, 5u};                             // clang: ошибка: type 'double' cannot be narrowed to 'int' in initializer list [-Wc++11-narrowing]
+                                                //   gcc: ошибка: narrowing conversion of ‘1.0e+1’ from ‘double’ to ‘int’ [-Wnarrowing]
+
+    DECL_CURVE_INIT(auto, c1, 10);
+    DECL_CURVE_INIT_EQ(auto, c2, 32);
+  //DECL_CURVE_INIT_EQ(auto, ce1, 10.0, 20u);   // clang: ошибка: deduced conflicting types ('double' vs 'unsigned int') for initializer list element type
+                                                //   gcc: ошибка: unable to deduce ‘std::initializer_list<auto>’ from ‘{1.0e+1, 20}’
+    DECL_CURVE_INIT_EQ(auto, c3, 10.0, 2.0, 3., 4.);
+    DECL_CURVE_INIT(float, c4);
+    DECL_CURVE_INIT(auto, c5, 562.0f);
+
+    DECL_CURVE_INIT(auto, p1, 0);
+    DECL_CURVE_INIT(auto, p2, NULL);            // gcc: предупреждение: converting to non-pointer type ‘long int’ from NULL [-Wconversion-null]
+    DECL_CURVE_INIT(auto, p3, nullptr);
+
+    DECL_CURVE_INIT_EQ(auto, pe1, 0);
+    DECL_CURVE_INIT_EQ(auto, pe2, NULL);
+    DECL_CURVE_INIT_EQ(auto, pe3, nullptr);
 }
