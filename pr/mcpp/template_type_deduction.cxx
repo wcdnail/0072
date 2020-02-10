@@ -43,4 +43,5 @@ void template_type_deduction()
     using PVFunc = void (*)(void*);
     CHECK_LVALUE(PVFunc, pvfn, nullptr);
     CHECK_RVALUE(std::vector<double>, 256);
+    CHECK_RVALUE(int, 1024);
 }

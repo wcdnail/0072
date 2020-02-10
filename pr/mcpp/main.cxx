@@ -6,6 +6,8 @@
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
+#include <type_traits>
+#include <array>
 #include <boost/config.hpp>
 #include <boost/version.hpp>
 #include <boost/type_index.hpp>
@@ -28,18 +30,17 @@ static inline void printBuildHeader()
 #if 0
 static inline void testMiscStuff()
 {
-    std::vector c1 = { 1, 2, 3 };
-    for(auto&& el: c1) {
-        std::cout << DMP_DECLTYPE_NAME(el) << " : " << el << "\n";
-    }
+    auto arr1 = new char[1024];
+    strcpy(arr1, "Trololo");
+    delete [] arr1;
 }
 #endif
 
 int main()
 {
     printBuildHeader();
-    curve_brackets_init();
     //testMiscStuff();
-    //template_type_deduction();
+    //curve_brackets_init();
+    template_type_deduction();
     return 0;
 }
