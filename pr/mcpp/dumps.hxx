@@ -46,7 +46,7 @@ static const int    DMP_LW = 30;
         std::cout << std::setfill('.') << std::setw(DMP_SEP_W) << std::left << FUNC_DNAME << "\n" << std::setfill(' ')                                                      \
             << std::setw(DMP_LW) << std::right << #TT " : " << type_id_with_cvr<TT>().pretty_name() << "\n"                                                                 \
             << std::setw(DMP_LW) << std::right << "decltype(" #par ") : " << type_id_with_cvr<decltype(par)>().pretty_name() << "\n"                                        \
-         /* << std::setw(DMP_LW) << std::right << "decltype(forward<" #TT ">(" #par ")) : " << type_id_with_cvr<decltype(std::forward<TT>(par))>().pretty_name() << "\n" */ \
+            << std::setw(DMP_LW) << std::right << "decltype(forward<" #TT ">(" #par ")) : " << type_id_with_cvr<decltype(std::forward<TT>(par))>().pretty_name() << "\n"    \
             << std::setfill('.') << std::setw(DMP_SEP_W) << "" << "\n"                                                                                                      \
             ;                                                                                                                                                               \
     } while (0)
