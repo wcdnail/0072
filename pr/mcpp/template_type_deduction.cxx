@@ -7,6 +7,12 @@ template <typename T> void argPassedByValue(T arg) { DMP_FNCTX(T, arg); }
 template <typename T> void argPassedByRef(T& arg) { DMP_FNCTX(T, arg); }
 template <typename T> void argPassedByURef(T&& arg) { DMP_FNCTX(T, arg); }
 
+template <typename T> void argPassedOverload(T& arg) { DMP_FNCTX(T, arg); }
+template <typename T> void argPassedOverload(T&& arg) { DMP_FNCTX(T, arg); }
+
+template <typename T> void argPassedByURef2(T&& arg) { DMP_FNCTX(T, arg); argPassedOverload(arg); }
+template <typename T> void argPassedByURef2Move(T&& arg) { DMP_FNCTX(T, arg); argPassedOverload(std::move(arg)); }
+
 #define CHECK_LVALUE(type, var, init)       \
         type var = init;                    \
         DMP_SEP();                          \
@@ -14,6 +20,8 @@ template <typename T> void argPassedByURef(T&& arg) { DMP_FNCTX(T, arg); }
         argPassedByValue(var);              \
         argPassedByRef(var);                \
         argPassedByURef(var);               \
+        argPassedByURef2(var);              \
+        argPassedByURef2Move(var)
 
 #define CHECK_RVALUE(type, init)            \
         DMP_SEP();                          \
@@ -21,6 +29,8 @@ template <typename T> void argPassedByURef(T&& arg) { DMP_FNCTX(T, arg); }
         argPassedByValue(type{init});       \
         /*argPassedByRef(type{init});*/     \
         argPassedByURef(type{init});        \
+        argPassedByURef2(type{init});       \
+        argPassedByURef2Move(type{init})
 
 #define CHECK_LVALUE_ARRAY(type, var, init) \
         type var[] = init;                  \
@@ -29,6 +39,8 @@ template <typename T> void argPassedByURef(T&& arg) { DMP_FNCTX(T, arg); }
         argPassedByValue(var);              \
         argPassedByRef(var);                \
         argPassedByURef(var);               \
+        argPassedByURef2(var);              \
+        argPassedByURef2Move(var)
 
 
 void template_type_deduction()
@@ -43,4 +55,5 @@ void template_type_deduction()
     using PVFunc = void (*)(void*);
     CHECK_LVALUE(PVFunc, pvfn, nullptr);
     CHECK_RVALUE(std::vector<double>, 256);
+    CHECK_RVALUE(int, 1024);
 }

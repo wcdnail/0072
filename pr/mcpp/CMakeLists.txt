@@ -17,6 +17,7 @@ set(MCPP_HEADERS
 set(MCPP_SRCS 
     main.cxx
     template_type_deduction.cxx
+    curve_brackets_init.cxx
 )
 
 add_executable(${PROJECT_NAME} ${MCPP_HEADERS} ${MCPP_SRCS})
