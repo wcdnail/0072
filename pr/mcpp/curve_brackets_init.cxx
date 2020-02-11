@@ -64,13 +64,15 @@ void curve_brackets_init()
     B b6{5u, 10.0};
   //B b7{10.0, 5u};                             // clang: ошибка: type 'double' cannot be narrowed to 'int' in initializer list [-Wc++11-narrowing]
                                                 //   gcc: ошибка: narrowing conversion of ‘1.0e+1’ from ‘double’ to ‘int’ [-Wnarrowing]
+                                                //  msvc: error C2398: Element '1': conversion from 'double' to 'int' requires a narrowing conversion
 
     DECL_CURVE_INIT(auto, c1, 10);
     DECL_CURVE_INIT_EQ(auto, c2, 32);
   //DECL_CURVE_INIT_EQ(auto, ce1, 10.0, 20u);   // clang: ошибка: deduced conflicting types ('double' vs 'unsigned int') for initializer list element type
                                                 //   gcc: ошибка: unable to deduce ‘std::initializer_list<auto>’ from ‘{1.0e+1, 20}’
+                                                //  msvc: error C3535: cannot deduce type for 'auto' from 'initializer list'
     DECL_CURVE_INIT_EQ(auto, c3, 10.0, 2.0, 3., 4.);
-    DECL_CURVE_INIT(float, c4);
+    DECL_CURVE_INIT_EQ(auto, c4, 1.f, 2.f, 3.f);
     DECL_CURVE_INIT(auto, c5, 562.0f);
 
     DECL_CURVE_INIT(auto, p1, 0);
@@ -80,4 +82,6 @@ void curve_brackets_init()
     DECL_CURVE_INIT_EQ(auto, pe1, 0);
     DECL_CURVE_INIT_EQ(auto, pe2, NULL);
     DECL_CURVE_INIT_EQ(auto, pe3, nullptr);
+
+    using my_nullptr_t = std::nullptr_t;
 }

@@ -40,7 +40,7 @@ int main()
 {
     printBuildHeader();
     //testMiscStuff();
-    //curve_brackets_init();
-    template_type_deduction();
+    curve_brackets_init();
+    //template_type_deduction();
     return 0;
 }
