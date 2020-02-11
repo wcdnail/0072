@@ -10,6 +10,11 @@ endif()
 
 find_package(Boost REQUIRED)
 
+set(PCH
+    stdafx.h
+    stdafx.cxx
+)
+
 set(MCPP_HEADERS
     dumps.hxx
 )
@@ -18,9 +23,25 @@ set(MCPP_SRCS
     main.cxx
     template_type_deduction.cxx
     curve_brackets_init.cxx
+    auto_generated_ctors.cxx
 )
 
-add_executable(${PROJECT_NAME} ${MCPP_HEADERS} ${MCPP_SRCS})
+source_group("build" FILES 
+    CMakeLists.txt
+)
+
+source_group("" FILES 
+    ${MCPP_HEADERS} 
+    ${MCPP_SRCS} 
+    ${PCH}
+)
+
+if (MSVC)
+    add_definitions(/Yustdafx.h)
+    set_source_files_properties(stdafx.cxx PROPERTIES COMPILE_FLAGS /Ycstdafx.h)
+endif()
+
+add_executable(${PROJECT_NAME} ${MCPP_HEADERS} ${MCPP_SRCS} ${PCH})
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 

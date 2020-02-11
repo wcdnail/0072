@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "dumps.hxx"
 #include <iostream>
 #include <iomanip>
