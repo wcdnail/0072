@@ -20,6 +20,11 @@ constexpr int     DMP_LW = 30;
 #define DMP_DECLTYPE_NAME(var)                                                              \
     DMP_TYPE_NAME(decltype(var))
 
+#define DMP_EXPR1(W, expr)                                                                              \
+    do {                                                                                                \
+        std::cout << std::setfill(' ') << std::setw(W) << std::right << #expr " : " << expr << "\n";    \
+    } while (0)
+
 #define DMP_SEP()                                                                           \
     do {                                                                                    \
         std::cout << std::setfill('-') << std::setw(DMP_SEP_W) << "" << "\n";               \

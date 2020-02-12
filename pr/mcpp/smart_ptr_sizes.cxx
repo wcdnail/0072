@@ -7,38 +7,33 @@
 #include <string>
 #include <functional>
 
-struct Obj
+struct Obj1
 {
     int           id{ 0 };
     std::string str1{ "str1" };
 
-    Obj(int n = -1) : id(n) { std::cout << "C" << id << "\n"; }
-    Obj(Obj&&) { std::cout << "RR" << id << "\n"; }
-    Obj(const Obj&) { std::cout << "CR" << id << "\n"; }
-    Obj& operator = (Obj&&) { std::cout << "ORR" << id << "\n"; return *this;  }
-    Obj& operator = (const Obj&) { std::cout << "OR" << id << "\n"; return *this; }
-    ~Obj() { std::cout << "D" << id << "\n"; }
+    Obj1(int n = -1) : id(n) { std::cout << "C" << id << "\n"; }
+    Obj1(Obj1&&) { std::cout << "RR" << id << "\n"; }
+    Obj1(const Obj1&) { std::cout << "CR" << id << "\n"; }
+    Obj1& operator = (Obj1&&) { std::cout << "ORR" << id << "\n"; return *this;  }
+    Obj1& operator = (const Obj1&) { std::cout << "OR" << id << "\n"; return *this; }
+    ~Obj1() { std::cout << "D" << id << "\n"; }
 };
 
-#define DMP_EXPR1(expr)                                                                                 \
-    do {                                                                                                \
-        std::cout << std::setfill(' ') << std::setw(60) << std::right << #expr " : " << expr << "\n";   \
-    } while (0)
-
-static void objectDeleter(Obj *obj)
+static void objectDeleter(Obj1 *obj)
 {
     delete obj;
 }
 
 void unique_ptr_size_test()
 {
-    auto lambdaDel = [](Obj *obj) {
+    auto lambdaDel = [](Obj1 *obj) {
         delete obj;
     };
     using LambdaDel = decltype(lambdaDel);
 
     uint64_t lambdaDelCount = 0;
-    auto lambdaDelComp = [&lambdaDelCount](Obj *obj) {
+    auto lambdaDelComp = [&lambdaDelCount](Obj1 *obj) {
         delete obj;
         ++lambdaDelCount;
     };
@@ -46,7 +41,7 @@ void unique_ptr_size_test()
 
     struct ObjDel
     {
-        void operator() (Obj *obj) noexcept
+        void operator() (Obj1 *obj) noexcept
         {
             delete obj;
         }
@@ -55,7 +50,7 @@ void unique_ptr_size_test()
     struct ObjDelComp
     {
         uint64_t count{ 0 };
-        void operator() (Obj *obj) noexcept
+        void operator() (Obj1 *obj) noexcept
         {
             delete obj;
             ++count;
@@ -64,27 +59,25 @@ void unique_ptr_size_test()
 
     std::cout << "LambdaDel : " << DMP_DECLTYPE_NAME(lambdaDel) << "\n";
 
-    DMP_EXPR1(sizeof(Obj));
-    DMP_EXPR1(sizeof(Obj*));
-    DMP_EXPR1(sizeof(LambdaDel));
-    DMP_EXPR1(sizeof(lambdaDel));
-    DMP_EXPR1(sizeof(ObjDel));
-    DMP_EXPR1(sizeof(LambdaDelComp));
-    DMP_EXPR1(sizeof(lambdaDelComp));
-    DMP_EXPR1(sizeof(ObjDelComp));
-    DMP_EXPR1(sizeof(std::unique_ptr<Obj>));
-    DMP_EXPR1(sizeof(std::unique_ptr<Obj, ObjDel>));
-    DMP_EXPR1(sizeof(std::unique_ptr<Obj, LambdaDel>));
-    DMP_EXPR1(sizeof(std::unique_ptr<Obj, ObjDelComp>));
-    DMP_EXPR1(sizeof(std::unique_ptr<Obj, LambdaDelComp>));
-    DMP_EXPR1(sizeof(std::unique_ptr<Obj, void(*)(Obj*)>));
-    DMP_EXPR1(sizeof(std::unique_ptr<Obj, std::function<void(Obj*)>>));
+    DMP_EXPR1(50, sizeof(Obj1));
+    DMP_EXPR1(50, sizeof(Obj1*));
+    DMP_EXPR1(50, sizeof(LambdaDel));
+    DMP_EXPR1(50, sizeof(lambdaDel));
+    DMP_EXPR1(50, sizeof(ObjDel));
+    DMP_EXPR1(50, sizeof(LambdaDelComp));
+    DMP_EXPR1(50, sizeof(lambdaDelComp));
+    DMP_EXPR1(50, sizeof(ObjDelComp));
+    DMP_EXPR1(50, sizeof(std::unique_ptr<Obj1>));
+    DMP_EXPR1(50, sizeof(std::unique_ptr<Obj1, ObjDel>));
+    DMP_EXPR1(50, sizeof(std::unique_ptr<Obj1, LambdaDel>));
+    DMP_EXPR1(50, sizeof(std::unique_ptr<Obj1, ObjDelComp>));
+    DMP_EXPR1(50, sizeof(std::unique_ptr<Obj1, LambdaDelComp>));
+    DMP_EXPR1(50, sizeof(std::unique_ptr<Obj1, void(*)(Obj1*)>));
+    DMP_EXPR1(50, sizeof(std::unique_ptr<Obj1, std::function<void(Obj1*)>>));
 
     ObjDel customDeleter;
-    std::unique_ptr<Obj, ObjDel> customDelObj(new Obj(1), customDeleter);
-    std::unique_ptr<Obj, LambdaDel> lambdaDelObj(new Obj(2), lambdaDel);
-    std::unique_ptr<Obj, void(*)(Obj*)> funcDelObj(new Obj(3), objectDeleter);
-    std::unique_ptr<Obj, std::function<void(Obj*)>> funcDelObj2(new Obj(4), objectDeleter);
-
-    std::cout << std::endl;
+    std::unique_ptr<Obj1, ObjDel> customDelObj(new Obj1(1), customDeleter);
+    std::unique_ptr<Obj1, LambdaDel> lambdaDelObj(new Obj1(2), lambdaDel);
+    std::unique_ptr<Obj1, void(*)(Obj1*)> funcDelObj(new Obj1(3), objectDeleter);
+    std::unique_ptr<Obj1, std::function<void(Obj1*)>> funcDelObj2(new Obj1(4), objectDeleter);
 }

@@ -25,6 +25,7 @@ set(MCPP_SRCS
     curve_brackets_init.cxx
     auto_generated_ctors.cxx
     smart_ptr_sizes.cxx
+    smart_ptr_dumps.cxx
 )
 
 source_group("build" FILES 
