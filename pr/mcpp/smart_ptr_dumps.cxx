@@ -34,13 +34,15 @@ struct Obj2
     Obj2& operator = (Obj2&&) 
     {
         strncpy(buffer, "moved op data", sizeof(buffer));
-        //std::cout << "ORR" << id << "\n"; return *this;  
+        //std::cout << "ORR" << id << "\n";
+        return *this;
     }
 
     Obj2& operator = (const Obj2&) 
     {
         strncpy(buffer, "copied op data", sizeof(buffer));
-        //std::cout << "OR" << id << "\n"; return *this; 
+        //std::cout << "OR" << id << "\n";
+        return *this;
     }
 
     virtual ~Obj2()

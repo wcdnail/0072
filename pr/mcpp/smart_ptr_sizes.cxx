@@ -30,12 +30,14 @@ struct Obj1
 
     Obj1& operator = (Obj1&&) 
     {
-        //std::cout << "ORR" << id << "\n"; return *this;
+        //std::cout << "ORR" << id << "\n";
+        return *this;
     }
 
     Obj1& operator = (const Obj1&) 
     {
-        //std::cout << "OR" << id << "\n"; return *this;
+        //std::cout << "OR" << id << "\n";
+        return *this;
     }
 
     virtual ~Obj1() 
