@@ -24,6 +24,7 @@ set(MCPP_SRCS
     template_type_deduction.cxx
     curve_brackets_init.cxx
     auto_generated_ctors.cxx
+    unique_ptr_sizes.cxx
 )
 
 source_group("build" FILES 

@@ -11,8 +11,8 @@
 #  define FUNC_DNAME __PRETTY_FUNCTION__
 #endif
 
-static const int DMP_SEP_W = 80;
-static const int    DMP_LW = 30;
+constexpr int  DMP_SEP_W = 80;
+constexpr int     DMP_LW = 30;
 
 #define DMP_TYPE_NAME(type)                                                                 \
     boost::typeindex::type_id_with_cvr<type>().pretty_name()
