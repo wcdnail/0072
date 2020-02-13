@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "dumps.hxx"
+#include <memory>
 #include <string>
 #include <vector>
 #include <cmath>
@@ -57,4 +58,8 @@ void template_type_deduction()
     CHECK_LVALUE(PVFunc, pvfn, nullptr);
     CHECK_RVALUE(std::vector<double>, 256);
     CHECK_RVALUE(int, 1024);
+    CHECK_RVALUE(std::unique_ptr<int>, nullptr);
+    CHECK_RVALUE(std::shared_ptr<int>, nullptr);
+  //CHECK_LVALUE(std::unique_ptr<int>, up1, nullptr); // clang: ошибка: call to deleted constructor of 'std::unique_ptr<int, std::default_delete<int> >'
+    CHECK_LVALUE(std::shared_ptr<int>, sp1, nullptr);
 }
