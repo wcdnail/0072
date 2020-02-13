@@ -62,4 +62,7 @@ void smart_ptr_dump()
     DMP_EXPR1(60, sizeof(std::shared_ptr<Obj2>));
 
     auto obj1 = std::make_shared<Obj2>(1);
+
+    auto all1 = std::allocator<Obj2>();
+    auto obj2 = std::allocate_shared<Obj2>(all1, 2);
 }
