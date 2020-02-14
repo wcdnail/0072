@@ -1,15 +1,15 @@
 #include "stdafx.h"
 
-struct Over1
+struct BadExample1
 {
     template <typename T>
-    explicit Over1(T&& par1)
+    explicit BadExample1(T&& par1)
         : str1(std::forward<T>(par1))
     {
         std::cout << "UC\n";
     }
 
-    Over1(const Over1& rhs)
+    BadExample1(const BadExample1& rhs)
         : str1(rhs.str1)
     {
         std::cout << "CC\n";
@@ -45,11 +45,11 @@ static void dump_overload(T&& obj, const std::string &name)
 
 void uref_overloads()
 {
-    Over1 moved1("text moved");
-    Over1 cloned1 = clone(moved1);
-    Over1 cloned2 = clone_fwd(cloned1);
-  //Over1 cloned3 = clone(Over1(std::string("rvalue1")));       // ERROR
-  //Over1 cloned4 = clone_fwd(Over1(std::string("rvalue2")));   // ERROR
+    BadExample1 moved1("text moved");
+    BadExample1 cloned1 = clone(moved1);
+    BadExample1 cloned2 = clone_fwd(cloned1);
+  //BadExample1 cloned3 = clone(BadExample1(std::string("rvalue1")));       // ERROR
+  //BadExample1 cloned4 = clone_fwd(BadExample1(std::string("rvalue2")));   // ERROR
     DUMP_OVERLOAD(moved1);
     DUMP_OVERLOAD(cloned1);
     DUMP_OVERLOAD(cloned2);
