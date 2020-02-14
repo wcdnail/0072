@@ -26,6 +26,7 @@ set(MCPP_SRCS
     auto_generated_ctors.cxx
     smart_ptr_sizes.cxx
     smart_ptr_dumps.cxx
+    uref_overloads.cxx
 )
 
 source_group("build" FILES 
