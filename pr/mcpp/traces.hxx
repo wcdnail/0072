@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <mutex>
+#include <thread>
 #include <type_traits>
 
 #ifdef _MSC_VER
@@ -16,9 +17,8 @@ namespace debug
     template <typename TP>
     struct TraceBuf
     {
-        explicit TraceBuf(const char *file = nullptr, unsigned long long line = 0, const char *fname = nullptr)
-            : funcName(fname)
-            , sourceFile(file)
+        explicit TraceBuf(const char *file = nullptr, unsigned long long line = 0)
+            : sourceFile(file)
             , sourceLine(line)
             , buffer() 
         {
@@ -29,7 +29,6 @@ namespace debug
             TP::write(*this);
         }
 
-        const char *funcName;
         const char *sourceFile;
         unsigned long long sourceLine;
         std::ostringstream buffer;
@@ -48,7 +47,9 @@ namespace debug
 }
 
 #define TRACEST()       debug::TraceBuf<debug::TraceST>(__FILE__, __LINE__).buffer
-#define TRACEST_FN()    debug::TraceBuf<debug::TraceST>(__FILE__, __LINE__, FUNC_DNAME).buffer
 #define TRACEMT()       debug::TraceBuf<debug::TraceMT>(__FILE__, __LINE__).buffer
-#define TRACEMT_FN()    debug::TraceBuf<debug::TraceMT>(__FILE__, __LINE__, FUNC_DNAME).buffer
-#define THREAD_ID()     "[" << std::this_thread::get_id() << "] "
+#ifdef _WIN32
+#  define THREAD_ID()     "[" << std::setw(6) << std::setfill(' ') << std::this_thread::get_id() << "] "
+#else
+#  define THREAD_ID()     "[" << std::this_thread::get_id() << "] "
+#endif

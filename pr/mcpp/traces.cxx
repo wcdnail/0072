@@ -28,9 +28,6 @@ namespace debug
             if (buf.sourceFile) {
                 text << buf.sourceFile << "(" << buf.sourceLine << "): ";
             }
-            if (buf.funcName) {
-                text << "[" << buf.funcName << "] ";
-            }
             text << buf.buffer.str();
             auto output = text.str();
             std::cout << output << std::flush;
