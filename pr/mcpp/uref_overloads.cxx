@@ -37,16 +37,16 @@ struct NotBadExample1
 };
 
 
-template <typename T>
-static T clone(T&& obj)
+template <typename T, typename... Args>
+static T clone(T&& obj, Args&&... args)
 {
-    return T(obj);
+    return T(obj, std::forward<Args>(args)...);
 }
 
-template <typename T>
-static T clone_fwd(T&& obj)
+template <typename T, typename... Args>
+static T clone_fwd(T&& obj, Args&&... args)
 {
-    return T(std::forward<T>(obj));
+    return T(std::forward<T>(obj), std::forward<Args>(args)...);
 }
 
 

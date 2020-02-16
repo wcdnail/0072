@@ -17,16 +17,19 @@ set(PCH
 
 set(MCPP_HEADERS
     dumps.hxx
+    traces.hxx
 )
 
 set(MCPP_SRCS 
     main.cxx
+    traces.cxx
     template_type_deduction.cxx
     curve_brackets_init.cxx
     auto_generated_ctors.cxx
     smart_ptr_sizes.cxx
     smart_ptr_dumps.cxx
     uref_overloads.cxx
+    async_1.cxx
 )
 
 source_group("build" FILES 
