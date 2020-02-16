@@ -15,32 +15,32 @@ struct Obj2
     Obj2(int n = -1)
         : id(n)
     {
-        strncpy(buffer, "data", sizeof(buffer));
+        strncpy_s(buffer, "data", sizeof(buffer));
         //std::cout << "C" << id << "\n"; 
     }
 
     Obj2(Obj2 &&) 
     {
-        strncpy(buffer, "moved data", sizeof(buffer));
+        strncpy_s(buffer, "moved data", sizeof(buffer));
         //std::cout << "RR" << id << "\n";
     }
 
     Obj2(const Obj2&) 
     {
-        strncpy(buffer, "copied data", sizeof(buffer));
+        strncpy_s(buffer, "copied data", sizeof(buffer));
         //std::cout << "CR" << id << "\n"; 
     }
 
     Obj2& operator = (Obj2&&) 
     {
-        strncpy(buffer, "moved op data", sizeof(buffer));
+        strncpy_s(buffer, "moved op data", sizeof(buffer));
         //std::cout << "ORR" << id << "\n";
         return *this;
     }
 
     Obj2& operator = (const Obj2&) 
     {
-        strncpy(buffer, "copied op data", sizeof(buffer));
+        strncpy_s(buffer, "copied op data", sizeof(buffer));
         //std::cout << "OR" << id << "\n";
         return *this;
     }

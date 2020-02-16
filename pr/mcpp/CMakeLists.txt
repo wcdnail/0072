@@ -56,6 +56,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE 
+    $<$<CXX_COMPILER_ID:MSVC>:-W4>
+    $<$<CXX_COMPILER_ID:MSVC>:-experimental:module>
+    $<$<CXX_COMPILER_ID:MSVC>:-EHa>
+    $<$<CXX_COMPILER_ID:GNU>:-Wzero-as-null-pointer-constant>
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE

@@ -1,15 +1,10 @@
 #pragma once
 
+#include "traces.hxx"
 #include <iostream>
 #include <iomanip>
 #include <typeinfo>
 #include <boost/type_index.hpp>
-
-#ifdef _MSC_VER
-#  define FUNC_DNAME __FUNCSIG__
-#else
-#  define FUNC_DNAME __PRETTY_FUNCTION__
-#endif
 
 constexpr int  DMP_SEP_W = 80;
 constexpr int     DMP_LW = 30;
