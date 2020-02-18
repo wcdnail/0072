@@ -18,6 +18,7 @@ set(PCH
 set(MCPP_HEADERS
     dumps.hxx
     traces.hxx
+    clib_wrappers.hxx
 )
 
 set(MCPP_SRCS 
@@ -59,10 +60,15 @@ target_compile_options(${PROJECT_NAME} PRIVATE
     $<$<CXX_COMPILER_ID:MSVC>:-W4>
     $<$<CXX_COMPILER_ID:MSVC>:-experimental:module>
     $<$<CXX_COMPILER_ID:MSVC>:-EHa>
-    $<$<CXX_COMPILER_ID:GNU>:-Wall>
+    $<$<PLATFORM_ID:Linux>:-Wall>
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    #$<$<PLATFORM_ID:Linux>:__STDC_WANT_LIB_EXT1__=1>
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
+    $<$<PLATFORM_ID:Linux>:pthread>
 )
 
 message(STATUS "=======================================================")

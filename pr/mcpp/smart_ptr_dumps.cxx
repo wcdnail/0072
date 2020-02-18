@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "dumps.hxx"
+#include "clib_wrappers.hxx"
 #include <cstdint>
 #include <memory>
 #include <iostream>
