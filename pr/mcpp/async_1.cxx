@@ -46,3 +46,19 @@ void async_1_test()
     auto deferred2 = std::async(std::launch::deferred, future1Body, "deferred2");
     deferred2.wait();
 }
+
+void async_2_test()
+{
+    auto asyncTask1 = [](int id) {
+        TRACEMT() << THREAD_ID() << FUNC_DNAME << " (" << id << ")\n";
+    };
+
+    using AsyncTasksVec = std::vector<std::future<void>>;
+    AsyncTasksVec asyncsVec;
+    for (int i = 0; i < 10; i++) {
+        asyncsVec.emplace_back(std::async(std::launch::async | std::launch::deferred, asyncTask1, 1 + i));
+    }
+    for (AsyncTasksVec::const_iterator it = asyncsVec.cbegin(); it != asyncsVec.cend(); ++it) {
+        it->wait();
+    }
+}

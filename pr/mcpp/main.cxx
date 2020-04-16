@@ -20,6 +20,7 @@ void unique_ptr_size_test();
 void smart_ptr_dump();
 void uref_overloads();
 void async_1_test();
+void async_2_test();
 
 static inline void printBuildHeader()
 {
@@ -52,6 +53,7 @@ int main()
     //unique_ptr_size_test();
     //smart_ptr_dump();
     //uref_overloads();
-    async_1_test();
+    //async_1_test();
+    async_2_test();
     return 0;
 }

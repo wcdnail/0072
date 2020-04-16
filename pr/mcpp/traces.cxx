@@ -12,7 +12,6 @@
 #define ON_FATAL()                                              \
     do {                                                        \
         fprintf(stderr, "%s: FAILED!\n", FUNC_DNAME);           \
-        WIN32_DEBUG_OUTPUTA(title);                             \
     } while (0)
 
 

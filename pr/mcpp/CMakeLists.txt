@@ -18,7 +18,7 @@ set(PCH
 set(MCPP_HEADERS
     dumps.hxx
     traces.hxx
-    clib_wrappers.hxx
+    #clib_wrappers.hxx
 )
 
 set(MCPP_SRCS 
