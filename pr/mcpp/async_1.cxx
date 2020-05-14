@@ -62,3 +62,19 @@ void async_2_test()
         it->wait();
     }
 }
+
+void async_3_test()
+{
+    auto asyncTask1 = [](int id) {
+        std::cout << " Thread (" << id << ") running...\n";
+    };
+
+    using AsyncTasksVec = std::vector<std::future<void>>;
+    AsyncTasksVec asyncsVec;
+    for (int i = 0; i < 10; i++) {
+        asyncsVec.emplace_back(std::async(std::launch::async | std::launch::deferred, asyncTask1, 1 + i));
+    }
+    for (AsyncTasksVec::const_iterator it = asyncsVec.cbegin(); it != asyncsVec.cend(); ++it) {
+        it->wait();
+    }
+}
