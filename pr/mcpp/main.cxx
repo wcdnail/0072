@@ -43,9 +43,24 @@ static inline void testMiscStuff()
 }
 #endif
 
+void main_cmod()
+{
+    constexpr unsigned int id = 100;
+    unsigned char array[] = { id % 3, id % 5, id % 2, id % 4, id % 6 };
+    for (auto it : array) {
+        std::cout << static_cast<unsigned int>(it);
+    }
+    std::cout << std::endl;
+}
+
+void uchar_digits() {
+    std::cout << std::numeric_limits<unsigned char>::digits;
+}
+
 int main()
 {
     printBuildHeader();
+    uchar_digits();
     //testMiscStuff();
     //curve_brackets_init();
     //template_type_deduction();
@@ -54,6 +69,6 @@ int main()
     //smart_ptr_dump();
     //uref_overloads();
     //async_1_test();
-    async_2_test();
+    //async_2_test();
     return 0;
 }
