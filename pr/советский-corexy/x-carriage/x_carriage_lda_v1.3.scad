@@ -27,7 +27,7 @@ module E3D_v5_LDA_wxcar(withNut=true, clr="Yellow", halfSlice=false) {
         translate([-CARCentralHoleDiam, 0, E3Dv5ZOffset+43.9]) cube([CARCentralHoleDiam*2, CARCentralHoleDiam, 300]);
       }
       else {
-        translate([-CARCentralHoleDiam, 0, E3Dv5ZOffset+43.9]) cube([CARCentralHoleDiam*2, CARCentralHoleDiam, zE3Dv5HolderOffset+8]);
+        translate([-CARCentralHoleDiam, 0, E3Dv5ZOffset+43.9]) cube([CARCentralHoleDiam*2, CARCentralHoleDiam, zE3Dv5HolderOffset+1.2]);
       }
       // Bolt holes
       translate([ CARCentralHoleDiam/xfd, CARCentralHoleDiam, E3Dv5ZOffset+zbd]) rotate([90]) cylinder(d=3.05, h=CARCentralHoleDiam*2);
@@ -40,7 +40,9 @@ module E3D_v5_LDA_wxcar(withNut=true, clr="Yellow", halfSlice=false) {
         translate([ CARCentralHoleDiam/xfd, ybd-3, E3Dv5ZOffset+zbd]) rotate([90]) cylinder(d=6.1, h=7);
         translate([-CARCentralHoleDiam/xfd, ybd-3, E3Dv5ZOffset+zbd]) rotate([90]) cylinder(d=6.1, h=7);
       }
-      translate([ 0,  CARCY/2-20, XENDFullCZ-200]) cylinder(h=400, d=8);
+    }
+    color("Cyan") {
+        translate([ 0,  CARCY/2-20, XENDFullCZ-9.65]) cylinder(h=20, d1=9, d2=8);
     }
     color("Blue") translate([0, 0, E3Dv5ZOffset-CARTopZOffs]) 
       E3D_v5_cylinders(0.2, 0.4);
@@ -83,5 +85,5 @@ module CoreXY_X_Carriage_v3_wLDA(skipDims=true, carClr="Green", e3d=false) {
   }
 }
 
-//rotate([180]) E3D_v5_LDA_wxcar_Clamp();
+translate([0, 0, 26.85]) rotate([180]) #E3D_v5_LDA_wxcar_Clamp();
 CoreXY_X_Carriage_v3_wLDA();
