@@ -763,7 +763,7 @@ module XCar_Base_holes(centralHoles=true) {
 
 module XCar_Base(clr="Yellow", drawE3D=true) {
 	if (drawE3D) {
-		%translate([0, 0, -51.8-CARTopZOffs]) rotate([0, 0, 90]) E3D_v5_temp();
+		%translate([0, 0, -1.85-CARTopZOffs]) rotate([0, 0, 90]) E3D_v5_temp();
 	}
     color(clr) translate([-CAR2CX/2, -CARCY/2, XENDFullCZ-CARBaseCZ]) cube([CAR2CX, CARCY, CARBaseCZ]);
 }
@@ -774,14 +774,14 @@ module XCar_LM8UU_Holder1(clr="Yellow") {
     bhz=LM8UUOutterDiam-3.5;
     bslicez=14.6;
     wsz=5;
-    wz=6.7;
+    wz=10; //6.7;
     difference() {
         // Bearing holder
         color(clr) union() {
             translate([CARCX/2-LM8UULen-CARXE, CARCY/2-bhy, sz]) rotate([0, 90, 0])
                 linear_extrude(height=LM8UULen+CARXE*2) polygon(points=[[0, 0],[CARBaseCZ, 0],[CARBaseCZ+bhz, bhy/6],[CARBaseCZ+bhz, bhy-bhy/7],[CARBaseCZ, bhy], [0, bhy]]);
             translate([-0.1, -0.1, sz-wsz]) cube([CARCX/4, CARCY/2-CARXE*2, wsz]);
-            translate([16, -0.1, sz-wz]) cube([18, CARCY/4, wz]);
+            translate([14, -0.1, sz-wz]) cube([26.5, CARCY/4, wz]);
         }
         // Linear bearing
         color("Blue") {

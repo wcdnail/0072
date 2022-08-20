@@ -85,5 +85,13 @@ module CoreXY_X_Carriage_v3_wLDA(skipDims=true, carClr="Green", e3d=false) {
   }
 }
 
-translate([0, 0, 26.85]) rotate([180]) #E3D_v5_LDA_wxcar_Clamp();
+module CoreXY_X_Carriage_v3_Adh_Helper() {
+    translate([-CAR2CX/2, -CARCY/2, 0]) cylinder(h=0.6, r=10);
+    translate([-CAR2CX/2, CARCY/2, 0]) cylinder(h=0.6, r=10);
+    translate([CAR2CX/2, -CARCY/2, 0]) cylinder(h=0.6, r=10);
+    translate([CAR2CX/2, CARCY/2, 0]) cylinder(h=0.6, r=10);
+}
+
+//translate([0, 0, 26.85]) rotate([180]) #E3D_v5_LDA_wxcar_Clamp();
 CoreXY_X_Carriage_v3_wLDA();
+CoreXY_X_Carriage_v3_Adh_Helper();
