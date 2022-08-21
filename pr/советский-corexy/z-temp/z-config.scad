@@ -753,7 +753,7 @@ module XCar_Base_holes(centralHoles=true) {
         translate([ 8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-		// M3 holes
+		// M3 nuts
         translate([-8,  CARCY/2-13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
         translate([ 8,  CARCY/2-13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
         translate([-8, -CARCY/2+13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
@@ -993,7 +993,8 @@ module X_EndStop_Mount(esbx=CARCX/2-3, cx=XEndStopMountCX, clr=undef, clra=undef
       hlcz=flipTB ? CARTopZBeg+6 : CARTopZBeg+22.5;
       hlkz=flipTB ? CARTopZBeg+12.5 : CARTopZBeg;
       hull() {
-        translate([esbx-cx-5, esby-1, hlcz]) rotate([0, 90, 0]) cylinder(d=13.8, h=cx, $fn=17);
+        //translate([esbx-cx-5, esby-1, hlcz]) rotate([0, 90, 0]) cylinder(d=13.8, h=cx, $fn=17);
+        translate([esbx-cx-5, esby-6, hlcz]) cube([cx, 10, 6]);
         translate([esbx-cx-5, esby-8, hlkz]) cube([cx, 14, 16]);
       }
       // Шайбы
