@@ -94,4 +94,4 @@ module CoreXY_X_Carriage_v3_Adh_Helper() {
 
 //translate([0, 0, 26.85]) rotate([180]) #E3D_v5_LDA_wxcar_Clamp();
 CoreXY_X_Carriage_v3_wLDA();
-CoreXY_X_Carriage_v3_Adh_Helper();
+//CoreXY_X_Carriage_v3_Adh_Helper();

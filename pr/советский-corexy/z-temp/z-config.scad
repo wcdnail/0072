@@ -1011,7 +1011,7 @@ module X_EndStop_Mount(esbx=CARCX/2-3, cx=XEndStopMountCX, clr=undef, clra=undef
     translate([esbx-cx-3, esby-0.9, CARTopZBeg+5.2]) scale([3, 1+NutScaleInc, 1+NutScaleInc]) rotate([0, 90]) nut("M3");
     translate([esbx-cx-3, esby-0.9, CARTopZBeg+23.5]) scale([3, 1+NutScaleInc, 1+NutScaleInc]) rotate([0, 90]) nut("M3");
   }
-  %translate([esbx, esby-0.89, esbz]) rotate([-90]) opt_endstop();
+  //%translate([esbx, esby-0.89, esbz]) rotate([-90]) opt_endstop();
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
