@@ -165,8 +165,8 @@ module CoreXY_Carriage_Titan(noRordsCheck=false, withMotor=false) {
   //#translate([0, 0, 0]) rotate([180, 0, 0]) render() CoreXY_X_Carriage_v3_wLDA();
   //Titan_and_E3D_v6();
   translate([0, 0, -21.5]) {
-    CoreXY_Direct_Drive_Titan_v3(rendStop=true, lendStop=true, noChainMount=false, noMotorMount=true);
-    //CoreXY_Direct_Drive_Titan_Mount();
+    render() CoreXY_Direct_Drive_Titan_v3(rendStop=true, lendStop=true, noChainMount=false, noMotorMount=true);
+    color("cyan") CoreXY_Direct_Drive_Titan_Mount();
   }
 }
 
