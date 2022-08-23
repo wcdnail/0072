@@ -140,7 +140,7 @@ module E3D_v5_cylinders(enlarger=0, innerEnlarger=0.2, drawOnlyHolder=false, lch
     hldrInnerH=9;
     hldrInnerDia=12+enlarger+innerEnlarger;
     hldrTopH=3.7;
-	translate([0, 0, 0]) union() {
+    translate([0, 0, 0]) union() {
         if(!drawOnlyHolder) {
             translate([0, 0, bz]) cylinder(h=largeH, d=largeDia);
             translate([0, 0, bz+largeH-1]) cylinder(h=thrH, d=thrDia);
@@ -156,27 +156,27 @@ module E3D_v5_stl() {
 }
 
 module E3D_v5_std_clamp() {
-	difference() {
-		translate([-16, 10, 26.85]) rotate([90]) import("../vulcanus-v1/CoreXY_Direct_Drive_Hotend_Clamp.stl");
-		color("Red") {
-			cylinder(d=4, h=500);
-			translate([0, 0, -33]) E3D_v5_cylinders(0.2, 0.4);
-		}
-	}
+        difference() {
+                translate([-16, 10, 26.85]) rotate([90]) import("../vulcanus-v1/CoreXY_Direct_Drive_Hotend_Clamp.stl");
+                color("Red") {
+                        cylinder(d=4, h=500);
+                        translate([0, 0, -33]) E3D_v5_cylinders(0.2, 0.4);
+                }
+        }
 }
 
 module E3D_v5_temp(skipDims=true, notTransparent=false, clr="Gray", fitting=false) {
     if (notTransparent) {
         color(clr) translate([0, 0, E3Dv5ZOffset-CARTopZOffs-CARTopBaseCZ/2]) rotate([0, 0, 90]) E3D_v5_stl();
-		if (fitting) {
-			color("White") translate([0, 0, 5]) import("../../parts/PC4-M10.stl");
-		}
+                if (fitting) {
+                        color("White") translate([0, 0, 5]) import("../../parts/PC4-M10.stl");
+                }
     }
     else {
         %translate([0, 0, E3Dv5ZOffset-CARTopZOffs-CARTopBaseCZ/2]) rotate([0, 0, 90]) E3D_v5_stl();
-		if (fitting) {
-			%translate([0, 0, 5]) import("../../parts/PC4-M10.stl");
-		}
+                if (fitting) {
+                        %translate([0, 0, 5]) import("../../parts/PC4-M10.stl");
+                }
     }
     if (!skipDims) {
         color("Black") {
@@ -192,29 +192,29 @@ module E3D_v5_temp(skipDims=true, notTransparent=false, clr="Gray", fitting=fals
 E3Dv6RadDiam=22.45;
 
 module e3d_v6_rad() {
-	E3DsradDiam=16;
-	E3DradZBeg=18.74;
-	E3DradCZ=26.01;
-	E3DfullCZ=62.5;
-	E3DsradCZ=7.05;
-	E3DhldrCZ=5.85;
-	E3DhldrDiam=12;
-	translate([0, 0, E3DradZBeg]) cylinder(h=E3DradCZ, d=E3Dv6RadDiam);
-	translate([0, 0, E3DradZBeg+E3DradCZ]) cylinder(h=E3DsradCZ, d=E3DsradDiam);
-	translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ]) cylinder(h=E3DhldrCZ, d=E3DhldrDiam);
-	translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ+E3DhldrCZ]) cylinder(h=E3DsradCZ/2+0.25, d=E3DsradDiam);
+  E3DsradDiam=16;
+  E3DradZBeg=18.74;
+  E3DradCZ=26.01;
+  E3DfullCZ=62.5;
+  E3DsradCZ=7.05;
+  E3DhldrCZ=5.85;
+  E3DhldrDiam=12;
+  translate([0, 0, E3DradZBeg]) cylinder(h=E3DradCZ, d=E3Dv6RadDiam);
+  translate([0, 0, E3DradZBeg+E3DradCZ]) cylinder(h=E3DsradCZ, d=E3DsradDiam);
+  translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ]) cylinder(h=E3DhldrCZ, d=E3DhldrDiam);
+  translate([0, 0, E3DradZBeg+E3DradCZ+E3DsradCZ+E3DhldrCZ]) cylinder(h=E3DsradCZ/2+0.25, d=E3DsradDiam);
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Размеры 
 
 module x_dim_abs(cx, cy, cz, offs=20, lh=6, rh=6, ox=0, oy=0, oz=0, textLoc=DIM_CENTER) {
-    translate([ox, oy-offs, oz+cz]) dimensions(cx, loc=textLoc);
-    lly=offs<0 ? oy-(offs-2) : oy+lh-2;
-    rly=offs<0 ? oy-(offs-2) : oy+rh-2;
-    lrh=abs(offs);
-    translate([ox, lly, oz+cz]) rotate([0, 0, -90]) line(lrh+lh);
-    translate([ox+cx, rly, oz+cz]) rotate([0, 0, -90]) line(lrh+rh);
+  translate([ox, oy-offs, oz+cz]) dimensions(cx, loc=textLoc);
+  lly=offs<0 ? oy-(offs-2) : oy+lh-2;
+  rly=offs<0 ? oy-(offs-2) : oy+rh-2;
+  lrh=abs(offs);
+  translate([ox, lly, oz+cz]) rotate([0, 0, -90]) line(lrh+lh);
+  translate([ox+cx, rly, oz+cz]) rotate([0, 0, -90]) line(lrh+rh);
 }
 
 module x_dim(cx, cy, cz, offs=20, lh=6, rh=6, textLoc=DIM_CENTER) {
@@ -370,7 +370,7 @@ module z_rod_holder_short_new(skipDims=true) {
     translate([ZrodHolder2CX/2, -41, -80]) rotate([90, 0, 0]) {
         color("Yellow") render() import("../vulcanus-v1/Z-Axis Holder.stl");
         color("Green") render() import("../vulcanus-v1/Z-Axis Clamp.stl");
-		//color("Black") model_name("'Z-Axis Holder.stl' & 'Z-Axis Clamp.stl'");
+                //color("Black") model_name("'Z-Axis Holder.stl' & 'Z-Axis Clamp.stl'");
     }
     if(!skipDims) {
         color("Black") {
@@ -529,16 +529,16 @@ module XY_Pulley(clra=0.5, pz=0, bz=40, noBoltHead=false) {
   // Bolt
   %translate([0, 0, -bz+pz+21]) color("DimGray", 0.99) {
     translate([31.7, 26, 0]) cylinder(h=bz, d=3.9);
-	if (!noBoltHead) {
-	  translate([31.7, 26, bz]) cylinder(h=4, d=6.9);
-	}
+        if (!noBoltHead) {
+          translate([31.7, 26, bz]) cylinder(h=4, d=6.9);
+        }
   }
   %color("Gainsboro", clra) translate([31.7, 26, 12 + pz]) {
     render() union() {
       cylinder(h=0.7, d=18);
-	  translate([0, 0, 0]) cylinder(h=8.4, d=12.6);
-	  translate([0, 0, 8.4-0.7]) cylinder(h=0.7, d=18);
-	}
+          translate([0, 0, 0]) cylinder(h=8.4, d=12.6);
+          translate([0, 0, 8.4-0.7]) cylinder(h=0.7, d=18);
+        }
   }
 }
 
@@ -552,12 +552,12 @@ module L_Pulley_Washer() {
           translate([31.7, 26, 0]) cylinder(h=hcz, d=hdia);
           translate([31.7, 26+18, 0]) cylinder(h=hcz, d=hdia);
         }
-	    translate([31.7, 26+18, 0]) cylinder(h=6, d1=19, d2=16);
-	    translate([31.7, 26+18, 5.99]) cylinder(h=2.9, d1=12, d2=10);
+            translate([31.7, 26+18, 0]) cylinder(h=6, d1=19, d2=16);
+            translate([31.7, 26+18, 5.99]) cylinder(h=2.9, d1=12, d2=10);
       }
-	  translate([31.7, 26, -1]) cylinder(h=20, d=4.2);
-	  translate([31.7, 26+18, -1]) cylinder(h=20, d=4.2);
-	}
+          translate([31.7, 26, -1]) cylinder(h=20, d=4.2);
+          translate([31.7, 26+18, -1]) cylinder(h=20, d=4.2);
+        }
   }
 }
 
@@ -577,17 +577,17 @@ module L_Pulley_Nut() {
   translate([0, 0, 10.8]) {
     color("Lime", 0.7) difference() {
       union() {
-	    translate([31.7, 26, 0]) cylinder(h=hcz, d=hdia, $fn=6);
-	    translate([31.7, 26+18, 0]) cylinder(h=htop, d=hdia, $fn=6);
+            translate([31.7, 26, 0]) cylinder(h=hcz, d=hdia, $fn=6);
+            translate([31.7, 26+18, 0]) cylinder(h=htop, d=hdia, $fn=6);
       }
-	  translate([31.7, 26, -1]) cylinder(h=20, d=XYNutBoltDiam);
-	  translate([31.7, 26+18, -1]) cylinder(h=20, d=XYNutBoltDiam);
-	  translate([31.7, 26+18, hcz+3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
+          translate([31.7, 26, -1]) cylinder(h=20, d=XYNutBoltDiam);
+          translate([31.7, 26+18, -1]) cylinder(h=20, d=XYNutBoltDiam);
+          translate([31.7, 26+18, hcz+3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
       color("Black") {
         translate([28, 26, hcz-0.4]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("E");
-		translate([27.2, 26.5+18, htop-0.4]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("E");
+                translate([27.2, 26.5+18, htop-0.4]) rotate([0, 0, 60]) scale(XYNutTextScale) drawtext("E");
       }
-	}
+        }
   }
 }
 
@@ -604,18 +604,18 @@ module R_Idler_Pulley_Nut(leftSide=false) {
   translate([31.7, 26, 25.01]) color("Lime", 0.7) {
     difference() {
       union() {
-		translate([-67.05, -51.5, 0]) cylinder(h=h1, d=hdia, $fn=6);
-		translate([-53.85, -36, 0]) cylinder(h=h2, d=hdia, $fn=6);
+                translate([-67.05, -51.5, 0]) cylinder(h=h1, d=hdia, $fn=6);
+                translate([-53.85, -36, 0]) cylinder(h=h2, d=hdia, $fn=6);
       }
-	  translate([-67.05, -51.5, -1]) cylinder(h=20, d=XYNutBoltDiam);
-	  translate([-53.85, -36, -1]) cylinder(h=20, d=XYNutBoltDiam);
-	  if (leftSide) {
-	    translate([-67.05, -51.5, bncz-3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
-	  }
-	  else {
-	    translate([-53.85, -36, bncz-3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
-	  }
-	}
+          translate([-67.05, -51.5, -1]) cylinder(h=20, d=XYNutBoltDiam);
+          translate([-53.85, -36, -1]) cylinder(h=20, d=XYNutBoltDiam);
+          if (leftSide) {
+            translate([-67.05, -51.5, bncz-3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
+          }
+          else {
+            translate([-53.85, -36, bncz-3.5]) scale([1.03, 1.03, 2]) rotate([180]) nut("M4");
+          }
+        }
   }
 }
 
@@ -633,17 +633,17 @@ module R_Idler_Pulley_Washer(leftSide=false) {
           translate([-67.05, -51.5, 0]) cylinder(h=hcz, d=hdia/2);
           translate([-53.85, -36, 0]) cylinder(h=hcz, d=hdia);
         }
-		if (leftSide) {
-		  translate([-67.05, -51.5, 0]) cylinder(h=6+3.6, d1=hdia/2, d2=hdia/2-0.5);
-		}
-		else {
-		  translate([-53.85, -36, 0]) cylinder(h=6, d1=19, d2=16);
-		  translate([-53.85, -36, 5.99]) cylinder(h=3.6, d1=12, d2=10);
-		}
+                if (leftSide) {
+                  translate([-67.05, -51.5, 0]) cylinder(h=6+3.6, d1=hdia/2, d2=hdia/2-0.5);
+                }
+                else {
+                  translate([-53.85, -36, 0]) cylinder(h=6, d1=19, d2=16);
+                  translate([-53.85, -36, 5.99]) cylinder(h=3.6, d1=12, d2=10);
+                }
       }
-	  translate([-67.05, -51.5, -1]) cylinder(h=20, d=4.2);
-	  translate([-53.85, -36, -1]) cylinder(h=20, d=4.2);
-	}
+          translate([-67.05, -51.5, -1]) cylinder(h=20, d=4.2);
+          translate([-53.85, -36, -1]) cylinder(h=20, d=4.2);
+        }
   }
 }
 
@@ -735,25 +735,25 @@ CARCentralHoleDiam=E3Dv5RadDiam+1;
 
 module XCar_Base_holes(centralHoles=true) {
     color("Red") {
-		if (centralHoles) {
-			// E3D hole
-			translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
-			// Wires holes
-			translate([ 0,  CARCY/2-20, XENDFullCZ-200]) cylinder(h=400, d=8);
-			translate([ 0,  CARCY/2-25, XENDFullCZ-100]) cube([8, 10, 300], center=true);
-		}
-		// M4 holes 
+                if (centralHoles) {
+                        // E3D hole
+                        translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
+                        // Wires holes
+                        translate([ 0,  CARCY/2-20, XENDFullCZ-200]) cylinder(h=400, d=8);
+                        translate([ 0,  CARCY/2-25, XENDFullCZ-100]) cube([8, 10, 300], center=true);
+                }
+        // M4 holes 
         translate([-CARCX/2+13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
         translate([ CARCX/2-13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
-		// M4 nuts 
+        // M4 nuts 
         translate([-CARCX/2+13, 0, XENDFullCZ-4]) scale([1, 1, 2]) nut("M4");
         translate([ CARCX/2-13, 0, XENDFullCZ-4]) scale([1, 1, 2]) nut("M4");
-		// M3 holes
+        // M3 holes
         translate([-8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         translate([ 8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-		// M3 nuts
+        // M3 nuts
         translate([-8,  CARCY/2-13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
         translate([ 8,  CARCY/2-13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
         translate([-8, -CARCY/2+13, XENDFullCZ-3.5]) scale([1.05, 1.05, 2]) rotate([0, 0, 30]) nut("M3");
@@ -762,9 +762,9 @@ module XCar_Base_holes(centralHoles=true) {
 }
 
 module XCar_Base(clr="Yellow", drawE3D=true) {
-	if (drawE3D) {
-		%translate([0, 0, -1.85-CARTopZOffs]) rotate([0, 0, 90]) E3D_v5_temp();
-	}
+        if (drawE3D) {
+                %translate([0, 0, -1.85-CARTopZOffs]) rotate([0, 0, 90]) E3D_v5_temp();
+        }
     color(clr) translate([-CAR2CX/2, -CARCY/2, XENDFullCZ-CARBaseCZ]) cube([CAR2CX, CARCY, CARBaseCZ]);
 }
 
@@ -829,12 +829,12 @@ module CoreXY_X_Carriage_Full(skipDims=false, carClr="Green", e3d=true, withMoto
     translate([0, 0, 0.1]) CoreXY_Direct_Drive_v2("Yellow", rendStop=true, lendStop=true, renderBase=true, noChainMount=false);
     color("SteelBlue") translate([CARCX/2+2, 2, CARTopZBeg+0.2]) x_belt_clamp();
     if (withMotor) {
-  	  translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
+          translate([-5.5, -50.2, CARTopZBeg+CARTopBaseCZ+N17Height/2+4.5]) rotate([0, -90, 0]) rotate([-90]) Nema17(N17Height, N17Width, N17ShaftDiameter, N17ShaftLength, N17FixingHolesInteraxis);
     }
-	if (false) {
-	  translate([90, 0, CarZOffs]) X_EndStop_Stand();
+        if (false) {
+          translate([90, 0, CarZOffs]) X_EndStop_Stand();
       mirror([1, 0, 0]) translate([95, 0, CarZOffs]) X_EndStop_Stand();
-	}
+        }
     // Fan duct
     rotate([0, 0, 0]) YA_FanDuct_Full(61);
   }
@@ -862,10 +862,10 @@ module CoreXY_Full(bx=BARXLen, cx=RODXLen, by=BARYLen, cy=RODYLen, px=0, py=0, p
   }
   if (showCarriage) {
     if (newCar) {
-  	  translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
+          translate([xe_px, xe_py, BARCZ+RODXYDiam/1.5]) x_carriage_new(carClr, withE3D, e3dClr);
     }
     else {
-  	  translate([xe_px, xe_py, 0.6]) rotate([0, 0, 180]) CoreXY_X_Carriage_Full(true, carClr, false);
+          translate([xe_px, xe_py, 0.6]) rotate([0, 0, 180]) CoreXY_X_Carriage_Full(true, carClr, false);
     }
   }
   /**/

@@ -2,6 +2,8 @@ include <../z-temp/z-config.scad>
 use <../x-carriage/x_carriage_lda_v1.3.scad>
 use <../x-carriage/x_carriage_directdrive_enhanced.scad>
 
+//$fn=16;
+
 // X Carriage top frame
 XCarTopCZ=3.4;
 // Titan mount width
@@ -41,27 +43,36 @@ module E3D_v6_175(clr="DarkSlateGray", cla=undef) {
   color(clr, cla) translate([5.2, -2.5, 0]) rotate([0, 0, 0]) import("../../parts/E3D_v6_1.75mm_Universal.stl");
 }
 
-module BackHardenner(beltStBY) {
+module BackHardenner_v2(beltStBY) {
   difference() {
-    hull() {
-      translate([-38, -10.0-beltStBY-beltStBY, 21.498]) cube([7, beltStBY+0.1, 16.7]);
-      translate([-26.5, -38, 21.498]) cube([7, beltStBY+0.1, 8]);
-      translate([9.2, -38, 21.498]) cube([7, beltStBY+0.1, 8]);
-      translate([23, -23.4, 21.498]) cube([7, beltStBY+0.1, 8]);
-      translate([16, -10.0-beltStBY-beltStBY, 21.498]) cube([14, beltStBY+0.1, 16.7]);
+    union() {
+      translate([16, 0, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) {
+        linear_extrude(height=14) 
+          polygon(points=[[-38, -2.7],[-22, 10],[-14.8, 10],[-14.8, -6.7],[-38, -6.7]]);
+        translate([0, 0, -54]) linear_extrude(height=5.8) 
+          polygon(points=[[-38, -2.7],[-22, 13],[-14.8, 13],[-14.8, -6.7],[-38, -6.7]]);
+      }
+      translate([-38, -38, 21.5]) cube([68, 19.4, 4]);
     }
-    translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-    translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-    translate([-22, -34, 28]) cube([36, 14, 20]);
+    // M3 holes
+    translate([-8, -CARCY/2+13, 0]) cylinder(h=50, d=3.3);
+    translate([ 8, -CARCY/2+13, 0]) cylinder(h=50, d=3.3);
+    hull() {
+      translate([-8, -CARCY/2+13, 22.5]) cylinder(h=20, d=7);
+      translate([ 8, -CARCY/2+13, 22.5]) cylinder(h=20, d=7);
+    }
   }
 }
-
-module CoreXY_Direct_Drive_Clean_v1(clr="Khaki") {
+/*
+module CoreXY_Direct_Drive_Clean_v2(clr="Khaki") {
   beltStCY=5.41;
   beltStCX=15.2;
   beltStBY=5;
   
-  color(clr) union() {
+  color(clr) 
+render() 
+  union() 
+  {
     difference() {
       CoreXY_Direct_Drive(clr);
       color("red") {
@@ -80,48 +91,85 @@ module CoreXY_Direct_Drive_Clean_v1(clr="Khaki") {
       translate([-29, -50, 42]) rotate([0, 60, 0]) cube([40, 100, 30]);
     }
     translate([-38, -10.0-beltStBY, 23.2]) cube([7, beltStBY+0.1, 18]);
-    BackHardenner(beltStBY=beltStBY);
+  }
+  //#BackHardenner_v2(beltStBY=beltStBY);
+}
+*/
+
+module CoreXY_Direct_Drive_Belt_TensMnt() {
+  difference() {
+    translate([18, -21, XENDFullCZ]) cube([14.4, 44.5, 16.7]);
+    //translate([18, -21, XENDFullCZ]) ChamferBox2([14.4, 41, 16.7], 7);
+    // M4 hole
+    translate([ CARCX/2-13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
+    translate([ CARCX/2-13, 0, XENDFullCZ+12.7]) cylinder(h=100, d=8.4);
+    // Side holes
+    translate([0, 15, 31.35]) rotate([0, 90, 0]) cylinder(h=100, d=3.3);
+    translate([0, -11.9, 31.35]) rotate([0, 90, 0]) cylinder(h=100, d=3.3);
+    // Nut holes
+    translate([23, -15, XENDFullCZ+6.7]) cube([3.1, 6, 30]);
+    translate([23, 11.9, XENDFullCZ+6.7]) cube([3.1, 6, 30]);
+  }
+  *color("SteelBlue") translate([CARCX/2+2, 2, CARTopZBeg+0.2]) x_belt_clamp();
+}
+
+module Belt_Holes() {
+  translate([-120, 0.3, XENDFullCZ+3.1]) cube([300, 2.3, 6.2]);
+  translate([-120, 7.4, XENDFullCZ+3.1]) cube([300, 2.3, 6.2]);
+  translate([-120, 0.3-3, XENDFullCZ+10.1]) cube([300, 2.3, 6.2]);
+  translate([-120, 7.4-3, XENDFullCZ+10.1]) cube([300, 2.3, 6.2]);
+}
+
+module CoreXY_Direct_Drive_Belt_Mnt() {
+  // Old cubes
+  *translate([-26, 0, XENDFullCZ]) cube([10, 10, 10]);
+  *translate([-38, -10, XENDFullCZ]) cube([7, 25, 19.7]);
+  difference() {
+    translate([-38, -21, XENDFullCZ]) cube([7, 44.5, 19.7]);
+    //translate([-38, -21, XENDFullCZ]) ChamferBox2([7, 41, 19.7], 7);
+    translate([-60, 7.05, -0.2]) mirror([0, 1, 0]) Belt_Holes();
+  }
+}
+
+module CoreXY_Direct_Drive_Compound_v1(clr="Khaki") {
+  //color(clr, 0.4) CoreXY_Direct_Drive(clr);
+  difference() {
+    union() {
+      CoreXY_Direct_Drive_Belt_TensMnt();
+      translate([-2.5, 0, 0]) CoreXY_Direct_Drive_Belt_Mnt();
+      translate([0, 0, XENDFullCZ]) linear_extrude(height=2.8) 
+        polygon(points=[[18+14.4, -21], 
+                        [18+14.4, -21+44.5], 
+                        [20, -21+44.5+10],
+                        [-28.1, -21+44.5+10],
+                        [-(18+14.4+8.1), -21+44.5],
+                        [-(18+14.4+8.1), -21],
+                        [-(18+14.4+8.1)+12.4, -21-10],
+                        [20, -21+-10],
+        ]);
+    }
+    color("red") {
+      // E3D hole
+      translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
+      // Wires holes
+      translate([ 0,  CARCY/2-20, XENDFullCZ-200]) cylinder(h=400, d=8);
+      translate([ 0,  CARCY/2-25, XENDFullCZ-100]) cube([8, 10, 300], center=true);
+      // M4 hole
+      translate([ CARCX/2-13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
+      translate([-CARCX/2+13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
+      // M3 holes
+      translate([-8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+      translate([ 8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+      translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+      translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+    }
   }
 }
 
 module CoreXY_Direct_Drive_Titan_Mount() {
-  difference() {
-    union() {
-      hull() {
-        //translate([-17.7, -31.9, 23.2]) cube([4, 46.3, 55]);
-        translate([-17.7, 15, 23.5]) cube([4, 15, 24]);
-        translate([-17.7, 7.4, 78.4]) rotate([0, 90, 0]) cylinder(h=4, d=14);
-        translate([-17.7, -32, 23.5]) cube([4, 15, 15]);
-        translate([-17.7, -32, 70.3]) cube([4, 15, 15]);
-        //translate([-17.7, -28, 78.4]) rotate([0, 90, 0]) cylinder(h=4, d=14);
-      }
-      hull() {
-        translate([-17.7, -31.9, 23.5]) cube([4, 61.9, 4]);
-        translate([10, -31.9, 23.5]) cube([4, 61.9, 7]);
-        translate([-17.7, -31.9, 36.5]) cube([4, 61.9, 4]);
-      }
-    }
-    BackHardenner(beltStBY=5);
-    // M3 vert holes
-    translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.3);
-    translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.3);
-    hull() {
-      translate([-8, -CARCY/2+13, 30]) cylinder(h=20, d=3.3);
-      translate([ 8, -CARCY/2+13, 30]) cylinder(h=20, d=3.3);
-    }
-    translate([-8, 25, -75]) cylinder(h=200, d=3.2);
-    translate([ 8, 25, -75]) cylinder(h=200, d=3.2);
-    hull() {
-      translate([-8, 25, 30]) cylinder(h=20, d=3.3);
-      translate([ 8, 25, 30]) cylinder(h=20, d=3.3);
-    }
-    // Central holes
-    translate([0, 0, -75]) cylinder(h=200, d=16);
-    translate([0, 18, -75]) cylinder(h=200, d=8);
-  }
 }
 
-
+/*
 module CoreXY_Direct_Drive_Titan_v4(clr="DeepPink", rendStop=false, lendStop=true, noMotorMount=false, noChainMount=false) {
   esbx=CARCX/2-3;
   cx=XEndStopMountCX;
@@ -180,16 +228,14 @@ module CoreXY_Carriage_Titan_Classic_Vulcanus(noRordsCheck=false, withMotor=fals
     //color("cyan") CoreXY_Direct_Drive_Titan_Mount();
   }
 }
+*/
 
 module CoreXY_Carriage_Titan_Modern() {
   translate([0, 0, -21.5]) {
-      color("Khaki", 0.7) CoreXY_X_Carriage_v3(true, e3d=false);
-      translate([0, 0, 26.4]) rotate([0, 0, 90]) Titan_E3D_v6_Asm();
-      //#CoreXY_Direct_Drive_Clean_v1();
+      color("Khaki", 0.3) CoreXY_X_Carriage_v3(true, e3d=false);
+      translate([0, 0, 30.4]) rotate([0, 0, 180]) Titan_E3D_v6_Asm();
+      CoreXY_Direct_Drive_Compound_v1();
   }
 }
-
-
-//CoreXY_Carriage_Titan_Classic_Vulcanus();
 
 CoreXY_Carriage_Titan_Modern();
