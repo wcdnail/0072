@@ -995,11 +995,11 @@ module X_EndStop_Mount(esbx=CARCX/2-3, cx=XEndStopMountCX, clr=undef, clra=undef
       hull() {
         //translate([esbx-cx-5, esby-1, hlcz]) rotate([0, 90, 0]) cylinder(d=13.8, h=cx, $fn=17);
         translate([esbx-cx-5, esby-6, hlcz]) cube([cx, 10, 6]);
-        translate([esbx-cx-5, esby-8, hlkz]) cube([cx, 14, 16]);
+        translate([esbx-cx-5, esby-8, hlkz]) cube([cx, 14, 20]);
       }
       // Шайбы
-      translate([esbx-cx-0.2, esby-0.89, CARTopZBeg+5.15]) rotate([0, 90, 0]) cylinder(d=7, h=1.8);
-      translate([esbx-cx-0.2, esby-0.89, CARTopZBeg+23.45]) rotate([0, 90, 0]) cylinder(d=7, h=1.8);
+      translate([esbx-cx-0.2+1.8, esby-0.89, CARTopZBeg+5.15]) rotate([0, 90, 0]) cylinder(d=7, h=1.8);
+      translate([esbx-cx-0.2+1.8, esby-0.89, CARTopZBeg+23.45]) rotate([0, 90, 0]) cylinder(d=7, h=1.8);
       if (!noCon) {
         // Connector
         translate([esbx-cx-5, esby-16, CARTopZBeg]) cube([cx, 22, 13]);

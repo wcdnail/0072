@@ -35,7 +35,7 @@ module Nema17_usual(clr="Gainsboro", cla=undef) {
 module Titan_E3D_v6_Asm() {
     zOffs=-10;
     %translate([8.5, -1.9, zOffs+5.4]) rotate([0, 0, 0]) E3D_Titan_Base(cla=1);
-    *%translate([0, 0, zOffs]) rotate([0, 0, E3DRot]) E3D_v6_175_base(cla=1); // Z-=43.25 for patched STL
+    %translate([0, 0, zOffs]) rotate([0, 0, E3DRot]) E3D_v6_175_base(cla=1); // Z-=43.25 for patched STL
     %translate([8.3, -30.4-TMMountCY, zOffs+31.3]) rotate([-90, 90, 0]) Nema17_usual();
 }
 
@@ -50,24 +50,25 @@ module Belt_Holes() {
   translate([-120, 7.4-3, XENDFullCZ+10.1]) cube([300, 2.3, 6.2]);
 }
 
-module CoreXY_DD_Plate(cz=2.8) {
+module CoreXY_DD_Plate(cz=2.8, lendStop=true) {
+  lendStopDy=(lendStop ? 54.5 : 44.5);
   translate([0, 0, XENDFullCZ]) linear_extrude(height=cz) 
     polygon(points=[[18+14.4, -21], 
                     [18+14.4, -21+44.5], 
                     [20, -21+44.5+10],
                     [-28.1, -21+44.5+10],
-                    [-(18+14.4+8.1), -21+44.5],
+                    [-(18+14.4+8.1), -21+lendStopDy],
                     [-(18+14.4+8.1), -21],
                     [-(18+14.4+8.1)+12.4, -21-10],
                     [20, -21+-10],
     ]);
 }
 
-module CoreXY_DD_EdgeCutter() {
+module CoreXY_DD_EdgeCutter(lendStop=true) {
   difference() {
     // almost real dims - translate([-4.2, 1.1, 7]) cube([75, 69, 165], center=true);
     translate([-4.2, 1.1, 7]) cube([300, 300, 165], center=true);
-    translate([0, 0, -100]) CoreXY_DD_Plate(170);
+    translate([0, 0, -100]) CoreXY_DD_Plate(cz=170, lendStop=lendStop);
   }
 }
 
@@ -77,7 +78,7 @@ module CoreXY_Direct_Drive_Belt_TensMnt() {
       translate([18, -21, XENDFullCZ]) cube([14.4, 44.5, 16.7]);
       translate([72, 0, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) {
         translate([0, 0, -54]) linear_extrude(height=14.4) 
-        polygon(points=[[-31, -2.7], [-22, 10], [-20.8, 10], [-20.8, -6.7], [-31, -6.7]]);
+          polygon(points=[[-31, -2.7], [-22, 10], [-20.8, 10], [-20.8, -6.7], [-31, -6.7]]);
       }
       mirror([0, 1, 0]) translate([72, -2.5, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) {
         translate([0, 0, -54]) linear_extrude(height=14.4) 
@@ -121,65 +122,82 @@ module CoreXY_Direct_Drive_Belt_Mnt() {
   }
 }
 
-module CoreXY_Direct_Drive_Compound_v1(clr="Khaki") {
+module CoreXY_Direct_Drive_Compound_v1(clr="Khaki", lendStop=true, chainMounter=true) {
   *color(clr, 0.4) CoreXY_Direct_Drive(clr);
-  difference() {
-    color(clr) union() {
-      CoreXY_Direct_Drive_Belt_TensMnt();
-      translate([-2.5, 0, 0]) CoreXY_Direct_Drive_Belt_Mnt();
-      translate([-23.51, -31, XENDFullCZ]) cube([43.5, 64.5, 4]);
-      translate([-40.5, -31, XENDFullCZ]) cube([20.5, 22, 4]);
-      // Nema17 mount
-      hull() {
-        translate([-40.5, -17.6, XENDFullCZ]) cube([20.5, 4, 32]);
-        translate([-32, -17.6, XENDFullCZ+46]) rotate([-90, 0, 0]) cylinder(h=4, d=6);
-        translate([10, -17.6, XENDFullCZ+46]) rotate([-90, 0, 0]) cylinder(h=4, d=6);
-        translate([20.5, -17.6, XENDFullCZ]) cube([2, 4, 32]);
-      }
-      //CoreXY_DD_Plate(2.8);
+  
+  esbx=CARCX/2;
+  cx=XEndStopMountCX+2;
+  union() {
+    if (lendStop) {
+      translate([-7.499, 0, 0]) mirror([1, 0, 0]) X_EndStop_Mount(esbx, cx, clr);
     }
-    color("red") {
-      // E3D hole
-      translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
-      // Wires holes
-      translate([ 0,  CARCY/2-23, XENDFullCZ-200]) cylinder(h=400, d=8);
-      translate([ 0,  CARCY/2-28, XENDFullCZ-100]) cube([8, 10, 300], center=true);
-      // M4 hole
-      translate([ CARCX/2-13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
-      translate([-CARCX/2+13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
-      translate([-CARCX/2+13, 0, XENDFullCZ+2.8]) cylinder(h=30, d=9);
-      // M3 holes
-      translate([-8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-      translate([ 8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-      translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-      translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
-      // Back
-      hull() {
-        translate([-8, -CARCY/2+13, 24.1]) cylinder(h=20, d=7);
-        translate([ 8, -CARCY/2+13, 24.1]) cylinder(h=20, d=7);
-      }
-      // Front
-      hull() {
-        translate([-8,  CARCY/2-13, 24.1]) cylinder(h=20, d=7);
-        translate([ 8,  CARCY/2-13, 24.1]) cylinder(h=20, d=7);
-      }
+    if (chainMounter) {
+      translate([56, -5, 0]) rotate([0, 0, -90]) Chain_Mount_Solid(clr=clr, cx=10);
     }
-    color("orange") {
-      CoreXY_DD_EdgeCutter();
-      translate([-26.3, 50, XENDFullCZ+9.5]) hull() {
-        translate([10, 0, 0]) rotate([90, 0, 0]) cylinder(h=40, d=5);
-        rotate([90, 0, 0]) cylinder(h=40, d=5);
-        translate([0, 0, 10]) rotate([90, 0, 0]) cylinder(h=40, d=5);
+    difference() {
+      color(clr) union() {
+        CoreXY_Direct_Drive_Belt_TensMnt();
+        translate([-2.5, 0, 0]) CoreXY_Direct_Drive_Belt_Mnt();
+        translate([-23.51, -31, XENDFullCZ]) cube([43.5, 64.5, 4]);
+        translate([-40.5, -31, XENDFullCZ]) cube([20.5, 22, 4]);
+        // Nema17 mount
+        hull() {
+          translate([-40.5, -17.6, XENDFullCZ]) cube([20.5, 4, 32]);
+          translate([-32, -17.6, XENDFullCZ+46]) rotate([-90, 0, 0]) cylinder(h=4, d=6);
+          translate([13, -17.6, XENDFullCZ+46]) rotate([-90, 0, 0]) cylinder(h=4, d=6);
+          translate([20.5, -17.6, XENDFullCZ]) cube([2, 4, 32]);
+        }
+        // make nema17 mnt harder
+        translate([-40.5, -14, XENDFullCZ+32.1]) rotate([0, 90, 0]) linear_extrude(height=7) 
+          polygon(points=[[0, 0], [13, 0], [13, 38]]);
+        translate([18, -14, XENDFullCZ+29.1]) rotate([0, 90, 0]) linear_extrude(height=4.5) 
+          polygon(points=[[0, 0], [13, 0], [13, 38]]);
+        //CoreXY_DD_Plate(2.8);
       }
-    }
-    // Nema17 holes
-    color("green") {
-      translate([-26.3, 50, XENDFullCZ+9.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
-      translate([-26.3, 50, XENDFullCZ+40.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
-      translate([4.7, 50, XENDFullCZ+9.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
-      translate([4.7, 50, XENDFullCZ+40.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
-      // Central
-      translate([-10.8, 50, XENDFullCZ+25]) rotate([90, 0, 0]) cylinder(h=100, d=22.2);
+      color("red") {
+        // E3D hole
+        translate([0, 0, XENDFullCZ-200]) cylinder(h=400, d=CARCentralHoleDiam);
+        // Wires holes
+        translate([ 0,  CARCY/2-23, XENDFullCZ-200]) cylinder(h=400, d=8);
+        translate([ 0,  CARCY/2-28, XENDFullCZ-100]) cube([8, 10, 300], center=true);
+        // M4 hole
+        translate([ CARCX/2-13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
+        translate([-CARCX/2+13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
+        translate([-CARCX/2+13, 0, XENDFullCZ+2.8]) cylinder(h=30, d=9);
+        translate([ CARCX/2-13, 0, XENDFullCZ+12.7]) cylinder(h=100, d=8.4);
+        // M3 holes
+        translate([-8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+        translate([ 8,  CARCY/2-13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+        translate([-8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+        translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
+        // Back
+        hull() {
+          translate([-8, -CARCY/2+13, 24.1]) cylinder(h=20, d=7);
+          translate([ 8, -CARCY/2+13, 24.1]) cylinder(h=20, d=7);
+        }
+        // Front
+        hull() {
+          translate([-8,  CARCY/2-13, 24.1]) cylinder(h=20, d=7);
+          translate([ 8,  CARCY/2-13, 24.1]) cylinder(h=20, d=7);
+        }
+      }
+      color("orange") {
+        CoreXY_DD_EdgeCutter(lendStop=lendStop);
+        translate([-26.3, 50, XENDFullCZ+9.5]) hull() {
+          translate([10, 0, 0]) rotate([90, 0, 0]) cylinder(h=40, d=5);
+          rotate([90, 0, 0]) cylinder(h=40, d=5);
+          translate([0, 0, 10]) rotate([90, 0, 0]) cylinder(h=40, d=5);
+        }
+      }
+      // Nema17 holes
+      color("green") {
+        translate([-26.3, 50, XENDFullCZ+9.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
+        translate([-26.3, 50, XENDFullCZ+40.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
+        translate([4.7, 50, XENDFullCZ+9.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
+        translate([4.7, 50, XENDFullCZ+40.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
+        // Central
+        translate([-10.8, 50, XENDFullCZ+25]) rotate([90, 0, 0]) cylinder(h=100, d=22.2);
+      }
     }
   }
   //#CoreXY_DD_Plate(2.8);
@@ -187,11 +205,10 @@ module CoreXY_Direct_Drive_Compound_v1(clr="Khaki") {
 
 module CoreXY_Carriage_Titan_Modern() {
   translate([0, 0, -21.5]) {
-      *color("Khaki", 0.3) CoreXY_X_Carriage_v3(true, e3d=false);
-      translate([0, 0, 30.4]) rotate([0, 0, 0]) Titan_E3D_v6_Asm();
+      %color("Khaki", 0.3) CoreXY_X_Carriage_v3(true, e3d=false);
+      %translate([0, 0, 30.4]) rotate([0, 0, 0]) Titan_E3D_v6_Asm();
       mirror([1, 0, 0]) CoreXY_Direct_Drive_Compound_v1();
   }
 }
 
 CoreXY_Carriage_Titan_Modern();
-

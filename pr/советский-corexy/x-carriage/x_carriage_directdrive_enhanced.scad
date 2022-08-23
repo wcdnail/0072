@@ -15,8 +15,7 @@ module Chain_Mount_Holes() {
   translate([19, -8.1, CARTopZBeg+CARTopBaseCZ+hbz]) scale([3, 1+NutScaleInc, 1+NutScaleInc]) rotate([0, 90]) nut("M3");
 }
 
-module Chain_Mount_Solid(clr=undef) {
-  cx=8;
+module Chain_Mount_Solid(clr=undef, cx=8) {
   hullCD=5;
   hullFN=12;
   color(clr) difference() {
