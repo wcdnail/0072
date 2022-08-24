@@ -4,19 +4,16 @@ use <../x-carriage/x_carriage_directdrive_enhanced.scad>
 
 //$fn=16;
 
-// X Carriage top frame
-XCarTopCZ=3.4;
-// Titan mount width
-MCX=62.5; 
-// Titan mount length
-MCY=40.0;
-// Titan Z angle
-TZRot=180;
 // E3D hotend Z angle
 E3DRot=0;
-E3D_CentralHole_D=26;
 // Titan mount sizes
 TMMountCY=5;
+// R-Side x offset
+BeltMnt_X_Offs = 2.4;
+//
+DDBaseCZ = 2.8;
+// 
+DDTitan_BaseCZ = 6;
 
 module E3D_Titan_Base(clr="DeepSkyBlue", cla=undef) {
   color(clr, cla) {
@@ -57,9 +54,9 @@ module CoreXY_DD_Plate(cz=2.8, lendStop=true) {
                     [18+14.4, -21+44.5], 
                     [20, -21+44.5+10],
                     [-28.1, -21+44.5+10],
-                    [-(18+14.4+8.1), -21+lendStopDy],
-                    [-(18+14.4+8.1), -21],
-                    [-(18+14.4+8.1)+12.4, -21-10],
+                    [-(18+14.4+8.1)-BeltMnt_X_Offs, -21+lendStopDy],
+                    [-(18+14.4+8.1)-BeltMnt_X_Offs, -21],
+                    [-(18+14.4+8.1)+12.4-BeltMnt_X_Offs, -21-10],
                     [20, -21+-10],
     ]);
 }
@@ -82,10 +79,10 @@ module CoreXY_Direct_Drive_Belt_TensMnt() {
       }
       mirror([0, 1, 0]) translate([72, -2.5, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) {
         translate([0, 0, -54]) linear_extrude(height=14.4) 
-        polygon(points=[[-31, -2.7], [-22, 10], [-20.8, 10], [-20.8, -6.7], [-31, -6.7]]);
+        polygon(points=[[-31, -2.7+2], [-22, 10], [-20.8, 10], [-20.8, -6.7], [-31, -6.7]]);
       }
       // bottom plate 
-      translate([-2, -100, XENDFullCZ]) cube([64, 220, 2.8]);
+      translate([-2, -100, XENDFullCZ]) cube([64, 220, DDBaseCZ]);
     }
     // M4 hole
     translate([ CARCX/2-13, 0, XENDFullCZ-200]) cylinder(h=400, d=4.5);
@@ -105,19 +102,22 @@ module CoreXY_Direct_Drive_Belt_Mnt() {
   *translate([-26, 0, XENDFullCZ]) cube([10, 10, 10]);
   *translate([-38, -10, XENDFullCZ]) cube([7, 25, 19.7]);
   union() {
-    translate([16, 0, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) {
+    translate([16-BeltMnt_X_Offs, 0, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 90]) rotate([90]) {
       translate([0, 0, -54]) linear_extrude(height=7) 
       polygon(points=[[-31, -2.7], [-22, 13], [-20.8, 13], [-20.8, -6.7], [-31, -6.7]]);
     }
-    translate([-52, 68, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 180]) rotate([90]) {
-      translate([0, 0, -54]) linear_extrude(height=19.5) 
-      polygon(points=[[-31, -2.7], [-21, 13], [-14, 13], [-14, -6.7], [-31, -6.7]]);
+    translate([-52-BeltMnt_X_Offs, 66, CARTopZBeg+CARTopBaseCZ]) rotate([0, 0, 180]) rotate([90]) {
+      translate([0, 0, -54]) linear_extrude(height=21.5) 
+      polygon(points=[[-31, -2.7+DDBaseCZ], [-21, 13], [-14, 13], [-14, -6.7], [-31, -6.7]]);
     }
+    // N17 mnt hardener
+    translate([-40.4, -15.5, XENDFullCZ+32.1]) mirror([0, 1, 0]) rotate([0, 90, 0]) linear_extrude(height=7) 
+      polygon(points=[[0, 0], [29.3+DDBaseCZ, 0], [29.3+DDBaseCZ, 24]]);
     // bottom plate 
-    translate([-62, -100, XENDFullCZ]) cube([64, 220, 2.8]);
+    translate([-62-BeltMnt_X_Offs, -100, XENDFullCZ]) cube([64+BeltMnt_X_Offs+2, 220, DDBaseCZ]);
     difference() {
-      translate([-38, -21, XENDFullCZ]) cube([7, 44.5, 19.7]);
-      translate([-60, 7.05, -0.2]) mirror([0, 1, 0]) Belt_Holes();
+      translate([-38-BeltMnt_X_Offs, -21, XENDFullCZ]) cube([7, 44.5, 19.7]);
+      translate([-60-BeltMnt_X_Offs, 7.05, -0.2]) mirror([0, 1, 0]) Belt_Holes();
     }
   }
 }
@@ -129,7 +129,7 @@ module CoreXY_Direct_Drive_Compound_v1(clr="Khaki", lendStop=true, chainMounter=
   cx=XEndStopMountCX+2;
   union() {
     if (lendStop) {
-      translate([-7.499, 0, 0]) mirror([1, 0, 0]) X_EndStop_Mount(esbx, cx, clr);
+      translate([-7.499-BeltMnt_X_Offs, 0, 0]) mirror([1, 0, 0]) X_EndStop_Mount(esbx, cx, clr);
     }
     if (chainMounter) {
       translate([56, -5, 0]) rotate([0, 0, -90]) Chain_Mount_Solid(clr=clr, cx=10);
@@ -138,21 +138,24 @@ module CoreXY_Direct_Drive_Compound_v1(clr="Khaki", lendStop=true, chainMounter=
       color(clr) union() {
         CoreXY_Direct_Drive_Belt_TensMnt();
         translate([-2.5, 0, 0]) CoreXY_Direct_Drive_Belt_Mnt();
-        translate([-23.51, -31, XENDFullCZ]) cube([43.5, 64.5, 4]);
-        translate([-40.5, -31, XENDFullCZ]) cube([20.5, 22, 4]);
+        translate([-23.51-BeltMnt_X_Offs, -31, XENDFullCZ]) cube([43.5+BeltMnt_X_Offs, 64.5, DDTitan_BaseCZ]);
+        translate([-40.5-BeltMnt_X_Offs, -31, XENDFullCZ]) cube([20.5, 22, DDTitan_BaseCZ]);
         // Nema17 mount
+        N17MntRad = 3;
+        N17MntCY = 2;
         hull() {
-          translate([-40.5, -17.6, XENDFullCZ]) cube([20.5, 4, 32]);
-          translate([-32, -17.6, XENDFullCZ+46]) rotate([-90, 0, 0]) cylinder(h=4, d=6);
-          translate([13, -17.6, XENDFullCZ+46]) rotate([-90, 0, 0]) cylinder(h=4, d=6);
-          translate([20.5, -17.6, XENDFullCZ]) cube([2, 4, 32]);
+          translate([-40.5-BeltMnt_X_Offs, -17.6+N17MntCY, XENDFullCZ]) cube([20.5, N17MntCY, 32]);
+          translate([-32, -17.6+N17MntCY, XENDFullCZ+46+DDTitan_BaseCZ/N17MntRad]) rotate([-90, 0, 0]) cylinder(h=N17MntCY, d=N17MntRad*2);
+          translate([13, -17.6+N17MntCY, XENDFullCZ+46+DDTitan_BaseCZ/N17MntRad]) rotate([-90, 0, 0]) cylinder(h=N17MntCY, d=N17MntRad*2);
+          translate([21, -17.6+N17MntCY, XENDFullCZ]) cube([2, N17MntCY, 32]);
         }
         // make nema17 mnt harder
-        translate([-40.5, -14, XENDFullCZ+32.1]) rotate([0, 90, 0]) linear_extrude(height=7) 
+        translate([-40.5-BeltMnt_X_Offs, -14, XENDFullCZ+32.1]) rotate([0, 90, 0]) linear_extrude(height=7) 
           polygon(points=[[0, 0], [13, 0], [13, 38]]);
-        translate([18, -14, XENDFullCZ+29.1]) rotate([0, 90, 0]) linear_extrude(height=4.5) 
+        // left
+        translate([18, -14, XENDFullCZ+29.1]) rotate([0, 90, 0]) linear_extrude(height=5) 
           polygon(points=[[0, 0], [13, 0], [13, 38]]);
-        //CoreXY_DD_Plate(2.8);
+        *CoreXY_DD_Plate(2.8);
       }
       color("red") {
         // E3D hole
@@ -172,25 +175,26 @@ module CoreXY_Direct_Drive_Compound_v1(clr="Khaki", lendStop=true, chainMounter=
         translate([ 8, -CARCY/2+13, XENDFullCZ-200]) cylinder(h=400, d=3.2);
         // Back
         hull() {
-          translate([-8, -CARCY/2+13, 24.1]) cylinder(h=20, d=7);
-          translate([ 8, -CARCY/2+13, 24.1]) cylinder(h=20, d=7);
+          translate([-8, -CARCY/2+13, XENDFullCZ+DDBaseCZ]) cylinder(h=20, d=7);
+          translate([ 8, -CARCY/2+13, XENDFullCZ+DDBaseCZ]) cylinder(h=20, d=7);
         }
         // Front
         hull() {
-          translate([-8,  CARCY/2-13, 24.1]) cylinder(h=20, d=7);
-          translate([ 8,  CARCY/2-13, 24.1]) cylinder(h=20, d=7);
+          translate([-8,  CARCY/2-13, XENDFullCZ+DDBaseCZ]) cylinder(h=20, d=7);
+          translate([ 8,  CARCY/2-13, XENDFullCZ+DDBaseCZ]) cylinder(h=20, d=7);
         }
       }
       color("orange") {
         CoreXY_DD_EdgeCutter(lendStop=lendStop);
+        toolHullD=6.9;
         translate([-26.3, 50, XENDFullCZ+9.5]) hull() {
-          translate([10, 0, 0]) rotate([90, 0, 0]) cylinder(h=40, d=5);
-          rotate([90, 0, 0]) cylinder(h=40, d=5);
-          translate([0, 0, 10]) rotate([90, 0, 0]) cylinder(h=40, d=5);
+          translate([10, 0, 0]) rotate([90, 0, 0]) cylinder(h=40, d=toolHullD);
+          rotate([90, 0, 0]) cylinder(h=40, d=toolHullD);
+          translate([0, 0, 10]) rotate([90, 0, 0]) cylinder(h=40, d=toolHullD);
         }
       }
       // Nema17 holes
-      color("green") {
+      translate([0, 0, DDTitan_BaseCZ/3]) color("green") {
         translate([-26.3, 50, XENDFullCZ+9.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
         translate([-26.3, 50, XENDFullCZ+40.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
         translate([4.7, 50, XENDFullCZ+9.5]) rotate([90, 0, 0]) cylinder(h=100, d=3.3);
@@ -205,8 +209,8 @@ module CoreXY_Direct_Drive_Compound_v1(clr="Khaki", lendStop=true, chainMounter=
 
 module CoreXY_Carriage_Titan_Modern() {
   translate([0, 0, -21.5]) {
-      %color("Khaki", 0.3) CoreXY_X_Carriage_v3(true, e3d=false);
-      %translate([0, 0, 30.4]) rotate([0, 0, 0]) Titan_E3D_v6_Asm();
+      *%color("Khaki", 0.3) CoreXY_X_Carriage_v3(true, e3d=false);
+      %translate([0, 0, 26.4 + DDTitan_BaseCZ]) rotate([0, 0, 0]) Titan_E3D_v6_Asm();
       mirror([1, 0, 0]) CoreXY_Direct_Drive_Compound_v1();
   }
 }
