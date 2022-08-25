@@ -768,28 +768,40 @@ module XCar_Base(clr="Yellow", drawE3D=true) {
     color(clr) translate([-CAR2CX/2, -CARCY/2, XENDFullCZ-CARBaseCZ]) cube([CAR2CX, CARCY, CARBaseCZ]);
 }
 
-module XCar_LM8UU_Holder1(clr="Yellow") {
-    sz=XENDFullCZ;
+module XCar_LM8UU_Mnt(sz=XENDFullCZ) {
     bhy=CARCY/2.8;
     bhz=LM8UUOutterDiam-3.5;
-    bslicez=14.6;
     wsz=5;
-    wz=10; //6.7;
-    difference() {
-        // Bearing holder
-        color(clr) union() {
-            translate([CARCX/2-LM8UULen-CARXE, CARCY/2-bhy, sz]) rotate([0, 90, 0])
-                linear_extrude(height=LM8UULen+CARXE*2) polygon(points=[[0, 0],[CARBaseCZ, 0],[CARBaseCZ+bhz, bhy/6],[CARBaseCZ+bhz, bhy-bhy/7],[CARBaseCZ, bhy], [0, bhy]]);
-            translate([-0.1, -0.1, sz-wsz]) cube([CARCX/4, CARCY/2-CARXE*2, wsz]);
-            translate([14, -0.1, sz-wz]) cube([26.5, CARCY/4, wz]);
-        }
-        // Linear bearing
-        color("Blue") {
-            translate([CARCX/2-LM8UULen, XRODSDiff/2, sz/2]) rotate([0, 90, 0]) cylinder(d=LM8UUOutterDiam, h=LM8UULen);
-            translate([CARCX/2-LM8UULen*1.5, XRODSDiff/2, sz/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam*1.3, h=LM8UULen*2);
-            translate([CARCX/2-LM8UULen/2, XRODSDiff/2, 0]) scale([1, 1, 0.7]) rotate([45, 0, 0]) cube([LM8UULen*2, LM8UULen, LM8UULen], center=true);
-            cube([CARCX*2, CARCY*2, bslicez], center=true);
-        }
+    wz=wsz+2; //6.7;
+    union() {
+        translate([CARCX/2-LM8UULen-CARXE, CARCY/2-bhy, sz]) rotate([0, 90, 0])
+            linear_extrude(height=LM8UULen+CARXE*2) polygon(points=[[0, 0],[CARBaseCZ, 0],[CARBaseCZ+bhz, bhy/6],[CARBaseCZ+bhz, bhy-bhy/7],[CARBaseCZ, bhy], [0, bhy]]);
+        // Central block
+        translate([-0.1, -0.1, sz-wsz]) cube([CARCX/4, CARCY/2-CARXE*2, wsz]);
+        // Side block
+        translate([-CARCX/2+5, -0.1, sz-wz]) cube([CARCX/2-4.9, CARCY/4-2, wz]);
+        //translate([14, -0.1, sz-wz]) cube([26.5, CARCY/4, wz]);
+    }
+}
+
+module XCar_LM8UU_PlaceHolder(sz=XENDFullCZ) {
+    bslicez=14.6;
+    union() {
+        translate([CARCX/2-LM8UULen, XRODSDiff/2, sz/2]) rotate([0, 90, 0]) cylinder(d=LM8UUOutterDiam, h=LM8UULen);
+        translate([CARCX/2-LM8UULen*1.5, XRODSDiff/2, sz/2]) rotate([0, 90, 0]) cylinder(d=RODXYDiam*1.3, h=LM8UULen*2);
+        // Slice
+        translate([CARCX/2-LM8UULen/2, XRODSDiff/2, 0]) scale([1, 1, 0.7]) rotate([45, 0, 0]) cube([LM8UULen*2, LM8UULen, LM8UULen], center=true);
+        cube([CARCX*2, CARCY*2, bslicez], center=true);
+    }
+}
+
+module XCar_LM8UU_Holder1(clr="Yellow") {
+    sz=XENDFullCZ;
+    color(clr) difference() {
+        // Bearing mount
+        XCar_LM8UU_Mnt(sz=sz);
+        // Bearing place
+        XCar_LM8UU_PlaceHolder(sz=sz);
     }
 }
 
