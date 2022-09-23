@@ -1,0 +1,3 @@
+[submodule "3d-printer/ender-3/ender-3-marlin"]
+	path = 3d-printer/ender-3/ender-3-marlin
+	url = git@github.com:wcdnail/Marlin.git
