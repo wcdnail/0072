@@ -1,0 +1,21 @@
+{
+    "fileFormatVersion": "1",
+    "parameterSets": {
+        "New set 1": {
+            "BedColor": "White",
+            "ShowAll": "true",
+            "ShowBed": "false",
+            "ShowBelts": "false",
+            "ShowCoreXY": "false",
+            "ShowDims": "true",
+            "ShowHalfZ": "false",
+            "ShowProfiles": "true",
+            "ShowTableSize": "false",
+            "ShowTopFrameSize": "true",
+            "ShowXAxis": "false",
+            "ShowXCar": "false",
+            "ShowZ": "true",
+            "ShowZFrameSize": "true"
+        }
+    }
+}
