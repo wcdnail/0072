@@ -2,7 +2,7 @@
 
 ## Внимание !
 
-- Плата - [BTT SKR E3 mini V2](https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3.git);
+- Плата - [BTT SKR mini E3 V2](https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3.git);
 - Включен SENSORLESS_HOMING;
 - Поднят ток драйверов;
 - Изменено кол-во шагов по Z, винты заменены на одно-заходные (ибо не было в наличии 4-заходных);
@@ -13,12 +13,25 @@
 
 ![dual-z-ender-3-complete-system-model_files.zip](ph/dual-z-1.jpg)
 
-Детали печатались на SP3 (TwoTrees Sapphire Pro) из ABS пластика соплом в 1 мм, прочность на уровне.
+Детали печатались на SP3 (TwoTrees Sapphire Pro) из ABS пластика соплом в 1мм, прочность на уровне.
 
 ### Внимание !
 При подключении второго двигателя стандартным кабелем, движки крутились в разные стороны! Необходимо поменять зеленый и синий провода местами в стандартном проводе, чтобы завелось как надо.
 
 ![swap_wirez](ph/z-mot-wiring.jpg)
+
+## Ось Y
+
+Использованные модели:
+- [Крепление мотора](https://www.thingiverse.com/thing:5137055)
+- [Натяжитель](https://www.thingiverse.com/thing:3097972)
+
+Держатель мотора взял у [Red_Lion'a](https://www.thingiverse.com/red_lion/designs), а натяжитель ремня у [Cornely_Cool'a](https://www.thingiverse.com/cornely_cool/designs). Стандартный ремень оказался коротким для немного удлиненной оси Y, пришлось заменить.
+
+![OY](ph/oy.jpg)
+
+Детали так же печатались на SP3 из ABS пластика соплом в 1мм. Даже не знаю, стоит ли возвращать 0.4мм сопло на SP3...
+
 
 ## Подстроечный держатель оптического концевика по Z
 
