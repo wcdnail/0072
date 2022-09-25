@@ -1,5 +1,11 @@
 # Аскетический апргрейд Creality Ender-3
 
+## Прошивка
+
+- Марли 2.1.х [ender-3-marlin](ender-3-marlin/) (гит субмодуль)
+
+Перед сборкой внимательно проверьте конфиги!
+
 ## Внимание !
 
 - Плата - [BTT SKR mini E3 V2](https://github.com/bigtreetech/BIGTREETECH-SKR-mini-E3.git);
