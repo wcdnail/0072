@@ -6,5 +6,8 @@
 ## B. Модели общих деталей
 [Heap](3d-printed-parts)
 
+## C. Схемы и даташиты
+[Heap](hw)
+
 ## Z. Устаревшие наработки
 [Obsolete](.obsolete)
